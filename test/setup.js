@@ -4,7 +4,7 @@ import 'isomorphic-fetch'
 import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
-import dotenv from 'dotenv'
+import dotenv from 'dotenv' // eslint-disable-line import/extensions
 import chai, { expect } from 'chai'
 import chaiImmutable from 'chai-immutable'
 import sinon from 'sinon'
