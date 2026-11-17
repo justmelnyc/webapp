@@ -3,7 +3,7 @@ import 'regenerator-runtime/runtime'
 // This needs to be imported before everything else to work properly
 import './vendor/glamor-pxtorem'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { applyRouterMiddleware, browserHistory, Router } from 'react-router'
 import useScroll from 'react-router-scroll/lib/useScroll'
@@ -14,7 +14,7 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import store from './store'
 
 import './main.css'
-import { addFeatureDetection, isIOS } from './lib/jello'
+import { addFeatureDetection } from './lib/jello'
 import MemoryStore from './lib/memory_store'
 import { updateStrings as updateTimeAgoStrings } from './lib/time_ago_in_words'
 import createRoutes from './routes'
@@ -22,13 +22,6 @@ import Honeybadger from 'honeybadger-js'
 import './vendor/embetter'
 import './vendor/embetter_initializer'
 import * as ENV from '../env'
-
-/* eslint-disable global-require */
-// only use fastclick if we are on iOS
-if (isIOS()) {
-  require('react-fastclick')
-}
-/* eslint-enable global-require */
 
 function shouldScroll(prevRouterProps, currentRouterProps) {
   const { location } = currentRouterProps
@@ -91,7 +84,7 @@ const launchApplication = (storage, hasLocalStorage = false) => {
     whitelist,
   }, () => {
     const root = document.getElementById('root')
-    ReactDOM.render(element, root)
+    createRoot(root).render(element)
   })
 
   // check and update current version and only kill off the persisted reducers

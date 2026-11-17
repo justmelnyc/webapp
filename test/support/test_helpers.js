@@ -2,11 +2,12 @@
 // webpack doesn't inject it here
 import React from 'react'
 import TestUtils from 'react-dom/test-utils'
+import ShallowRenderer from 'react-test-renderer/shallow'
 import { camelize } from 'humps'
 
 // React helpers
 export function getRenderedComponent(component, options = {}, children = null) {
-  const shallowRenderer = TestUtils.createRenderer()
+  const shallowRenderer = new ShallowRenderer()
   shallowRenderer.render(React.createElement(component, options, children))
   return shallowRenderer.getRenderOutput()
 }
