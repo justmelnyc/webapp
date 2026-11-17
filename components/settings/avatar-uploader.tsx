@@ -11,7 +11,7 @@ interface AvatarUploaderProps {
   name: string
 }
 
-/** `.SettingsAvatarPicker`: the large avatar (120px, 180px from 40em) with its Uploader. */
+/** `.SettingsAvatarPicker`: the large avatar (120px, 180px from 60em) with its Uploader. */
 export const AvatarUploader = ({ src, name }: AvatarUploaderProps) => {
   const { preview, busy, upload } = useImageUpload('avatar')
   const shown = preview ?? src
@@ -28,7 +28,7 @@ export const AvatarUploader = ({ src, name }: AvatarUploaderProps) => {
       <Avatar
         src={shown}
         name={name}
-        className={cn('isLarge', 'absolute inset-x-0 top-0 z-[1] size-120 bp2:size-180', busy && uploaderStyles.requesting)}
+        className={cn('isLarge', 'absolute inset-x-0 top-0 z-[1] size-120 bp3:size-180', busy && uploaderStyles.requesting)}
       />
     </div>
   )

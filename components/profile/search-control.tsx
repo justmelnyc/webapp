@@ -11,9 +11,11 @@ const MIN_TERMS = 2
 /**
  * The original's SearchControl: a big grey input that searches as you type (debounced, at least two
  * characters) plus the Posts / People tabs. The form still submits as a plain GET without JavaScript.
- * The mock API only searches people, so the Posts tab is shown but disabled.
+ * `type` is the active tab (the original defaults to posts; people is `?type=users`).
  */
-export const SearchControl = ({ query }: { query: string }) => {
+export type SearchType = 'posts' | 'users'
+
+export const SearchControl = ({ query, type }: { query: string; type: SearchType }) => {
   const router = useRouter()
   const [text, setText] = useState(query)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -35,7 +37,8 @@ export const SearchControl = ({ query }: { query: string }) => {
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => {
       const terms = value.trim()
-      router.replace(terms.length >= MIN_TERMS ? `/search?q=${encodeURIComponent(terms)}` : '/search')
+      const kind = type === 'users' ? '&type=users' : ''
+      router.replace(terms.length >= MIN_TERMS ? `/search?q=${encodeURIComponent(terms)}${kind}` : `/search${kind.replace('&', '?')}`)
     }, DEBOUNCE_MS)
   }
 
@@ -63,10 +66,10 @@ export const SearchControl = ({ query }: { query: string }) => {
         />
       </div>
       <nav className={`SearchTabList TabListButtons ${styles.tabs}`}>
-        <button type="button" className={styles.tab} disabled title="Post search is not available in this build">
+        <button type="submit" name="type" value="posts" className={styles.tab} aria-current={type === 'posts' ? 'true' : undefined}>
           Posts
         </button>
-        <button type="button" className={styles.tab} aria-current="true">
+        <button type="submit" name="type" value="users" className={styles.tab} aria-current={type === 'users' ? 'true' : undefined}>
           People
         </button>
       </nav>

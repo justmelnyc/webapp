@@ -1,59 +1,49 @@
 'use client'
 
-import { useOptimistic, useTransition } from 'react'
+import { useOptimistic, useState, useTransition } from 'react'
 import { savePreference } from '@/actions/profile-actions'
+import { AdultPostsDialog } from '@/components/settings/adult-posts-dialog'
+import { Preference } from '@/components/settings/preference'
 import { TreeSection } from '@/components/settings/tree-section'
-import type { PreferenceSection } from '@/services/settings'
+import { preferencePatch } from '@/lib/preferences'
+import type { Preferences } from '@/services/settings'
 import { toast } from '@/stores/toast-store'
-import { cn } from '@/utils/cn'
-import treeStyles from './settings-tree.module.css'
 
 interface PreferenceTogglesProps {
-  sections: PreferenceSection[]
+  preferences: Preferences
 }
 
 type Values = Record<string, boolean>
 
-interface ToggleProps {
-  id: string
-  checked: boolean
-  disabled: boolean
-  onChange: (next: boolean) => void
-}
-
-/** The original's `ToggleControl`: a 60x30 pill that reads Yes / No. */
-const Toggle = ({ id, checked, disabled, onChange }: ToggleProps) => (
-  <label
-    htmlFor={id}
-    className={cn(treeStyles.toggle, checked && ['isChecked', treeStyles.toggleChecked])}
-    style={disabled ? { opacity: 0.25 } : undefined}
-  >
-    <input
-      id={id}
-      type="checkbox"
-      role="switch"
-      className="sr-only"
-      checked={checked}
-      disabled={disabled}
-      aria-labelledby={`${id}-label`}
-      aria-describedby={`${id}-info`}
-      onChange={() => onChange(!checked)}
-    />
-    <span>{checked ? 'Yes' : 'No'}</span>
-  </label>
+const RULES_LINK = (
+  <a href="/wtf/post/rules" target="_blank">
+    What does this mean?
+  </a>
 )
 
-export const PreferenceToggles = ({ sections }: PreferenceTogglesProps) => {
-  const initial: Values = Object.fromEntries(sections.flatMap((s) => s.items.map((i) => [i.key, i.value])))
-  const [values, setOptimistic] = useOptimistic<Values, { key: string; value: boolean }>(
-    initial,
-    (state, { key, value }) => ({ ...state, [key]: value }),
-  )
+const NSFW_DISCLAIMER =
+  'Note: Apple iOS rules block the sharing of NSFW content through iOS apps. Accounts & posts marked NSFW will not appear in search results on the Ello iOS App but will appear when using Ello on the web. If you want your posts to appear on Ello iOS, please set "Post Adult Content" to "No".'
+
+/**
+ * The preference sections: the ones the API serves (Privacy, Content) followed by the original's hard-coded NSFW
+ * section. Toggles save as they change.
+ */
+export const PreferenceToggles = ({ preferences }: PreferenceTogglesProps) => {
+  const { sections, adult } = preferences
+  const initial: Values = {
+    ...Object.fromEntries(sections.flatMap((s) => s.items.map((i) => [i.key, i.value]))),
+    views_adult_content: adult.viewsAdultContent,
+    posts_adult_content: adult.postsAdultContent,
+  }
+  const [values, setOptimistic] = useOptimistic<Values, Values>(initial, (state, patch) => ({ ...state, ...patch }))
   const [, startTransition] = useTransition()
+  const [showAdultDialog, setShowAdultDialog] = useState(false)
 
   const toggle = (key: string, value: boolean): void => {
+    if (key === 'posts_adult_content' && value) setShowAdultDialog(true)
     startTransition(async () => {
-      setOptimistic({ key, value })
+      const patch = preferencePatch(key, value)
+      setOptimistic(patch)
       const result = await savePreference(key, value)
       if (!result.ok) toast.error(result.error)
     })
@@ -63,22 +53,43 @@ export const PreferenceToggles = ({ sections }: PreferenceTogglesProps) => {
     <>
       {sections.map((section) => (
         <TreeSection key={section.label} title={section.label}>
-          {section.items.map((item) => {
-            const id = `pref-${item.key}`
-            // The original disables sharing while the profile is private.
-            const disabled = item.key === 'has_sharing_enabled' && values.is_public === false
-            return (
-              <div key={item.key} className={cn('Preference', treeStyles.preference)}>
-                <dl>
-                  <dt id={`${id}-label`}>{item.label}</dt>
-                  <dd id={`${id}-info`}>{item.info}</dd>
-                </dl>
-                <Toggle id={id} checked={values[item.key] ?? false} disabled={disabled} onChange={(v) => toggle(item.key, v)} />
-              </div>
-            )
-          })}
+          {section.items.map((item) => (
+            <Preference
+              key={item.key}
+              id={item.key}
+              term={item.label}
+              checked={values[item.key] ?? false}
+              // The original disables sharing while the profile is private.
+              disabled={item.key === 'has_sharing_enabled' && values.is_public === false}
+              onChange={(next) => toggle(item.key, next)}
+            >
+              {item.info}
+            </Preference>
+          ))}
         </TreeSection>
       ))}
+      <TreeSection title="NSFW">
+        <Preference
+          id="viewsAdultContent"
+          term="View Adult Content"
+          checked={values.views_adult_content ?? false}
+          onChange={(next) => toggle('views_adult_content', next)}
+        >
+          {RULES_LINK}
+        </Preference>
+        <Preference
+          id="postsAdultContent"
+          term="Post Adult Content"
+          checked={values.posts_adult_content ?? false}
+          onChange={(next) => toggle('posts_adult_content', next)}
+        >
+          {RULES_LINK}
+        </Preference>
+        <p>
+          <em>{NSFW_DISCLAIMER}</em>
+        </p>
+      </TreeSection>
+      {showAdultDialog ? <AdultPostsDialog onDismiss={() => setShowAdultDialog(false)} /> : null}
     </>
   )
 }

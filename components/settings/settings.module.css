@@ -74,7 +74,7 @@
   }
 }
 
-/* The credentials/Save area collapses to nothing until the form has changes to save. */
+/* The credentials/Save area (current password + Save) collapses to nothing until a credential changes. */
 .actions {
   position: relative;
   height: 0;
@@ -83,8 +83,12 @@
   transition: height var(--speed) ease;
 }
 
+.actions p {
+  text-align: left;
+}
+
 .actionsOpen {
-  height: 60px;
+  height: 240px;
 }
 
 .preferences {

@@ -10,6 +10,11 @@
   animation: fade 0.4s var(--ease-ello);
 }
 
+/* .isActive.isDangerZone */
+.dangerZone {
+  background-color: rgba(255, 0, 0, 0.95);
+}
+
 @keyframes fade {
   from {
     opacity: 0;

@@ -37,6 +37,13 @@ Zustand (composer draft, toasts) · React Hook Form + Zod (forms, and validation
 - Uploads go browser → storage directly with credentials from the API (`lib/client/upload.ts`).
 - `legacy/` holds the previous React 15 / Redux / Webpack app, kept only for reference while features are ported.
 
+## Design fidelity
+
+The point of the rewrite is to keep the original design. Its tokens and base styles live in
+`app/styles/` (ported from `legacy/src/styles/jso.js` and `legacy/src/lib/styles/`), the icon set in
+`components/icons/`, and every page was checked against the running original with a pixel diff.
+Before calling UI work done, run `tools/visual-diff` (see its README): matching pages are 0.0%.
+
 ## Code of Conduct
 Ello was created by idealists who believe that the essential nature of all human beings is to be kind, considerate, helpful, intelligent, responsible, and respectful of others. To that end, we will be enforcing [the Ello rules](https://ello.co/wtf/policies/rules/) within all of our open source projects. If you don’t follow the rules, you risk being ignored, banned, or reported for abuse.
 

@@ -12,7 +12,7 @@ const categories = NAMES.map((name, i) => ({
   level: i < 3 ? 'primary' : 'secondary',
   order: i,
   allowInOnboarding: true,
-  isCreatorType: false,
+  isCreatorType: true,
   description: `${name} on mock Ello`,
   brandAccount: null,
   tileImage: {

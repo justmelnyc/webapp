@@ -155,6 +155,8 @@ router.patch('/api/v2/profile', (req, res) => {
   if (typeof b.username === 'string' && b.username && !userByName(b.username)) me.username = b.username
   if (typeof b.email === 'string' && b.email) me.email = b.email
   KEYS.forEach((key) => { if (typeof b[key] === 'boolean') me.prefs = { ...me.prefs, [key]: b[key] } })
+  if (Array.isArray(b.creator_type_category_ids)) me.creatorTypeCategoryIds = b.creator_type_category_ids.map(Number)
+  // b.password / b.current_password are accepted and ignored: the mock has no real credentials.
   if (b.remote_avatar_url) me.avatarUrl = b.remote_avatar_url
   if (b.remote_cover_image_url) me.coverUrl = b.remote_cover_image_url
   save()

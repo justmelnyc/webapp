@@ -1,5 +1,7 @@
+import { ExportDataButton } from '@/components/settings/export-data-button'
 import { TreeSection } from '@/components/settings/tree-section'
 import { cn } from '@/utils/cn'
+import panelStyles from './settings-panels.module.css'
 import treeStyles from './settings-tree.module.css'
 
 interface YourDataProps {
@@ -22,7 +24,7 @@ const OriginalLink = ({ url }: { url: string | null | undefined }) =>
     <Dash />
   )
 
-/** The original's "Your Data" panel (the data export itself is not part of the mock API). */
+/** The original's "Your Data" panel (the export request is not part of the mock API). */
 export const YourData = ({ username, name, bio, links, avatarUrl, coverUrl }: YourDataProps) => (
   <TreeSection title="Your Data">
     <p className={cn('SettingsDataDescription', treeStyles.dataDescription)}>
@@ -57,5 +59,14 @@ export const YourData = ({ username, name, bio, links, avatarUrl, coverUrl }: Yo
         <OriginalLink url={coverUrl} />
       </dd>
     </dl>
+    <div className={cn('SettingsCell', panelStyles.cell)}>
+      <dl className={cn('SettingsDefinition', panelStyles.definition)}>
+        <dt>Export Data</dt>
+        <dd>
+          This includes all of the content you have posted on Ello. We will email you a link to download your data.
+        </dd>
+      </dl>
+      <ExportDataButton />
+    </div>
   </TreeSection>
 )

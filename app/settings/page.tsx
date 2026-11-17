@@ -1,21 +1,24 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { AccountDeletion } from '@/components/settings/account-deletion'
 import { AvatarUploader } from '@/components/settings/avatar-uploader'
 import { CoverUploader } from '@/components/settings/cover-uploader'
+import { CreatorType } from '@/components/settings/creator-type'
+import { CredentialsForm } from '@/components/settings/credentials-form'
+import { InfoForm } from '@/components/settings/info-form'
 import { PreferenceToggles } from '@/components/settings/preference-toggles'
-import { ProfileForm } from '@/components/settings/profile-form'
 import styles from '@/components/settings/settings.module.css'
 import { YourData } from '@/components/settings/your-data'
 import { requireSession } from '@/lib/require-session'
-import { getPreferenceSections } from '@/services/settings'
+import { getCreatorTypes, getPreferences } from '@/services/settings'
 import { getViewer } from '@/services/viewer'
 
 export const metadata: Metadata = { title: 'Settings' }
 
 const SettingsPage = async () => {
   await requireSession('/settings')
-  const [viewer, sections] = await Promise.all([getViewer(), getPreferenceSections()])
+  const [viewer, preferences, creatorTypes] = await Promise.all([getViewer(), getPreferences(), getCreatorTypes()])
   if (!viewer) redirect('/enter?next=%2Fsettings')
 
   const cover = viewer.coverImage
@@ -34,12 +37,10 @@ const SettingsPage = async () => {
               private.
             </p>
           </header>
-          <ProfileForm
-            key={`${viewer.username}-${viewer.email ?? ''}`}
+          <CredentialsForm key={`${viewer.username}-${viewer.email ?? ''}`} username={viewer.username} email={viewer.email ?? ''} />
+          <InfoForm
             defaults={{
               name: viewer.name ?? '',
-              username: viewer.username,
-              email: viewer.email ?? '',
               bio: viewer.shortBio ?? '',
               location: viewer.location ?? '',
               links: links.map((l) => ({ url: l.url, text: l.text ?? '' })),
@@ -54,7 +55,8 @@ const SettingsPage = async () => {
             </Link>
           </p>
           <div className={`SettingsPreferences ${styles.preferences}`}>
-            <PreferenceToggles sections={sections} />
+            <CreatorType {...creatorTypes} />
+            <PreferenceToggles preferences={preferences} />
             <YourData
               username={viewer.username}
               name={viewer.name}
@@ -63,6 +65,7 @@ const SettingsPage = async () => {
               avatarUrl={avatar?.original?.url}
               coverUrl={cover?.original?.url}
             />
+            <AccountDeletion />
           </div>
         </div>
       </div>

@@ -14,14 +14,13 @@ const TOGGLES = [
   {
     label: 'Content',
     items: [
-      { key: 'views_adult_content', label: 'Show NSFW content', info: 'Display posts marked as adult content.' },
-      { key: 'posts_adult_content', label: 'My posts are NSFW', info: 'Mark everything you post as adult content.' },
       { key: 'has_auto_watch_enabled', label: 'Auto-watch comments', info: 'Watch posts you comment on.' },
     ],
   },
 ]
 
-const KEYS = TOGGLES.reduce((all, s) => all.concat(s.items.map(i => i.key)), [])
+// The original hard-codes its NSFW section (View / Post Adult Content), so those two keys aren't served as toggles.
+const KEYS = TOGGLES.reduce((all, s) => all.concat(s.items.map(i => i.key)), ['views_adult_content', 'posts_adult_content'])
 const camel = key => key.replace(/_(\w)/g, (m, c) => c.toUpperCase())
 const DEFAULTS = { is_public: true, has_commenting_enabled: true, has_sharing_enabled: true, has_reposting_enabled: true, has_loves_enabled: true, views_adult_content: false, posts_adult_content: false, has_auto_watch_enabled: true }
 

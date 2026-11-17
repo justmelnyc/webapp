@@ -4,7 +4,14 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rest } from '@/lib/api/client'
 import { errorMessage } from '@/lib/errors'
-import { imageKindSchema, preferenceKeySchema, profileSchema } from '@/lib/schemas/profile'
+import { preferencePatch } from '@/lib/preferences'
+import {
+  creatorTypeIdsSchema,
+  credentialsSchema,
+  imageKindSchema,
+  infoSchema,
+  preferenceKeySchema,
+} from '@/lib/schemas/profile'
 import { failure, success, type ActionResult } from '@/types/action'
 
 const profileResponse = z.object({ users: z.object({ id: z.string() }) })
@@ -19,18 +26,30 @@ const patchProfile = async (body: Record<string, unknown>): Promise<ActionResult
   }
 }
 
-export const saveProfile = async (input: unknown): Promise<ActionResult> => {
-  const parsed = profileSchema.safeParse(input)
+export const saveCredentials = async (input: unknown): Promise<ActionResult> => {
+  const parsed = credentialsSchema.safeParse(input)
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Check your details')
-  const { name, username, email, bio, location, links } = parsed.data
+  const { username, email, password, currentPassword } = parsed.data
+  // The mock API ignores `password` and `current_password`; they are sent as the original sends them.
+  return patchProfile({ username, email, current_password: currentPassword, ...(password ? { password } : {}) })
+}
+
+export const saveInfo = async (input: unknown): Promise<ActionResult> => {
+  const parsed = infoSchema.safeParse(input)
+  if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Check your details')
+  const { name, bio, location, links } = parsed.data
   return patchProfile({
     name,
-    username,
-    email,
     unsanitized_short_bio: bio,
     location,
     external_links: links.map(({ url, text }) => ({ url, text: text || url })),
   })
+}
+
+export const saveCreatorTypes = async (ids: unknown): Promise<ActionResult> => {
+  const parsed = creatorTypeIdsSchema.safeParse(ids)
+  if (!parsed.success) return failure('That creator type could not be saved')
+  return patchProfile({ creator_type_category_ids: parsed.data })
 }
 
 export const saveProfileImage = async (kind: unknown, url: unknown): Promise<ActionResult> => {
@@ -46,5 +65,5 @@ export const savePreference = async (key: unknown, value: unknown): Promise<Acti
   const parsedKey = preferenceKeySchema.safeParse(key)
   const parsedValue = z.boolean().safeParse(value)
   if (!parsedKey.success || !parsedValue.success) return failure('That setting could not be saved')
-  return patchProfile({ [parsedKey.data]: parsedValue.data })
+  return patchProfile(preferencePatch(parsedKey.data, parsedValue.data))
 }

@@ -8,14 +8,18 @@ import styles from './modal.module.css'
 interface ModalProps {
   onDismiss: () => void
   label: string
+  className?: string
   children: ReactNode
 }
+
+/** The original's `isDangerZone` scrim (account deletion, blocking): pass as `className`. */
+export const dangerZone = styles.dangerZone
 
 /**
  * The original's `Modal` kind (ModalContainer): a full screen scrim with the dialog centered in it.
  * Clicking the scrim or pressing Escape dismisses; the page behind stops scrolling (`isModalActive`).
  */
-export const Modal = ({ onDismiss, label, children }: ModalProps) => {
+export const Modal = ({ onDismiss, label, className, children }: ModalProps) => {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export const Modal = ({ onDismiss, label, children }: ModalProps) => {
       aria-modal="true"
       aria-label={label}
       tabIndex={-1}
-      className={cn('Modal isActive', styles.modal)}
+      className={cn('Modal isActive', styles.modal, className)}
       onKeyDown={onKeyDown}
       onClick={onClick}
     >
