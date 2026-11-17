@@ -1,0 +1,196 @@
+/* eslint-disable */
+// Turn stored records into the shapes the app expects:
+//   gql*  -> GraphQL (v3) objects, consumed by src/reducers/v3_reducer.js
+//   flat* -> normalized v2 models, as the reducers store them in state
+const { db, userById } = require('./db')
+const media = require('./media')
+const { prefsFor } = require('./settings')
+
+const relationship = (user, viewerId) => {
+  if (viewerId && viewerId === user.id) return 'self'
+  const follows = viewerId && db.follows.some(f => f.followerId === viewerId && f.followeeId === user.id)
+  return follows ? 'friend' : 'none'
+}
+
+const userStats = u => ({
+  followersCount: db.follows.filter(f => f.followeeId === u.id).length,
+  followingCount: db.follows.filter(f => f.followerId === u.id).length,
+  lovesCount: db.loves.filter(l => l.userId === u.id).length,
+  postsCount: db.posts.filter(p => p.authorId === u.id).length,
+  totalViewsCount: db.posts.filter(p => p.authorId === u.id).reduce((n, p) => n + (p.views || 0), 0),
+})
+
+const settings = {
+  hasLovesEnabled: true,
+  hasSharingEnabled: true,
+  hasRepostingEnabled: true,
+  hasCommentingEnabled: true,
+  postsAdultContent: false,
+  isHireable: false,
+  isCollaborateable: false,
+  isCollaboratable: false,
+}
+
+const gqlAuthor = (u, viewerId) => ({
+  id: u.id,
+  username: u.username,
+  name: u.name,
+  avatar: media.avatar(u),
+  currentUserState: { relationshipPriority: relationship(u, viewerId) },
+  settings,
+})
+
+const gqlUser = (u, viewerId) => ({
+  ...gqlAuthor(u, viewerId),
+  location: u.location || '',
+  formattedShortBio: `<p>${u.bio || ''}</p>`,
+  isCommunity: false,
+  badges: [],
+  coverImage: media.coverImage(u),
+  externalLinksList: u.links || [],
+  userStats: userStats(u),
+  metaAttributes: { title: u.name, description: u.bio || '', robots: 'index', image: null },
+  categoryUsers: [],
+})
+
+// v2 profile / follower-list shape: stats and settings flattened onto the user
+const flatUser = (u, viewerId) => ({
+  id: u.id,
+  username: u.username,
+  name: u.name,
+  avatar: media.avatar(u),
+  coverImage: media.coverImage(u),
+  badges: [],
+  formattedShortBio: `<p>${u.bio || ''}</p>`,
+  shortBio: u.bio || '',
+  unsanitizedShortBio: u.bio || '',
+  location: u.location || '',
+  externalLinksList: u.links || [],
+  metaAttributes: { title: u.name, description: u.bio || '', robots: 'index', image: null },
+  ...settings,
+  ...prefsFor(u),
+  ...userStats(u),
+  relationshipPriority: relationship(u, viewerId),
+  links: { categories: [] },
+})
+
+// Resolve where an image region's pixels live
+const imageOf = (region) => {
+  const { url, seed } = region.data
+  const w = region.width || 1200
+  const h = region.height || 800
+  return { url: url || media.photoUrl(seed, w, h), w, h }
+}
+
+const postRegions = (post) => {
+  const assets = []
+  const content = post.regions.map((region, i) => {
+    if (region.kind !== 'image') {
+      return { kind: 'text', data: region.data, linkUrl: null, links: null }
+    }
+    const { url, w, h } = imageOf(region)
+    const id = `${post.id}-a${i}`
+    assets.push({ id, attachment: media.responsive(url, w, h) })
+    return { kind: 'image', data: { url, alt: region.data.alt || '' }, linkUrl: region.linkUrl || null, links: { assets: id } }
+  })
+  const firstImage = content.find(r => r.kind === 'image')
+  const summary = [content.find(r => r.kind === 'text'), firstImage].filter(Boolean)
+  return { content, summary, assets }
+}
+
+const postStats = post => ({
+  lovesCount: db.loves.filter(l => l.postId === post.id).length,
+  commentsCount: db.comments.filter(c => c.postId === post.id).length,
+  viewsCount: post.views || 0,
+  repostsCount: 0,
+})
+
+const viewerState = (post, viewerId) => ({
+  watching: !!viewerId && db.watches.some(w => w.userId === viewerId && w.postId === post.id),
+  loved: !!viewerId && db.loves.some(l => l.userId === viewerId && l.postId === post.id),
+  reposted: false,
+})
+
+const gqlPost = (post, viewerId) => {
+  const { content, summary, assets } = postRegions(post)
+  return {
+    id: post.id,
+    token: post.token,
+    createdAt: post.createdAt,
+    artistInviteSubmission: null,
+    summary,
+    content,
+    repostContent: [],
+    repostedSource: null,
+    author: gqlAuthor(userById(post.authorId), viewerId),
+    categoryPosts: [],
+    assets,
+    postStats: postStats(post),
+    currentUserState: viewerState(post, viewerId),
+  }
+}
+
+// v2 post as it sits in redux state (see parsePost in v3_reducer.js)
+const flatPost = (post, viewerId) => {
+  const { content, summary, assets } = postRegions(post)
+  const byId = assets.reduce((m, a) => ({ ...m, [a.id]: a }), {})
+  const region = (r, i) => ({
+    ...r,
+    id: `${post.id}-${i}`,
+    ...(r.kind === 'image' ? { asset: byId[r.links.assets] } : {}),
+  })
+  return {
+    id: post.id,
+    token: post.token,
+    href: `/${userById(post.authorId).username}/post/${post.token}`,
+    authorId: post.authorId,
+    createdAt: post.createdAt,
+    summary: summary.map(region),
+    content: content.map(region),
+    body: content,
+    repostContent: [],
+    isAdultContent: false,
+    contentWarning: '',
+    ...postStats(post),
+    ...viewerState(post, viewerId),
+    links: { author: { id: post.authorId, type: 'users' }, categories: post.categoryIds || [] },
+  }
+}
+
+// Envelope for create/update/detail: the post plus the author and image assets it needs
+const postEnvelope = (post, viewerId) => ({
+  posts: flatPost(post, viewerId),
+  linked: {
+    users: [flatUser(userById(post.authorId), viewerId)],
+    assets: postRegions(post).assets,
+  },
+})
+
+const gqlComment = (c, viewerId) => {
+  const text = { kind: 'text', data: `<p>${c.text}</p>`, linkUrl: null, links: null }
+  return {
+    id: c.id,
+    createdAt: c.createdAt,
+    author: gqlAuthor(userById(c.authorId), viewerId),
+    summary: [text],
+    content: [text],
+    assets: [],
+    parentPost: { id: c.postId },
+  }
+}
+
+// v2 comment as the comments reducer stores it
+const flatComment = (c) => {
+  const text = { kind: 'text', data: `<p>${c.text}</p>` }
+  return {
+    id: c.id, postId: c.postId, authorId: c.authorId, createdAt: c.createdAt,
+    body: [{ kind: 'text', data: c.text }], content: [text], summary: [text],
+  }
+}
+
+const commentEnvelope = (c, viewerId) => ({
+  comments: flatComment(c),
+  linked: { users: [flatUser(userById(c.authorId), viewerId)] },
+})
+
+module.exports = { postEnvelope, flatComment, commentEnvelope, relationship, gqlAuthor, gqlUser, flatUser, gqlPost, flatPost, gqlComment, postRegions, imageOf }
