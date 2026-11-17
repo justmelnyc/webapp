@@ -1,4 +1,5 @@
-import 'babel-polyfill'
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import 'isomorphic-fetch'
 import fs from 'fs'
 import path from 'path'
@@ -27,7 +28,7 @@ if (!global.document) {
   global.window = new JSDOM(html).window
   global.document = global.window.document
   global.navigator = { userAgent: 'node.js' }
-  global.URL = { createObjectURL: input => input }
+  global.URL.createObjectURL = input => input
 
   const enums = [
     ...Object.keys(document.defaultView),

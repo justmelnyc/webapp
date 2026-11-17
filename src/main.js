@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-import 'babel-polyfill'
+import 'regenerator-runtime/runtime'
 // This needs to be imported before everything else to work properly
 import './vendor/glamor-pxtorem'
 import React from 'react'
