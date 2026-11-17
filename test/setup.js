@@ -15,7 +15,7 @@ chai.use(chaiSaga)
 chai.use(chaiImmutable)
 chai.use(sinonChai)
 
-dotenv.load()
+dotenv.config({ quiet: true })
 
 global.chai = chai
 global.expect = expect

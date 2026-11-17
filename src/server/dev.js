@@ -8,7 +8,7 @@ import config from './../../webpack.dev.config'
 import { updateStrings as updateTimeAgoStrings } from './../lib/time_ago_in_words'
 
 // load env vars first
-require('dotenv').load()
+require('dotenv').config()
 
 const app = express()
 const compiler = webpack(config)
@@ -21,7 +21,6 @@ updateTimeAgoStrings({ about: '' })
 
 // Development Middleware
 app.use(webpackDevMiddleware(compiler, {
-  noInfo: true,
   publicPath: config.output.publicPath,
 }))
 app.use(webpackHotMiddleware(compiler))
