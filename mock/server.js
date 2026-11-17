@@ -32,6 +32,7 @@ app.all('/api/*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Mock Ello API on http://localhost:${PORT}`)
-  console.log(`${db.users.length} users, ${db.posts.length} posts. Log in with any of:`)
-  console.log(`  ${db.users.map(u => u.email).join('  ')}  (any password)`)
+  console.log(`${db.users.length} users, ${db.posts.length} posts. Log in at /enter with any of:`)
+  console.log(`  ${db.users.map(u => u.email).join('  ')}`)
+  console.log('  Password: anything with 8+ characters (the form blocks shorter ones), e.g. "password"')
 })

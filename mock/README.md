@@ -10,7 +10,7 @@ yarn mock:reset    # delete mock/.data and start over from the seed data
 
 ## Logging in
 
-Log in at `/enter` with any seeded user's email or username and **any password**:
+Log in at `/enter` with any seeded user's email or username and **any password of 8+ characters** (e.g. `password`; the form keeps the button disabled for shorter ones):
 `ada@example.com` (default, follows everyone), `grace`, `mara`, `jules`, `theo`, `noor`, `ines`, `kofi`, `saoirse`, `luca`, `yuki`, `amara`.
 Unknown users get a 401. Signup is not mocked.
 

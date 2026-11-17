@@ -53,7 +53,8 @@ const trending = () => [...db.posts].sort((a, b) => loveCount(b) - loveCount(a))
 const resolvers = {
   categoryNav: () => ({ categoryNav: content.categories }),
   allCategories: () => ({ allCategories: content.categories }),
-  searchCategories: () => ({ searchCategories: content.categories }),
+  // logged-in profile pages ask for categories the viewer administers: none
+  searchCategories: v => ({ searchCategories: { next: null, isLastPage: true, categories: v.administered ? [] : content.categories } }),
   category: v => ({ category: content.categories.find(c => c.slug === v.slug) || content.categories[0] }),
   pageHeaders: v => ({ pageHeaders: [content.pageHeader(v.kind || 'GENERIC', v.slug)] }),
   editorialStream: (v, viewer) => ({ editorialStream: { next: null, isLastPage: true, editorials: content.editorials(viewer) } }),
@@ -101,6 +102,7 @@ const resolvers = {
 router.post('/api/v3/graphql', (req, res) => {
   const { query = '', variables = {} } = req.body || {}
   const root = rootField(query)
+  console.log(`  graphql: ${root} ${JSON.stringify(variables).slice(0, 80)}`)
   const resolve = resolvers[root]
   if (!resolve) {
     console.warn(`  !! unmocked graphql root: ${root}`)
