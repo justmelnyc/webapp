@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { ComposeButton } from '@/components/composer/compose-button'
 import { NavLink } from '@/components/layout/nav-link'
 import { UserMenu } from '@/components/layout/user-menu'
+import { getCategories } from '@/services/content'
 import { getViewer } from '@/services/viewer'
 
 export const Navbar = async () => {
   const viewer = await getViewer()
+  const categories = viewer ? await getCategories().catch(() => []) : []
   return (
     <header className="border-stone bg-paper/95 sticky top-0 z-50 border-b backdrop-blur">
       <div className="mx-auto flex h-20 max-w-[120rem] items-center gap-8 px-5">
@@ -23,7 +25,7 @@ export const Navbar = async () => {
           {viewer ? (
             <>
               <UserMenu viewer={viewer} />
-              <ComposeButton />
+              <ComposeButton categories={categories} />
             </>
           ) : (
             <>

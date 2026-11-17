@@ -3,8 +3,8 @@
 The real Ello API is gone, so this server stands in for it during development.
 
 ```bash
-yarn mock          # http://localhost:7770 (set AUTH_DOMAIN to this in .env)
-yarn dev           # the app on :6660 proxies /api to the mock
+yarn mock          # http://localhost:7770
+yarn dev           # the Next.js app on :6660; it reads API_ORIGIN (default http://localhost:7770)
 yarn mock:reset    # delete mock/.data and start over from the seed data
 ```
 

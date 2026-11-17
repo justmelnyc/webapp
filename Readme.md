@@ -8,17 +8,34 @@ The web app for [ello.co](http://ello.co).
 
 ## Running locally
 
-The Ello API is not public, so the repo ships a mock for local development.
+The Ello API is not public, so the repo ships a mock (`mock/`, see [mock/README.md](mock/README.md)).
 
 ```bash
-nvm use                 # Node 20 (see .nvmrc)
+nvm use                      # Node 20 (see .nvmrc)
 yarn install
-cp .env.example .env    # set AUTH_DOMAIN=http://localhost:7770 and USE_LOCAL_EMOJI=false
-yarn mock               # mock API on :7770
-yarn dev                # app on http://localhost:6660
+cp .env.example .env.local   # API_ORIGIN=http://localhost:7770
+yarn mock                    # terminal 1: mock API on :7770
+yarn dev                     # terminal 2: the app on http://localhost:6660
 ```
 
-`yarn test` runs lint and the unit tests; `yarn build` creates a production bundle in `public/static`.
+Log in at `/enter` as `ada@example.com` with any password of 8+ characters.
+
+| Command | |
+|---|---|
+| `yarn dev` / `yarn build` / `yarn start` | Next.js dev server, production build, serve the build |
+| `yarn typecheck` | `tsc --noEmit` |
+| `yarn lint` | ESLint (Next + TypeScript rules) |
+| `yarn test` | Jest + React Testing Library |
+
+## Stack
+
+Next.js (App Router) · React 19 · TypeScript (strict) · Tailwind CSS 4 · TanStack Query (infinite feeds) ·
+Zustand (composer draft, toasts) · React Hook Form + Zod (forms, and validation of every API response).
+
+- Server Components read the API with the session token from an httpOnly cookie (`lib/api`, `services/`).
+- Mutations are Server Actions (`actions/`); optimistic UI uses `useOptimistic`.
+- Uploads go browser → storage directly with credentials from the API (`lib/client/upload.ts`).
+- `legacy/` holds the previous React 15 / Redux / Webpack app, kept only for reference while features are ported.
 
 ## Code of Conduct
 Ello was created by idealists who believe that the essential nature of all human beings is to be kind, considerate, helpful, intelligent, responsible, and respectful of others. To that end, we will be enforcing [the Ello rules](https://ello.co/wtf/policies/rules/) within all of our open source projects. If you don’t follow the rules, you risk being ignored, banned, or reported for abuse.

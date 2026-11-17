@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.5",
+    "@testing-library/dom": "^10",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.12",
@@ -48,6 +49,7 @@
     "multer": "^2.5.0",
     "prettier": "^3.10.1",
     "tailwindcss": "^4.3.5",
+    "ts-node": "^10.9.2",
     "typescript": "5.9"
   }
 }

@@ -16,7 +16,7 @@ export const getUser = async (username: string): Promise<User> => {
   return data.findUser
 }
 
-export const searchUsers = async (query: string): Promise<Author[]> => {
+export const searchUsers = async (query: string): Promise<(Author & { formattedShortBio?: string | null })[]> => {
   if (!query.trim()) return []
   const data = await graphql(SEARCH_USERS, { query }, searchEnvelope)
   return data.searchUsers.users

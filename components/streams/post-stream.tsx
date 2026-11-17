@@ -15,11 +15,13 @@ interface PostStreamProps {
   /** First page, rendered on the server. */
   initialPage: PostPage
   signedIn: boolean
+  /** The signed-in user's id; enables the owner menu on their own posts. */
+  viewerId?: string | null
   emptyMessage?: string
 }
 
 /** A masonry feed that loads further pages as you scroll. */
-export const PostStream = ({ spec, initialPage, signedIn, emptyMessage = 'Nothing here yet.' }: PostStreamProps) => {
+export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage = 'Nothing here yet.' }: PostStreamProps) => {
   const query = useInfiniteQuery({
     queryKey: ['stream', spec],
     queryFn: ({ pageParam }) => fetchStreamPage(spec, pageParam),
@@ -46,7 +48,7 @@ export const PostStream = ({ spec, initialPage, signedIn, emptyMessage = 'Nothin
       <div className="columns-1 gap-8 md:columns-2 xl:columns-3">
         {posts.map((post, index) => (
           <PostCard key={post.id} className="mb-10 break-inside-avoid">
-            <PostCard.Header post={post} />
+            <PostCard.Header post={post} viewerId={viewerId} />
             <PostCard.Body>
               <PostBody regions={post.summary} assets={post.assets} loading={index < 3 ? 'eager' : 'lazy'} />
             </PostCard.Body>

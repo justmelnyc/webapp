@@ -62,6 +62,8 @@ const flatUser = (u, viewerId) => ({
   coverImage: media.coverImage(u),
   badges: [],
   formattedShortBio: `<p>${u.bio || ''}</p>`,
+  // email is private: only the owner sees it
+  ...(viewerId && viewerId === u.id ? { email: u.email } : {}),
   shortBio: u.bio || '',
   unsanitizedShortBio: u.bio || '',
   location: u.location || '',

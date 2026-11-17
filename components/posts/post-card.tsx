@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ComponentProps } from 'react'
 import { LoveButton } from '@/components/posts/love-button'
+import { PostOwnerMenu } from '@/components/posts/post-owner-menu'
 import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
@@ -11,7 +12,7 @@ const Root = ({ className, ...props }: ComponentProps<'article'>) => (
   <article className={cn('flex flex-col gap-3', className)} {...props} />
 )
 
-const Header = ({ post }: { post: Post }) => {
+const Header = ({ post, viewerId }: { post: Post; viewerId?: string | null }) => {
   const { author } = post
   return (
     <header className="flex items-center gap-3">
@@ -24,6 +25,7 @@ const Header = ({ post }: { post: Post }) => {
       <Link href={`/${author.username}/post/${post.token}`} className="text-ash hover:text-ink ml-auto text-xs">
         {timeAgo(post.createdAt)}
       </Link>
+      <PostOwnerMenu post={post} viewerId={viewerId} />
     </header>
   )
 }

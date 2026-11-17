@@ -11,5 +11,13 @@ interface ServerStreamProps {
 /** Loads the first page on the server, then hands over to the client for infinite scroll. */
 export const ServerStream = async ({ spec, emptyMessage }: ServerStreamProps) => {
   const [initialPage, session] = await Promise.all([fetchStream(spec), getSession()])
-  return <PostStream spec={spec} initialPage={initialPage} signedIn={!!session} emptyMessage={emptyMessage} />
+  return (
+    <PostStream
+      spec={spec}
+      initialPage={initialPage}
+      signedIn={!!session}
+      viewerId={session?.id ?? null}
+      emptyMessage={emptyMessage}
+    />
+  )
 }
