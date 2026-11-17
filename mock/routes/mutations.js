@@ -32,6 +32,7 @@ const toRegions = (body = []) => body.map((block) => {
 // --- posts ---
 router.post('/api/v2/posts', (req, res) => {
   const regions = toRegions(req.body.body)
+  console.log(`  post body: ${JSON.stringify((req.body.body || []).map(b => ({ kind: b.kind, data: b.kind === 'image' ? (b.data || {}).url : String(b.data).slice(0, 50) })))}`)
   if (!regions.length) return res.status(422).json({ error: { message: 'Post can not be empty' } })
   const post = {
     id: nextId(), token: `m${Date.now().toString(36)}`, authorId: req.me.id,
