@@ -6,6 +6,7 @@ import { REHYDRATE } from 'redux-persist/constants'
 import { camelize } from 'humps'
 import get from 'lodash/get'
 import union from 'lodash/union'
+import removeTmpImages from '../helpers/image_state'
 import * as ACTION_TYPES from '../constants/action_types'
 import * as MAPPING_TYPES from '../constants/mapping_types'
 import { RELATIONSHIP_PRIORITY } from '../constants/relationship_types'
@@ -496,8 +497,7 @@ export default function json(state = initialState, action = { type: '' }) {
       if (action.payload.profile) {
         let curUser = action.payload.profile
         if (curUser) {
-          curUser = curUser.deleteIn(['avatar', 'tmp'])
-            .deleteIn(['coverImage', 'tmp'])
+          curUser = removeTmpImages(curUser)
           keepers = keepers.setIn([MAPPING_TYPES.USERS, curUser.get('id')], curUser)
         }
       }

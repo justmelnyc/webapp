@@ -10,6 +10,7 @@ import {
   PROFILE,
   UPDATE_STATE_FROM_NATIVE,
 } from '../constants/action_types'
+import removeTmpImages from '../helpers/image_state'
 import { imageGuid } from '../helpers/file_helper'
 
 function parseJWT(token) {
@@ -108,11 +109,11 @@ export default (state = initialState, action) => {
     }
     case REHYDRATE:
       if (!action.payload.profile) { return state }
-      return state.merge(action.payload.profile)
-        .set('availability', null)
-        .set('dataExport', null)
-        .deleteIn(['avatar', 'tmp'])
-        .deleteIn(['coverImage', 'tmp'])
+      return removeTmpImages(
+        state.merge(action.payload.profile)
+          .set('availability', null)
+          .set('dataExport', null),
+      )
     case PROFILE.SAVE_AVATAR_SUCCESS:
     case PROFILE.SAVE_COVER_SUCCESS: {
       const avatarTmp = state.getIn(['avatar', 'tmp'])
