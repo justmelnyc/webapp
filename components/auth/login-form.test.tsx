@@ -14,7 +14,7 @@ const loginMock = jest.mocked(login)
 const ok = { ok: true as const, data: { redirectTo: '/' } }
 
 const fill = async (username = 'ada', password = 'password1') => {
-  await userEvent.type(screen.getByLabelText('Username or email'), username)
+  await userEvent.type(screen.getByLabelText('Username or Email'), username)
   await userEvent.type(screen.getByLabelText('Password'), password)
 }
 const submit = () => screen.getByRole('button', { name: /log/i })
@@ -28,7 +28,7 @@ describe('LoginForm', () => {
   it('disables submit until the form is valid', async () => {
     render(<LoginForm />)
     expect(submit()).toBeDisabled()
-    await userEvent.type(screen.getByLabelText('Username or email'), 'ada')
+    await userEvent.type(screen.getByLabelText('Username or Email'), 'ada')
     expect(submit()).toBeDisabled()
     await userEvent.type(screen.getByLabelText('Password'), 'password1')
     await waitFor(() => expect(submit()).toBeEnabled())
@@ -38,17 +38,29 @@ describe('LoginForm', () => {
     render(<LoginForm />)
     const password = screen.getByLabelText('Password')
     await userEvent.type(password, 'short')
-    expect(await screen.findByRole('alert')).toHaveTextContent('Passwords are at least 8 characters')
+    // Like the original, the message only appears once typing has paused for a second.
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(await screen.findByRole('alert', {}, { timeout: 2500 })).toHaveTextContent(
+      'Password must be at least 8 characters.',
+    )
     expect(password).toBeInvalid()
   })
 
-  it('shows the username message when it is cleared', async () => {
+  it('shows the username message for an invalid username', async () => {
     render(<LoginForm />)
-    const username = screen.getByLabelText('Username or email')
+    const username = screen.getByLabelText('Username or Email')
+    await userEvent.type(username, 'a!')
+    expect(await screen.findByText('That username or email is invalid.', {}, { timeout: 2500 })).toBeInTheDocument()
+    expect(username).toBeInvalid()
+  })
+
+  it('shows no message when the username is cleared', async () => {
+    render(<LoginForm />)
+    const username = screen.getByLabelText('Username or Email')
     await userEvent.type(username, 'a')
     await userEvent.clear(username)
-    expect(await screen.findByText('Enter your username or email')).toBeInTheDocument()
-    expect(username).toBeInvalid()
+    await new Promise((resolve) => setTimeout(resolve, 1200))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it('logs in and navigates to the default route', async () => {
@@ -89,6 +101,7 @@ describe('LoginForm', () => {
     await waitFor(() =>
       expect(useToastStore.getState().toasts).toMatchObject([{ kind: 'error', message: 'Bad credentials' }]),
     )
+    expect(await screen.findByText('Your username/email or password are incorrect')).toBeInTheDocument()
     expect(replace).not.toHaveBeenCalled()
     expect(submit()).toBeEnabled()
   })

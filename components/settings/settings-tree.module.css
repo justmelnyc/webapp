@@ -1,0 +1,140 @@
+/* ---- TreeButton / TreePanel ---- */
+
+.treeButton {
+  position: relative;
+  height: 40px;
+  padding-left: 30px;
+  font-family: var(--font-black);
+  font-size: 18px;
+  color: #000;
+  white-space: nowrap;
+  vertical-align: top;
+  transition: color 0.2s ease;
+}
+
+.treeButton:hover {
+  color: #000;
+}
+
+.collapsed {
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .treeButton {
+    padding-left: 0;
+    font-size: 24px;
+  }
+}
+
+.treePanel {
+  padding-left: 30px;
+  overflow: hidden;
+}
+
+.panelCollapsed {
+  height: 0;
+  visibility: hidden;
+}
+
+.treePanel > p:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 60em) {
+  .treePanel {
+    padding-left: 0;
+  }
+}
+
+/* ---- Preference / ToggleControl ---- */
+
+.preference {
+  position: relative;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.preference dl {
+  width: calc(100% - 80px);
+  max-width: 440px;
+}
+
+.preference dd {
+  margin-top: 20px;
+  color: #aaa;
+}
+
+.toggle {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: #aaa;
+  border: 1px solid #aaa;
+  border-radius: 15px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.toggleChecked {
+  background-color: #0c0;
+  border-color: #0c0;
+}
+
+.toggle:focus-within {
+  outline: 1px dotted #000;
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    color: #aaa;
+    background-color: #fff;
+    border-color: #aaa;
+  }
+}
+
+/* ---- Your Data ---- */
+
+.dataDescription {
+  max-width: 600px;
+  margin-top: 30px !important;
+  color: #aaa;
+}
+
+.dataValues {
+  line-height: 40px;
+  color: #aaa;
+}
+
+.dataValues dt {
+  float: left;
+  width: 100px;
+  clear: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dataValues dd {
+  margin-left: 120px;
+}
+
+.dataValues a {
+  text-decoration: underline;
+  border-bottom: 0;
+}
+
+@media (hover: hover) {
+  .dataValues a:hover {
+    color: #666;
+  }
+}

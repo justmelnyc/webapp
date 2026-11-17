@@ -1,0 +1,154 @@
+/* Icon rules for editor, forms, footer, hero etc. See icons.css header. */
+@layer components {
+  /* Editor Icons
+------------------------------------- */
+  .BrowseIcon > g {
+    fill: #fff;
+  }
+
+  .ElloBuyButton > .SVGIcon.MoneyIcon > g {
+    fill: #fff;
+    stroke: #fff;
+    stroke-width: 0.5;
+  }
+
+  .PostActionButton .BrowseIcon > g {
+    fill: transparent;
+  }
+
+  .PostActionButton .XIconLG {
+    margin-top: -2px;
+    margin-left: -2px;
+  }
+
+  .SVGIcon.MoneyIconCircle path {
+    fill: #fff;
+    stroke: none;
+  }
+
+  .PostActionButton .SVGIcon > g {
+    stroke: #fff;
+  }
+
+  .TextToolButton.forLink > .SVGIcon {
+    margin-top: -2px;
+    margin-left: -1px;
+  }
+
+  @media (min-width: 40em) {
+    @media (hover: hover) {
+      .BlockRemove > .XIcon {
+        transition-duration: var(--speed), var(--speed), var(--speed2);
+        transform-origin: center center;
+      }
+    }
+
+    @media (hover: hover) {
+      .BlockRemove:hover > .XIcon {
+        transition-delay: 0.5s, 0.5s, 0.7s;
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (hover: hover) {
+      .ElloBuyButton:hover > .SVGIcon.MoneyIcon > g {
+        fill: #000;
+        stroke: transparent;
+      }
+    }
+  }
+
+  /* ??
+------------------------------------- */
+  .HeroScrollToContentButton .ChevronCircleIcon {
+    margin-top: -2px;
+    transition: transform var(--speed) cubic-bezier(0.23, 1, 0.32, 1);
+    transform: rotate(90deg);
+  }
+
+  .HeroScrollToContentButton .ChevronCircleIcon g {
+    fill: none;
+    stroke: #fff;
+  }
+
+  .FooterTool.LayoutTool > .SVGIcon {
+    margin-top: -2px;
+  }
+
+  .FooterTools .ChevronIcon {
+    margin-top: -2px;
+    transition: transform var(--speed) cubic-bezier(0.23, 1, 0.32, 1);
+    transform: rotate(-90deg);
+  }
+
+  .OnboardingInfoForm .SVGIcon {
+    transform: scale(0.6);
+  }
+
+  .FormControlStatus > .SVGIcon > g {
+    stroke-width: 2;
+  }
+
+  /* Request */
+  .FormControlStatus > .CircleIconLG > g {
+    fill: #aaa;
+    stroke: transparent;
+  }
+
+  /* Success */
+  .FormControlStatus > .CheckIconLG > g {
+    stroke: #06a54f;
+    stroke-linejoin: bevel;
+  }
+
+  /* Failure */
+  .FormControlStatus > .XIconLG > g {
+    stroke: #f00;
+  }
+
+  .MarkerIcon {
+    color: #ababab;
+  }
+
+  .Omnibar .ChevronIcon {
+    margin-right: 5px;
+    transform: rotate(180deg);
+  }
+
+  .BlockMuteButton > .DotsIcon > g {
+    fill: #fff;
+    stroke: transparent;
+  }
+
+  @media (hover: hover) {
+    .BlockMuteButton:hover > .DotsIcon > g {
+      fill: #f00;
+    }
+  }
+  /* stylelint-enable selector-max-compound-selectors, selector-max-specificity */
+
+  /* Rules that were glamor styles inside Icons.js */
+  .ArrowIconAnimatedRect {
+    fill: #fff;
+    animation: animateUploaderMover 0.666s infinite cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+  .TreeButton .ChevronIcon {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    transform: rotate(90deg);
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .TreeButton.isCollapsed .ChevronIcon {
+    transform: none;
+  }
+
+  @media (min-width: 40em) {
+    .TreeButton .ChevronIcon {
+      top: 8px;
+      left: -30px;
+    }
+  }
+}

@@ -15,7 +15,12 @@ const categories = NAMES.map((name, i) => ({
   isCreatorType: false,
   description: `${name} on mock Ello`,
   brandAccount: null,
-  tileImage: media.responsive(media.photoUrl(`cat-${name}`, 300, 300), 300, 300),
+  tileImage: {
+    small: media.version(media.photoUrl(`cat-${name}`, 160, 160), 160, 160),
+    regular: media.version(media.photoUrl(`cat-${name}`, 320, 320), 320, 320),
+    large: media.version(media.photoUrl(`cat-${name}`, 640, 640), 640, 640),
+    original: media.version(media.photoUrl(`cat-${name}`, 640, 640), 640, 640),
+  },
 }))
 
 const pageHeader = (kind, slug) => ({

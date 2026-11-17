@@ -1,0 +1,167 @@
+/*
+ * Post tools row (views, comment, love, repost, share), the Hint tooltip (hints/Hint.js) and the
+ * header follow button (relationships/FollowButton.js). Ported from legacy PostTools.css.
+ * `.no-touch` hover rules become `@media (hover: hover)`; `.no-touch` display rules likewise.
+ */
+
+.PostTools {
+  position: relative;
+  height: 60px;
+  padding-top: 20px;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: transform var(--speed) var(--ease-ello);
+}
+
+.PostTool {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  transition: transform var(--speed) var(--ease-ello);
+}
+
+.PostTool .PostToolValue.isZero {
+  display: none;
+}
+
+.PostTool > a,
+.PostTool > button {
+  padding-right: 8px;
+  padding-left: 4px;
+  color: #aaa;
+  transition: color var(--speed) ease;
+}
+
+.PostTool > button.hasPostToolDrawer {
+  padding-right: 5px;
+}
+
+.PostTool > button.PostToolDrawerButton {
+  padding-left: 0 !important;
+}
+
+.PostDetailStreamContainer .CommentTool,
+.PostDetailStreamContainer .PostToolDrawerButton,
+.PostTool[data-count='0'] > button.PostToolDrawerButton {
+  display: none;
+}
+
+.PostTool > a {
+  vertical-align: middle;
+}
+
+@media (hover: hover) {
+  .PostTool a:hover,
+  .PostTool button:hover {
+    color: #000;
+  }
+
+  .LoveTool > button.isActive:hover {
+    color: #aaa;
+  }
+}
+
+.CommentTool.PostTool button.isNotZero .PostToolValue {
+  padding-left: 0;
+}
+
+.ViewsTool {
+  margin-left: -8px;
+}
+
+.ViewsTool.isPill {
+  height: 22px;
+  margin-right: 10px;
+  margin-left: 0;
+  line-height: 22px;
+}
+
+.ViewsTool.isPill > a {
+  padding-right: 11px;
+  padding-left: 11px;
+  color: #535353;
+  background-color: #e8e8e8;
+  border-radius: 11px;
+  transition: color var(--speed) ease, background-color var(--speed) ease;
+}
+
+.ViewsTool.isPill > a .SVGIcon,
+.ViewsTool.isPill > a .PostToolValue {
+  position: relative;
+  top: 1px;
+}
+
+@media (hover: hover) {
+  .ViewsTool.isPill a:hover {
+    background-color: #ccc;
+  }
+}
+
+@media (min-width: 40em) and (hover: hover) {
+  .LightBoxTriggerTool {
+    display: none;
+  }
+}
+
+.PostTool .SVGIcon + .PostToolValue {
+  margin-left: 5px;
+}
+
+.ViewsTool .Hint {
+  left: 10px;
+}
+
+.ShareTool {
+  position: absolute;
+  top: 19px;
+  right: -10px;
+}
+
+.ShareTool .Hint {
+  left: calc(-100% - 2px);
+}
+
+.ShareTool.isPill {
+  right: 0;
+  height: 22px;
+  line-height: 22px;
+}
+
+.ShareTool.isPill > button {
+  padding-right: 11px;
+  padding-left: 11px;
+  background-color: #e8e8e8;
+  border-radius: 11px;
+  transition: color var(--speed) ease, background-color var(--speed) ease;
+}
+
+.ShareTool.isPill > button > .Hint {
+  position: static;
+  display: inline-block;
+  padding: 0;
+  color: #535353;
+  visibility: visible;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .ShareTool.isPill > button:hover {
+    background-color: #ccc;
+  }
+
+  .ShareTool.isPill > button:hover > .Hint {
+    color: #000;
+    transition-delay: 0s;
+    transition-duration: var(--speed);
+  }
+}
+
+.ShyTool {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--speed) ease;
+}

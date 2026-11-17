@@ -24,6 +24,10 @@ export const useImageUpload = (kind: ImageKind): ImageUpload => {
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview) }, [preview])
 
   const upload = async (file: File): Promise<void> => {
+    if (file.type === 'image/gif') {
+      // The original's alert when a .gif is picked for the avatar or header.
+      toast.info('If it’s animated people will only see the animation on your profile page.', 'Looks like you uploaded a .gif.')
+    }
     setPreview(URL.createObjectURL(file))
     setUploading(true)
     try {
@@ -34,7 +38,8 @@ export const useImageUpload = (kind: ImageKind): ImageUpload => {
       startRefresh(() => router.refresh())
     } catch (error) {
       setPreview(null)
-      toast.error(errorMessage(error))
+      const message = errorMessage(error)
+      toast.error(message, message.startsWith('We support') ? 'Invalid file type' : undefined)
     } finally {
       setUploading(false)
     }

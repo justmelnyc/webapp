@@ -2,9 +2,11 @@
 
 import { useOptimistic, useTransition } from 'react'
 import { savePreference } from '@/actions/profile-actions'
+import { TreeSection } from '@/components/settings/tree-section'
 import type { PreferenceSection } from '@/services/settings'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
+import treeStyles from './settings-tree.module.css'
 
 interface PreferenceTogglesProps {
   sections: PreferenceSection[]
@@ -12,33 +14,33 @@ interface PreferenceTogglesProps {
 
 type Values = Record<string, boolean>
 
-interface SwitchProps {
+interface ToggleProps {
   id: string
   checked: boolean
+  disabled: boolean
   onChange: (next: boolean) => void
 }
 
-const Switch = ({ id, checked, onChange }: SwitchProps) => (
-  <button
-    type="button"
-    role="switch"
-    id={id}
-    aria-checked={checked}
-    aria-labelledby={`${id}-label`}
-    aria-describedby={`${id}-info`}
-    onClick={() => onChange(!checked)}
-    className={cn(
-      'relative h-6 w-11 shrink-0 rounded-full transition-colors',
-      checked ? 'bg-ello-green' : 'bg-stone',
-    )}
+/** The original's `ToggleControl`: a 60x30 pill that reads Yes / No. */
+const Toggle = ({ id, checked, disabled, onChange }: ToggleProps) => (
+  <label
+    htmlFor={id}
+    className={cn(treeStyles.toggle, checked && ['isChecked', treeStyles.toggleChecked])}
+    style={disabled ? { opacity: 0.25 } : undefined}
   >
-    <span
-      className={cn(
-        'bg-paper absolute top-0.5 left-0.5 size-5 rounded-full transition-transform',
-        checked && 'translate-x-5',
-      )}
+    <input
+      id={id}
+      type="checkbox"
+      role="switch"
+      className="sr-only"
+      checked={checked}
+      disabled={disabled}
+      aria-labelledby={`${id}-label`}
+      aria-describedby={`${id}-info`}
+      onChange={() => onChange(!checked)}
     />
-  </button>
+    <span>{checked ? 'Yes' : 'No'}</span>
+  </label>
 )
 
 export const PreferenceToggles = ({ sections }: PreferenceTogglesProps) => {
@@ -58,21 +60,25 @@ export const PreferenceToggles = ({ sections }: PreferenceTogglesProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <>
       {sections.map((section) => (
-        <section key={section.label} className="flex flex-col gap-4">
-          <h3 className="text-slate text-xs tracking-wide uppercase">{section.label}</h3>
-          {section.items.map((item) => (
-            <div key={item.key} className="flex items-start justify-between gap-4">
-              <div>
-                <p id={`pref-${item.key}-label`} className="text-base">{item.label}</p>
-                <p id={`pref-${item.key}-info`} className="text-slate text-sm">{item.info}</p>
+        <TreeSection key={section.label} title={section.label}>
+          {section.items.map((item) => {
+            const id = `pref-${item.key}`
+            // The original disables sharing while the profile is private.
+            const disabled = item.key === 'has_sharing_enabled' && values.is_public === false
+            return (
+              <div key={item.key} className={cn('Preference', treeStyles.preference)}>
+                <dl>
+                  <dt id={`${id}-label`}>{item.label}</dt>
+                  <dd id={`${id}-info`}>{item.info}</dd>
+                </dl>
+                <Toggle id={id} checked={values[item.key] ?? false} disabled={disabled} onChange={(v) => toggle(item.key, v)} />
               </div>
-              <Switch id={`pref-${item.key}`} checked={values[item.key] ?? false} onChange={(v) => toggle(item.key, v)} />
-            </div>
-          ))}
-        </section>
+            )
+          })}
+        </TreeSection>
       ))}
-    </div>
+    </>
   )
 }

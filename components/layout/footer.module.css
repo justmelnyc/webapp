@@ -1,0 +1,222 @@
+/* Footer, ported from legacy/src/components/footer/* and FormControl.css / FormButton.js (`.inFooter`). */
+
+.footer {
+  position: fixed;
+  right: 0;
+  bottom: -54px;
+  left: 0;
+  z-index: 1030;
+  height: 69px;
+  color: #aaa;
+}
+
+.grabber {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.grabber:hover {
+  cursor: pointer;
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  height: 54px;
+  padding: 0 10px;
+  margin: 0;
+  background-color: #e5e5e5;
+  transition: transform 150ms ease;
+  transform: translate3d(0, calc(-100% + 15px), 0);
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1360px;
+  height: 54px;
+  margin: 0 auto;
+}
+
+.links {
+  position: relative;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tools {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.tools::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -20px;
+  z-index: 2;
+  width: 20px;
+  content: '';
+  background: linear-gradient(to right, rgba(229, 229, 229, 0) 0%, rgba(229, 229, 229, 1) 90%);
+}
+
+.rss {
+  display: none;
+  padding: 0 5px;
+  margin: 0 20px;
+}
+
+@media (hover: hover) {
+  .rss:hover rect {
+    fill: #000;
+  }
+}
+
+/* Post detail and /discover/all: the bar tucks away until you hover its edge. */
+.footer:global(.hide) .grabber {
+  height: 15px;
+  margin-top: 0;
+}
+
+.footer:global(.hide) .content {
+  transform: translate3d(0, 0, 0);
+}
+
+.footer:global(.hide):hover .content {
+  transition-delay: 350ms;
+  transform: translate3d(0, -100%, 0);
+}
+
+@media (max-width: 39.9375em) {
+  .footer {
+    bottom: -40px;
+    height: 54px;
+  }
+
+  .footer:global(.hide) {
+    position: relative;
+    bottom: auto;
+  }
+
+  .footer:global(.hide) .content {
+    transform: none;
+  }
+
+  .footer:global(.hide) .grabber {
+    display: none;
+  }
+
+  .tools {
+    position: relative;
+    right: auto;
+    white-space: nowrap;
+  }
+
+  .tools > :global(.LayoutTool) {
+    display: none;
+  }
+
+  :global(.isProfileMenuActive) > .footer {
+    display: none;
+  }
+}
+
+@media (min-width: 40em) {
+  .content {
+    padding: 0 20px;
+  }
+
+  .rss {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 85em) {
+  .content {
+    padding: 0 40px;
+  }
+
+  .tools::before {
+    display: none;
+  }
+}
+
+/* ---- links ---- */
+
+.link {
+  display: inline-block;
+  font-size: 14px;
+  vertical-align: middle;
+  border-bottom: 0;
+}
+
+.linkText {
+  display: inline-block;
+  margin-right: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (min-width: 40em) {
+  .linkText {
+    margin-right: 20px;
+  }
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: #000;
+  }
+}
+
+/* ---- tools (Top / layout toggle) ---- */
+
+.tool {
+  display: inline-block;
+  font-size: 12px;
+}
+
+.layoutTool {
+  margin-right: -8px;
+  margin-left: 5px;
+}
+
+.toolText {
+  display: inline-block;
+  width: 0;
+  margin-left: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s;
+}
+
+@media (hover: hover) {
+  .tool:hover {
+    color: #000;
+  }
+
+  :global(.TopTool):hover > .toolText {
+    width: 30px;
+  }
+
+  :global(.LayoutTool):hover > .toolText {
+    width: 66px;
+  }
+}

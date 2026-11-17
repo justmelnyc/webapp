@@ -1,0 +1,167 @@
+/* Port of HeroRenderables.js HeroPromotionCategory (collapsed info drawer, the default) */
+.root {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 240px;
+  overflow: hidden;
+  color: #fff;
+}
+
+.caption {
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 14px;
+}
+
+.heading {
+  font-family: var(--font-black);
+  font-weight: 400;
+}
+
+.check {
+  position: absolute;
+  display: inline-block;
+  width: 40px;
+  margin-top: -6px;
+  margin-left: -44px;
+  transform: scale(1.6);
+}
+
+.check :global(.svg-stroke-bevel) {
+  stroke: #fff;
+}
+
+.check circle {
+  stroke: #fff;
+}
+
+.unsubscribed .check circle {
+  fill: none;
+  stroke: #fff;
+}
+
+.subscribed .check circle {
+  fill: #00d100;
+  stroke: #00d100;
+}
+
+.subscribeHolder {
+  position: relative;
+  display: none;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+/* mobile (< 40em) */
+@media (max-width: 39.9375em) {
+  .root {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .caption {
+    display: flex;
+    align-items: center;
+    min-height: 200px;
+    padding: 0 10px;
+  }
+
+  .heading {
+    padding-right: 20px;
+    padding-left: 0;
+  }
+
+  .label {
+    font-size: 56px;
+    line-height: 1;
+  }
+
+  .check {
+    width: 26px;
+    margin-top: -2px;
+    margin-left: 0;
+    transform: scale(1.25);
+  }
+}
+
+@media (max-width: 420px) {
+  .heading {
+    padding-right: 0;
+  }
+
+  .label {
+    font-size: 13.15vw;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 40em) {
+  .root {
+    align-items: center;
+    min-height: 380px;
+  }
+
+  .caption {
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .heading {
+    display: inline-block;
+    padding-top: 35px;
+    padding-right: 40px;
+    padding-left: 40px;
+    text-align: center;
+  }
+
+  .check {
+    width: 30px;
+    margin-top: -2px;
+    margin-left: 15px;
+    transform: scale(1.75);
+  }
+
+  .label {
+    font-size: 144px;
+    line-height: 1;
+    border-bottom: 8px solid;
+  }
+
+  .subscribeHolder {
+    display: flex;
+  }
+}
+
+@media (min-width: 40em) and (max-width: 107.4375em) {
+  .check { margin-top: 14px; }
+  .label { font-size: 10vw; line-height: 1.2; }
+}
+
+@media (min-width: 40em) and (max-width: 84.9375em) {
+  .check { margin-top: 10px; }
+  .label { font-size: 9vw; line-height: 1.3; border-bottom: 7px solid; }
+}
+
+@media (min-width: 40em) and (max-width: 59.9375em) {
+  .check { margin-top: 8px; margin-left: 10px; transform: scale(1.25); }
+  .label { font-size: 8.5vw; line-height: 1.2; border-bottom: 5px solid; }
+}
+
+@media (min-width: 60em) {
+  .caption {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+@media (min-width: 85em) {
+  .caption {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}

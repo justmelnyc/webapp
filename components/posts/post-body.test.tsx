@@ -9,7 +9,7 @@ const regions = (...input: unknown[]): Region[] => input.map((r) => regionSchema
 describe('PostBody', () => {
   it('renders text regions as HTML', () => {
     const { container } = render(<PostBody regions={regions(textRegion('<p>Hello <strong>you</strong></p>'))} />)
-    expect(container.querySelector('.rich-text strong')).toHaveTextContent('you')
+    expect(container.querySelector('.TextRegion strong')).toHaveTextContent('you')
   })
 
   it('uses the linked asset url and dimensions for image regions', () => {
@@ -19,17 +19,15 @@ describe('PostBody', () => {
     )
     const img = container.querySelector('img')
     expect(img).toHaveAttribute('src', 'https://cdn.test/asset.jpg')
-    expect(img).toHaveAttribute('width', '640')
-    expect(img).toHaveAttribute('height', '480')
+    expect(img).toHaveAttribute('srcset', expect.stringContaining('https://cdn.test/asset.jpg 1920w'))
     expect(img).toHaveAttribute('alt', 'A photo')
   })
 
-  it('falls back to data.url and default dimensions when no asset matches', () => {
+  it('falls back to data.url when no asset matches', () => {
     const { container } = render(<PostBody regions={regions(imageRegion('missing', 'https://other.test/raw.jpg'))} />)
     const img = container.querySelector('img')
     expect(img).toHaveAttribute('src', 'https://other.test/raw.jpg')
-    expect(img).toHaveAttribute('width', '1200')
-    expect(img).toHaveAttribute('height', '800')
+    expect(img).not.toHaveAttribute('srcset')
   })
 
   it('applies the loading prop (lazy by default)', () => {
@@ -49,19 +47,29 @@ describe('PostBody', () => {
 
   it('skips embed regions', () => {
     const { container } = render(<PostBody regions={regions({ kind: 'embed', data: { service: 'youtube' } })} />)
-    expect(container.firstElementChild?.children).toHaveLength(0)
+    expect(container.querySelector('.PostBody > div')?.children).toHaveLength(0)
   })
 
   it('renders nothing inside for an empty region list', () => {
     const { container } = render(<PostBody regions={[]} />)
-    expect(container.firstElementChild).toBeEmptyDOMElement()
+    expect(container.querySelector('.PostBody > div')).toBeEmptyDOMElement()
   })
 
   it('keeps region order', () => {
     const { container } = render(
       <PostBody regions={regions(textRegion('<p>first</p>'), imageRegion('x', 'https://o.test/a.jpg'), textRegion('<p>last</p>'))} />,
     )
-    const tags = Array.from(container.firstElementChild?.children ?? [], (el) => el.tagName)
-    expect(tags).toEqual(['DIV', 'IMG', 'DIV'])
+    const classes = Array.from(container.querySelector('.PostBody > div')?.children ?? [], (el) => el.className)
+    expect(classes).toEqual(['TextRegion', 'ImageRegion', 'TextRegion'])
+  })
+})
+
+describe('PostBody in a grid', () => {
+  it('links images and shows the lightbox trigger', () => {
+    const { container } = render(
+      <PostBody regions={regions(imageRegion('x', 'https://o.test/a.jpg'))} detailPath="/ada/post/t1" />,
+    )
+    expect(container.querySelectorAll('.ImageRegion a[href="/ada/post/t1"]')).toHaveLength(2)
+    expect(container.querySelector('.lightbox-trigger')).toBeInTheDocument()
   })
 })

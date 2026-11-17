@@ -1,0 +1,155 @@
+/*
+ * Comment list, tools, editor and launcher button. Ported from comments/Comment.css,
+ * editor/Editor.css, editor/PostActionBar.js, QuickEmoji.js, RegionTools.js and the
+ * `CommentContent` rules in PostDetail.js. Original class names stay as global hooks.
+ */
+
+.content {
+  /* `CommentContent` in the narrow (inline) layout */
+  display: block;
+}
+
+.aside {
+  margin: 20px;
+}
+
+/* TabListStreamContainer */
+.stream {
+  padding: 0 0 10px;
+}
+
+.aside .stream,
+.empty {
+  padding: 0;
+}
+
+@media (min-width: 40em) {
+  .stream {
+    padding-bottom: 20px;
+  }
+}
+
+.comments {
+  position: relative;
+  max-width: 640px;
+}
+
+/* ---- Comment ---- */
+
+.comment {
+  position: relative;
+  padding-top: 20px;
+}
+
+.header {
+  position: relative;
+  height: 30px;
+  font-size: 14px;
+  color: #aaa;
+  background-color: #fff;
+}
+
+.author {
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 50px);
+  padding-left: 40px;
+  line-height: 30px;
+  vertical-align: middle;
+}
+
+.link {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.link :global(.Avatar) {
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: #535353;
+  }
+}
+
+.body {
+  padding-bottom: 20px;
+  margin-left: 40px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.body :global(.TextRegion) {
+  width: 100%;
+  max-width: 780px;
+  word-wrap: break-word;
+}
+
+.body :global(.RegionContent) > :first-child {
+  margin-top: 0;
+}
+
+.body :global(.RegionContent) > :last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 40em) {
+  .header {
+    height: 25px;
+  }
+
+  .author {
+    padding-left: 60px;
+    line-height: 20px;
+  }
+
+  .body {
+    margin-left: 60px;
+  }
+}
+
+/* ---- Load more (TabListStreamContainer .Paginator) ---- */
+
+.paginator {
+  width: calc(100% - 20px);
+  max-width: 580px;
+  height: 40px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  font-size: 14px;
+  line-height: 40px;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #aaa;
+  border-radius: 5px;
+  transition: background-color var(--speed) var(--ease);
+}
+
+.aside .paginator {
+  width: 100%;
+  margin: 30px 0 0;
+}
+
+.paginator button {
+  width: calc(100% - 40px);
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .paginator:hover {
+    background-color: #000;
+  }
+}
+
+.error {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #f00;
+}

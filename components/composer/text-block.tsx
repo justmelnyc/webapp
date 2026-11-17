@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from 'react'
 import { useComposerStore, type TextBlock as TextBlockData } from '@/stores/composer-store'
+import styles from './omnibar.module.css'
 
 export const TextBlock = ({ block, autoFocus }: { block: TextBlockData; autoFocus: boolean }) => {
   const setText = useComposerStore((s) => s.setText)
@@ -19,11 +20,10 @@ export const TextBlock = ({ block, autoFocus }: { block: TextBlockData; autoFocu
       ref={ref}
       value={block.text}
       autoFocus={autoFocus}
-      rows={2}
+      rows={1}
       aria-label="Post text"
-      placeholder="Say Ello..."
       onChange={(e) => setText(block.id, e.target.value)}
-      className="placeholder:text-ash w-full resize-none bg-transparent py-2 text-lg outline-none"
+      className={`editable text ${styles.editable}`}
     />
   )
 }

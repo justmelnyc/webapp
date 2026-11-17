@@ -1,0 +1,165 @@
+/* Avatar + dropdown menu, ported from NavbarProfile in legacy/src/components/navbar/NavbarParts.js */
+
+.profile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (min-width: 60em) {
+  .profile {
+    top: 0;
+    right: 130px;
+    left: auto;
+    z-index: 3;
+  }
+
+  @media (hover: hover) {
+    .profile:hover::before {
+      position: absolute;
+      top: 15px;
+      left: 0;
+      width: 100px;
+      height: 30px;
+      content: '';
+      background-color: rgba(0, 0, 0, 0);
+      transform: translateX(-100%);
+    }
+  }
+}
+
+.links {
+  position: absolute;
+  z-index: 2;
+  min-width: 140px;
+  padding: 5px 10px;
+  overflow: hidden;
+  color: #aaa;
+  pointer-events: none;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.links:global(.isActive) {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+@media (max-width: 59.9375em) {
+  .links {
+    top: -10px;
+    left: -10px;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+  }
+}
+
+@media (min-width: 60em) {
+  .links {
+    top: 40px;
+    right: 0;
+    left: auto;
+    max-width: 180px;
+  }
+
+  @media (hover: hover) {
+    .profile:hover .links {
+      pointer-events: auto;
+      opacity: 1;
+    }
+  }
+}
+
+.linkBase {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item {
+  composes: linkBase;
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+}
+
+.small {
+  composes: linkBase;
+  height: 25px;
+  font-size: 12px;
+  line-height: 25px;
+  color: #ccc;
+}
+
+@media (hover: hover) {
+  .item:hover,
+  .small:hover {
+    color: #000;
+  }
+}
+
+@media (max-width: 59.9375em) {
+  .item {
+    height: 50px;
+    line-height: 50px;
+    color: #000;
+    text-indent: 10px;
+    border-bottom: 1px solid;
+  }
+
+  .small {
+    height: 30px;
+    line-height: 30px;
+    color: #000;
+    text-indent: 10px;
+  }
+}
+
+.divider {
+  margin: 4px -10px;
+  border-color: #ccc;
+}
+
+@media (max-width: 59.9375em) {
+  .divider {
+    border-color: transparent;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+}
+
+@media (max-width: 59.9375em) {
+  .close {
+    display: block;
+  }
+}
+
+/* Invites is in the menu only where the navbar has no room for it; Giveaways only below 500px. */
+.invitesItem {
+  display: none;
+}
+
+@media (min-width: 640px) and (max-width: 700px), (max-width: 371.98px) {
+  .invitesItem {
+    display: block;
+  }
+}
+
+@media (min-width: 500px) {
+  .giveawaysItem {
+    display: none;
+  }
+}

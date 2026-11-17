@@ -1,0 +1,6 @@
+/* From MainView.css: the main view hides while the full screen avatar menu is open on phones. */
+@media (max-width: 39.9375em) {
+  .shell:global(.isProfileMenuActive) > :global(.MainView) {
+    display: none;
+  }
+}

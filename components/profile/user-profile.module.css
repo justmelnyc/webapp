@@ -1,0 +1,182 @@
+/*
+ * The profile hero. Ported from legacy/src/components/heros/HeroRenderables.js (Hero, HeroProfile),
+ * HeroParts.js (share / scroll buttons), assets/BackgroundImage.js, assets/Avatar.js (.inUserProfile),
+ * users/UserRenderables.css (.UserProfile) and the .inUserProfile rules of users/UserParts.css.
+ */
+.hero {
+  padding-top: 85px;
+  background-color: #fff;
+}
+
+:global(.isLoggedOut) .hero {
+  padding-top: 80px;
+}
+
+.profile {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* BackgroundImage.inHeroProfile.hasOverlay6 */
+.background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  height: 220px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
+  background-size: cover;
+}
+
+.background::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: '';
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  background: transparent no-repeat 50% 50%;
+  background-size: cover;
+}
+
+/* UserProfile */
+.userProfile {
+  position: relative;
+  flex-grow: 1;
+  max-width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin: auto;
+  color: #000;
+  text-align: center;
+}
+
+/* Avatar.inUserProfile */
+.avatar {
+  width: 180px;
+  height: 180px;
+  margin-top: 100px;
+  margin-bottom: 15px;
+  background-color: transparent;
+}
+
+.userProfile .names {
+  padding-bottom: 5px !important;
+}
+
+/* UserProfileButtons.inUserProfile */
+.buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+/* Hero buttons (HeroShareUserButton, HeroScrollToContentButton) */
+.heroButton {
+  position: absolute;
+  display: none;
+  width: 40px;
+  height: 40px;
+  color: #000;
+  background-color: #000;
+  border-radius: 20px;
+}
+
+.share {
+  top: 40px;
+  right: 40px;
+}
+
+.share :global(.ShareIcon) {
+  margin-top: -6px;
+  color: #fff;
+}
+
+.shareSmall {
+  position: absolute;
+  top: -55px;
+  right: 0;
+  z-index: 2;
+  display: block;
+  color: #aaa;
+}
+
+.scroll {
+  bottom: 60px;
+  left: calc(50% - 20px);
+}
+
+@media (min-width: 40em) {
+  .profile {
+    height: calc(100vh - 80px);
+    min-height: 540px;
+  }
+
+  .hero {
+    padding-top: 80px;
+  }
+
+  .background {
+    height: auto;
+  }
+
+  .userProfile {
+    max-width: 600px;
+    min-height: 360px;
+    padding-right: 0;
+    padding-left: 0;
+    color: #fff;
+  }
+
+  .userProfile :global(.UserCell) {
+    margin-left: 300px;
+    text-align: left;
+  }
+
+  .buttons {
+    top: 300px;
+    right: 0;
+    left: 0;
+    max-width: 260px;
+  }
+
+  .heroButton {
+    display: block;
+  }
+
+  .shareSmall {
+    display: none;
+  }
+
+  :global(.isLoggedIn) .userProfile :global(.UserName) {
+    padding-right: 30px;
+  }
+}
+
+@media (min-width: 60em) {
+  .avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 260px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

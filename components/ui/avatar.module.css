@@ -1,0 +1,65 @@
+/*
+ * Ported from legacy/src/components/assets/Avatar.js (baseStyle / imageStyle).
+ * Context-specific sizes (PostHeader, user profile, ...) are applied by the caller with
+ * utilities, so these rules live in the components layer and lose to Tailwind utilities.
+ */
+@layer components {
+  .avatar {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    color: transparent;
+    vertical-align: middle;
+    background: #f0f0f0 no-repeat 50% 50%;
+    background-size: cover;
+    border-radius: 50%;
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .avatar::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    content: '';
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    a.avatar:hover::before,
+    a:hover > .avatar::before,
+    button.avatar:hover::before,
+    button:hover > .avatar::before {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  @media (min-width: 60em) {
+    .avatar {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: opacity 0.4s;
+  }
+
+  .image[src=''] {
+    display: none;
+  }
+}

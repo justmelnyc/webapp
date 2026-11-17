@@ -1,0 +1,68 @@
+/* Port of the original's `Alert` (modals/Modal.js alertStyle + dialogs/Dialog.js): a black box that slides in from the right. */
+.alerts {
+  position: fixed;
+  top: 30px;
+  right: 10px;
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 95%;
+  max-width: 320px;
+  pointer-events: none;
+}
+
+.alert {
+  position: relative;
+  min-height: 80px;
+  padding: 16px 20px;
+  color: #fff;
+  pointer-events: auto;
+  cursor: pointer;
+  background-color: #000;
+  animation: enter 0.2s var(--ease-ello);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+.dialog {
+  position: relative;
+}
+
+.dialog h2 {
+  margin: 0;
+}
+
+.dialog p:last-of-type {
+  margin-bottom: 0;
+}
+
+.dismiss {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  color: #fff;
+  transition: color var(--speed) ease;
+}
+
+.dismiss:hover {
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .alerts {
+    right: 20px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 85em) {
+  .alerts {
+    right: 40px;
+  }
+}

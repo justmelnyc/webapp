@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { getProfile } from '@/components/profile/profile-data'
-import { ProfileHeader } from '@/components/profile/profile-header'
-import { ProfileTabs } from '@/components/profile/profile-tabs'
+import { ProfileHero } from '@/components/profile/profile-hero'
 import { NotFoundError } from '@/lib/errors'
 import { getSession } from '@/lib/session'
 
@@ -21,11 +20,10 @@ const ProfileLayout = async ({ children, params }: LayoutProps) => {
     getSession(),
   ])
   return (
-    <div className="flex flex-col gap-6">
-      <ProfileHeader user={user} signedIn={!!session} />
-      <ProfileTabs username={user.username} />
-      {children}
-    </div>
+    <>
+      <ProfileHero user={user} signedIn={!!session} />
+      <div className="UserDetails">{children}</div>
+    </>
   )
 }
 

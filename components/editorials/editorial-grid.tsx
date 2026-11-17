@@ -1,33 +1,19 @@
-import Link from 'next/link'
-import { ElloImage } from '@/components/ui/ello-image'
 import type { Editorial } from '@/types/content'
-import { cn } from '@/utils/cn'
-import { responsiveUrl } from '@/utils/images'
+import { EditorialLayout } from './editorial-layout'
 
-const Tile = ({ editorial, wide, first }: { editorial: Editorial; wide: boolean; first: boolean }) => {
-  const image = responsiveUrl(wide ? editorial.twoByOneImage : editorial.oneByOneImage)
-  const href = editorial.path ?? editorial.url ?? '#'
+const PAGE_SIZE = 24
+
+/** The home page's editorial modules, chunked into pages of 24 like the original's `editorials()`. */
+export const EditorialGrid = ({ editorials, signedIn = false }: { editorials: Editorial[]; signedIn?: boolean }) => {
+  const pages: Editorial[][] = []
+  for (let start = 0; start < editorials.length; start += PAGE_SIZE) {
+    pages.push(editorials.slice(start, start + PAGE_SIZE))
+  }
   return (
-    <Link
-      href={href}
-      className={cn('group relative flex min-h-72 items-start overflow-hidden bg-ink p-8 text-white', wide && 'md:col-span-2')}
-    >
-      {image && (
-        <ElloImage src={image} width={800} height={wide ? 400 : 800} priority={first} className="absolute inset-0 size-full object-cover opacity-70 transition-opacity group-hover:opacity-90" />
-      )}
-      <div className="relative">
-        <h2 className="text-4xl font-light">{editorial.title}</h2>
-        {editorial.subtitle && <p className="mt-2 text-sm">{editorial.subtitle}</p>}
-      </div>
-    </Link>
+    <>
+      {pages.map((page) => (
+        <EditorialLayout key={page[0]?.id} editorials={page} signedIn={signedIn} />
+      ))}
+    </>
   )
 }
-
-/** Wide tiles on a repeating rhythm: wide, square, square, wide, ... */
-export const EditorialGrid = ({ editorials }: { editorials: Editorial[] }) => (
-  <section className="grid gap-5 md:grid-cols-3">
-    {editorials.map((editorial, index) => (
-      <Tile key={editorial.id} editorial={editorial} wide={index % 3 === 0} first={index < 3} />
-    ))}
-  </section>
-)

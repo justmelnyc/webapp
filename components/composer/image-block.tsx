@@ -1,42 +1,32 @@
 'use client'
 
-import { Spinner } from '@/components/ui/spinner'
-import { OutlineButton } from '@/components/ui/button'
-import { useComposerStore, type ImageBlock as ImageBlockData } from '@/stores/composer-store'
+import { ArrowIcon } from '@/components/icons'
+import type { ImageBlock as ImageBlockData } from '@/stores/composer-store'
+import styles from './omnibar.module.css'
 
 interface ImageBlockProps {
   block: ImageBlockData
   onRetry: (id: string) => void
 }
 
-export const ImageBlock = ({ block, onRetry }: ImageBlockProps) => {
-  const updateImage = useComposerStore((s) => s.updateImage)
-  const removeBlock = useComposerStore((s) => s.removeBlock)
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="bg-stone/40 relative inline-block max-w-full self-start">
-        {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
-        <img src={block.previewUrl} alt={block.alt || 'Upload preview'} className="max-h-96 max-w-full" />
-        {block.status === 'uploading' && (
-          <div className="bg-paper/60 absolute inset-0 flex items-center justify-center">
-            <Spinner className="size-8" />
-          </div>
-        )}
-        {block.status === 'error' && (
-          <div className="bg-paper/80 absolute inset-0 flex items-center justify-center gap-2">
-            <OutlineButton onClick={() => onRetry(block.id)}>Retry upload</OutlineButton>
-            <OutlineButton onClick={() => removeBlock(block.id)}>Remove</OutlineButton>
-          </div>
-        )}
+/** The original's ImageBlock: the picture, with a dimmed "busy" cover while it uploads. */
+export const ImageBlock = ({ block, onRetry }: ImageBlockProps) => (
+  <div className={`editable image ${styles.editable} ${styles.image}`}>
+    {block.status === 'uploading' && (
+      <div className={styles.busy} role="status" aria-label="Uploading">
+        <div className={styles.busyArrow}>
+          <ArrowIcon isAnimated />
+        </div>
       </div>
-      <input
-        type="text"
-        value={block.alt}
-        onChange={(e) => updateImage(block.id, { alt: e.target.value })}
-        aria-label="Image description"
-        placeholder="Describe this image (optional)"
-        className="border-stone w-full border-b bg-transparent py-1 text-sm outline-none"
-      />
-    </div>
-  )
-}
+    )}
+    {block.status === 'error' && (
+      <div className={styles.retry}>
+        <button type="button" onClick={() => onRetry(block.id)}>
+          Retry upload
+        </button>
+      </div>
+    )}
+    {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview */}
+    <img src={block.previewUrl} alt={block.alt || 'Upload preview'} />
+  </div>
+)

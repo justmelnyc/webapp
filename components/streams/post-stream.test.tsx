@@ -6,6 +6,8 @@ import { postPageSchema, type PostPage, type StreamSpec } from '@/types/stream'
 import { PostStream } from './post-stream'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
+jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }) }))
 jest.mock('@/lib/client/streams', () => ({ fetchStreamPage: jest.fn() }))
 
 const fetchMock = jest.mocked(fetchStreamPage)
@@ -33,6 +35,12 @@ const renderStream = (initialPage: PostPage, emptyMessage?: string) => {
 describe('PostStream', () => {
   beforeEach(() => {
     fetchMock.mockReset()
+    window.matchMedia = jest.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    }))
     global.IntersectionObserver = jest.fn((callback: IntersectionObserverCallback) => {
       triggerIntersect = () =>
         callback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
@@ -48,6 +56,15 @@ describe('PostStream', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
+  it('deals posts into columns in turn', () => {
+    const { container } = renderStream(page(['a', 'b', 'c'], null))
+    const columns = Array.from(container.querySelectorAll('.Column'), (column) => column.textContent)
+    expect(columns).toHaveLength(2)
+    expect(columns[0]).toContain('body a')
+    expect(columns[0]).toContain('body c')
+    expect(columns[1]).toContain('body b')
+  })
+
   it('shows the default and custom empty messages', () => {
     const { unmount } = renderStream(page([], null))
     expect(screen.getByText('Nothing here yet.')).toBeInTheDocument()
@@ -61,6 +78,11 @@ describe('PostStream', () => {
     renderStream(page(['a', 'b'], 'cur1'))
 
     act(() => triggerIntersect())
+    expect(fetchMock).not.toHaveBeenCalled()
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+    act(() => triggerIntersect())
 
     await waitFor(() => expect(screen.getByText('body c')).toBeInTheDocument())
     expect(fetchMock).toHaveBeenCalledWith(spec, 'cur1')
@@ -70,6 +92,9 @@ describe('PostStream', () => {
 
   it('does not fetch when the last page was already loaded', () => {
     renderStream(page(['a'], null))
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
     act(() => triggerIntersect())
     expect(fetchMock).not.toHaveBeenCalled()
   })

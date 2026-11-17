@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { deletePost } from '@/actions/composer-actions'
-import { TextButton } from '@/components/ui/button'
+import { XBoxIcon } from '@/components/icons'
+import { Hint } from '@/components/posts/hint'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
 
@@ -12,10 +13,9 @@ interface PostOwnerMenuProps {
   viewerId: string | null | undefined
 }
 
-const DeleteControl = ({ postId }: { postId: string }) => {
+const DeleteTool = ({ postId }: { postId: string }) => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-
   const onDelete = (): void => {
     if (!window.confirm('Delete this post? This cannot be undone.')) return
     startTransition(async () => {
@@ -28,16 +28,18 @@ const DeleteControl = ({ postId }: { postId: string }) => {
       router.refresh()
     })
   }
-
   return (
-    <TextButton onClick={onDelete} disabled={isPending} aria-label="Delete post">
-      {isPending ? 'Deleting...' : 'Delete'}
-    </TextButton>
+    <span className="PostTool DeleteTool">
+      <button type="button" onClick={onDelete} disabled={isPending} aria-label="Delete post">
+        <XBoxIcon />
+        <Hint>{isPending ? 'Deleting...' : 'Delete'}</Hint>
+      </button>
+    </span>
   )
 }
 
-/** Owner-only actions. Only the author's cards mount the controls (and their hooks). */
+/** Owner-only actions (the original's `DeleteTool`). Only the author's cards mount the controls. */
 export const PostOwnerMenu = ({ post, viewerId }: PostOwnerMenuProps) => {
   if (!viewerId || viewerId !== post.author.id) return null
-  return <DeleteControl postId={post.id} />
+  return <DeleteTool postId={post.id} />
 }

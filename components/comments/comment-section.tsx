@@ -1,28 +1,38 @@
 'use client'
 
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { CommentForm } from '@/components/comments/comment-form'
+import { CommentForm, type ReplyRequest } from '@/components/comments/comment-form'
 import { CommentItem } from '@/components/comments/comment-item'
+import { CommentLauncher } from '@/components/comments/comment-launcher'
 import { fetchCommentPage } from '@/components/comments/fetch-comments'
-import { OutlineButton } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { useMediaQuery } from '@/components/layout/use-media-query'
 import type { CommentPage } from '@/types/stream'
+import { cn } from '@/utils/cn'
+import styles from './comments.module.css'
 
 interface CommentSectionProps {
   postId: string
-  /** The viewer's user id, or null when logged out. */
-  viewerId: string | null
-  /** Where to send logged-out viewers after they log in. */
-  loginNext: string
+  postAuthorId: string
+  viewer: { id: string; username: string; avatar: string | null }
   /** First page, rendered on the server. */
   initialPage: CommentPage
+  /** `aside` is the right column from 60em up; `inline` sits under the post below that. */
+  placement: 'inline' | 'aside'
 }
 
-export const CommentSection = ({ postId, viewerId, loginNext, initialPage }: CommentSectionProps) => {
+/**
+ * The original's `CommentContent` (rendered for signed-in viewers only): the editor, or its
+ * launcher button below 60em, and the comment list. Only the placement that matches the viewport
+ * renders, like the original's JS switch.
+ */
+export const CommentSection = ({ postId, postAuthorId, viewer, initialPage, placement }: CommentSectionProps) => {
+  const isWide = useMediaQuery('(min-width: 60em)')
   const router = useRouter()
   const queryClient = useQueryClient()
+  const [isEditing, setEditing] = useState(false)
+  const [reply, setReply] = useState<ReplyRequest | null>(null)
   const queryKey = ['comments', postId]
 
   const query = useInfiniteQuery({
@@ -33,48 +43,61 @@ export const CommentSection = ({ postId, viewerId, loginNext, initialPage }: Com
     initialData: { pages: [initialPage], pageParams: [null] },
   })
 
-  const changed = () => {
+  if (isWide !== (placement === 'aside')) return null
+
+  const changed = (): void => {
     void queryClient.invalidateQueries({ queryKey })
     router.refresh()
+  }
+  const onReply = (username: string): void => {
+    setEditing(true)
+    setReply({ username, nonce: Date.now() })
   }
 
   const seen = new Set<string>()
   const comments = query.data.pages
     .flatMap((page) => page.comments)
     .filter((comment) => (seen.has(comment.id) ? false : (seen.add(comment.id), true)))
+  const showEditor = placement === 'aside' || isEditing
 
   return (
-    <section className="flex flex-col gap-6" aria-label="Comments">
-      {viewerId ? (
-        <CommentForm postId={postId} onCreated={changed} />
+    <div className={cn('CommentContent', placement === 'aside' ? styles.aside : styles.content)}>
+      {showEditor ? (
+        <CommentForm postId={postId} onCreated={changed} onCancel={() => setEditing(false)} reply={reply} />
       ) : (
-        <p className="text-slate text-sm">
-          <Link href={`/enter?next=${encodeURIComponent(loginNext)}`} className="text-ink underline">
-            Log in to comment
-          </Link>
-        </p>
+        <CommentLauncher avatar={viewer.avatar} username={viewer.username} onLaunch={() => setEditing(true)} />
       )}
-      {comments.length === 0 ? (
-        <p className="text-ash py-6 text-center">No comments yet.</p>
-      ) : (
-        <ul className="flex flex-col gap-6">
-          {comments.map((comment) => (
-            <CommentItem
-              key={comment.id}
-              comment={comment}
-              postId={postId}
-              onDeleted={comment.author.id === viewerId ? changed : undefined}
-            />
-          ))}
-        </ul>
-      )}
-      {query.isFetching && !query.isFetchingNextPage && <Spinner />}
-      {query.hasNextPage && (
-        <OutlineButton onClick={() => void query.fetchNextPage()} disabled={query.isFetchingNextPage} className="self-center">
-          {query.isFetchingNextPage ? 'Loading…' : 'Load more'}
-        </OutlineButton>
-      )}
-      {query.isError && <p className="text-ello-red text-sm">Couldn’t load comments.</p>}
-    </section>
+      <section
+        className={cn('StreamContainer TabListStreamContainer', styles.stream, comments.length === 0 && cn('empty', styles.empty))}
+      >
+        <div className="with-lightbox">
+          <div className={cn('Comments', styles.comments)}>
+            {comments.map((comment) => (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                postId={postId}
+                isOwnComment={comment.author.id === viewer.id}
+                canDelete={comment.author.id === viewer.id || postAuthorId === viewer.id}
+                onReply={onReply}
+                onDeleted={changed}
+              />
+            ))}
+          </div>
+        </div>
+        {query.hasNextPage ? (
+          <div className={styles.paginator}>
+            <button type="button" onClick={() => void query.fetchNextPage()} disabled={query.isFetchingNextPage}>
+              {query.isFetchingNextPage ? 'Loading...' : 'Load More'}
+            </button>
+          </div>
+        ) : null}
+        {query.isError ? (
+          <p role="alert" className={styles.error}>
+            Couldn’t load comments.
+          </p>
+        ) : null}
+      </section>
+    </div>
   )
 }

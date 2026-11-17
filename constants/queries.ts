@@ -69,8 +69,8 @@ export const SEARCH_USERS = `
   }
 `
 
-export const CATEGORIES = `query { allCategories { id name slug level description tileImage ${responsive} } }`
-export const CATEGORY_NAV = `query { categoryNav { id name slug level tileImage ${responsive} } }`
+export const CATEGORIES = `query { allCategories { id name slug level description tileImage ${avatar} } }`
+export const CATEGORY_NAV = `query { categoryNav { id name slug level tileImage ${avatar} } }`
 
 export const PAGE_HEADERS = `
   query($kind: PageHeaderKind!, $slug: String) {

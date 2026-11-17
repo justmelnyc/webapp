@@ -1,0 +1,120 @@
+/* Hint (tooltip) */
+
+.Hint {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  display: none;
+  height: 22px;
+  padding: 0 11px;
+  line-height: 22px;
+  color: #fff;
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: #000;
+  border: 1px solid #000;
+  border-radius: 11px;
+  opacity: 0;
+  transition: opacity 0.2s ease, visibility 0s ease 0.2s, color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .Hint {
+    display: inline-block;
+  }
+
+  a:hover > .Hint,
+  button:hover > .Hint {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.5s, 0s;
+    transition-duration: 0.4s, 0s;
+  }
+}
+
+/* Follow button in a header (RelationshipContainer isInHeader) */
+
+.FollowButton {
+  width: 100px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #00d100;
+  border: 1px solid #00d100;
+  border-radius: 15px;
+  transition: background-color 0.2s var(--ease-ello), border-color 0.2s var(--ease-ello), border-radius 0.2s var(--ease-ello), color 0.2s var(--ease-ello), width 0.2s var(--ease-ello);
+}
+
+.FollowButton.isInHeader {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 0;
+  color: #aaa;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.FollowButton.isInHeader > .SVGIcon {
+  vertical-align: top;
+}
+
+/* FollowButton.js: a followed user's toggle is white, so the check shows on its grey disc. */
+.FollowButton.isInHeader[data-priority='noise'],
+.FollowButton.isInHeader[data-priority='friend'] {
+  color: #fff;
+}
+
+.FollowButton.isInHeader[data-priority='noise'] > .SVGIcon > g:first-child,
+.FollowButton.isInHeader[data-priority='friend'] > .SVGIcon > g:first-child {
+  fill: #aaa;
+  stroke: #aaa;
+}
+
+@media (hover: hover) {
+  .FollowButton.isInHeader:hover {
+    color: #fff;
+    background-color: transparent;
+  }
+
+  .FollowButton.isInHeader:hover > .SVGIcon > g:first-of-type {
+    fill: #535353;
+    stroke: #535353;
+  }
+}
+
+@media (min-width: 40em) and (hover: hover) {
+  .FollowButton.isInHeader {
+    overflow: visible;
+    font-size: 12px;
+  }
+
+  .FollowButton.isInHeader .FollowButtonLabel {
+    position: absolute;
+    top: -25px;
+    left: -50%;
+    height: 22px;
+    padding-right: 11px;
+    padding-left: 11px;
+    line-height: 22px;
+    white-space: nowrap;
+    visibility: hidden;
+    background-color: #000;
+    border-radius: 11px;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0s ease 0.2s;
+  }
+
+  .FollowButton.isInHeader:hover .FollowButtonLabel {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.5s, 0s;
+  }
+}

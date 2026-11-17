@@ -1,0 +1,135 @@
+/* ---- CommentTools (a PostTools footer) ---- */
+
+.tools {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  display: flex;
+  height: 60px;
+  padding: 0;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: transform var(--speed) var(--ease);
+}
+
+.tools :global(.PostTool) {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  transition: transform var(--speed) var(--ease);
+}
+
+.tools :global(.PostTool) > button {
+  padding-right: 8px;
+  padding-left: 4px;
+  color: #aaa;
+  transition: color var(--speed) ease;
+}
+
+@media (min-width: 60em) {
+  .tools :global(.PostTool) > button {
+    padding-right: 12px;
+  }
+}
+
+@media (hover: hover) {
+  .tools :global(.PostTool) button:hover {
+    color: #000;
+  }
+}
+
+.tools :global(.TimeAgoTool) {
+  display: inline-block;
+  color: #aaa;
+  cursor: default;
+}
+
+.tools :global(.MoreTool) > button {
+  padding-right: 0;
+}
+
+.tools .shyTool {
+  position: absolute;
+  right: -40px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--speed) ease;
+}
+
+.tools .shyTool + .shyTool {
+  right: -70px;
+}
+
+.shyTools {
+  position: relative;
+  display: flex;
+}
+
+@media (max-width: 39.9375em) {
+  .tools.isMoreToolActive {
+    transform: translate3d(-60px, 0, 0);
+  }
+
+  .tools.isMoreToolActive.isShyToolSolo {
+    transform: translate3d(-30px, 0, 0);
+  }
+
+  .tools.isMoreToolActive > .shyTools > .shyTool {
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .tools:not(.isMoreToolActive) .shyTool {
+    display: none;
+  }
+}
+
+@media (min-width: 40em) {
+  .tools :global(.MoreTool) {
+    display: none;
+  }
+
+  .tools .shyTool {
+    display: inline-block;
+  }
+
+  .shyTools {
+    transition: margin-left var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+
+  .shyTools::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -20px;
+    width: 30px;
+    content: '';
+  }
+}
+
+@media (min-width: 40em) and (hover: hover) {
+  .shyTools:hover {
+    margin-left: 60px;
+    transform: translate3d(-60px, 0, 0);
+  }
+
+  .shyTools:hover::before {
+    width: 90px;
+  }
+
+  .isShyToolSolo .shyTools:hover {
+    margin-left: 30px;
+    transform: translate3d(-30px, 0, 0);
+  }
+
+  .isShyToolSolo .shyTools:hover::before {
+    width: 60px;
+  }
+
+  .shyTools:hover .shyTool {
+    pointer-events: auto;
+    opacity: 1;
+  }
+}

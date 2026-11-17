@@ -1,40 +1,18 @@
-@import 'tailwindcss';
+/*
+ * Design tokens and base styles, ported 1:1 from the original app:
+ *   legacy/src/styles/jso.js, legacy/src/lib/styles/{properties,base,immutable}.css
+ * Never invent a value: take it from those files or measure it against the running original.
+ *
+ * Conventions:
+ *  - 1 spacing unit = 1px (so `p-10` is 10px, like the original's `p10`).
+ *  - Tailwind's preflight is NOT imported; the original's base layer below is the reset.
+ *  - Breakpoints keep the original's numbers: bp2 = 40em ... bp7 = 152.5em.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
 
-@theme {
-  --color-ink: #000;
-  --color-paper: #fff;
-  --color-mist: #f2f2f2;
-  --color-stone: #e5e5e5;
-  --color-ash: #999;
-  --color-slate: #666;
-  --color-ello-green: #00d100;
-  --color-ello-red: #f00;
-  --font-sans: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
-  --breakpoint-3xl: 120rem;
-}
-
-@layer base {
-  body {
-    @apply bg-paper text-ink antialiased;
-  }
-  a {
-    @apply transition-colors;
-  }
-}
-
-/* Rendered post/comment HTML */
-.rich-text p {
-  @apply mb-3 leading-relaxed;
-}
-.rich-text a {
-  @apply underline decoration-stone underline-offset-2 hover:decoration-ink;
-}
-.rich-text blockquote {
-  @apply border-stone text-slate my-3 border-l-2 pl-4;
-}
-.rich-text ul {
-  @apply mb-3 list-disc pl-6;
-}
-.rich-text ol {
-  @apply mb-3 list-decimal pl-6;
-}
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/elements.css';
+@import './styles/utilities.css';

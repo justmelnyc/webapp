@@ -4,6 +4,7 @@ import { postSchema } from '@/types/post'
 import { PostCard } from './post-card'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
+jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
 
 const post = postSchema.parse(
   gqlPost('p1', {
@@ -17,18 +18,21 @@ describe('PostCard', () => {
   it('Header links to the author profile and the post with a relative time', () => {
     render(<PostCard.Header post={post} />)
     const hrefs = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
-    expect(hrefs.filter((href) => href === '/ada')).toHaveLength(2)
-    expect(screen.getByRole('link', { name: '@ada' })).toHaveAttribute('href', '/ada')
+    expect(hrefs.filter((href) => href === '/ada')).toHaveLength(1)
+    expect(screen.getByRole('link', { name: /@ada/ })).toHaveAttribute('href', '/ada')
     expect(screen.getByRole('link', { name: '5m' })).toHaveAttribute('href', '/ada/post/tokp1')
     expect(screen.getByRole('img', { name: 'ada' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Follow' })).toBeInTheDocument()
   })
 
   it('Footer shows view, comment and love counts and loved state', () => {
     render(<PostCard.Footer post={post} signedIn />)
     expect(screen.getByTitle('Views')).toHaveTextContent('120')
-    expect(screen.getByRole('link')).toHaveTextContent('3')
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/ada/post/tokp1')
-    expect(screen.getByRole('button', { name: 'Unlove' })).toHaveTextContent('7')
+    const comments = screen.getByRole('link', { name: 'Comments' })
+    expect(comments).toHaveTextContent('3')
+    expect(comments).toHaveAttribute('href', '/ada/post/tokp1')
+    expect(screen.getByRole('button', { name: 'Unlove' })).toBeInTheDocument()
+    expect(screen.getByText('7')).toBeInTheDocument()
   })
 
   it('composes Root, Body and className', () => {
@@ -37,7 +41,7 @@ describe('PostCard', () => {
         <PostCard.Body className="extra">content</PostCard.Body>
       </PostCard>,
     )
-    expect(container.querySelector('article')).toHaveClass('mb-10', 'flex')
+    expect(container.querySelector('article')).toHaveClass('mb-10', 'Post')
     expect(screen.getByText('content')).toHaveClass('extra')
   })
 })

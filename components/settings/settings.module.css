@@ -1,0 +1,122 @@
+/*
+ * Port of legacy/src/components/views/Settings.css plus the Settings pieces that the original styled in
+ * glamor: Uploader.js, TreeButton.js, TreePanel.js, Preference.js, ToggleControl.js, SettingsLink.
+ */
+.settings {
+  position: relative;
+  max-width: 1440px;
+  padding: 85px 10px 60px;
+  margin: 0 auto;
+}
+
+.coverPicker {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.body {
+  position: relative;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.right {
+  padding-left: 0;
+}
+
+.header {
+  margin-top: 20px;
+}
+
+.heading {
+  height: 40px;
+  font-family: var(--font-black);
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.header > p {
+  max-width: 480px;
+  margin: 0 0 18px;
+  color: #aaa;
+}
+
+.links {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: -15px;
+}
+
+.links > * {
+  margin-left: 15px;
+}
+
+.link {
+  display: inline-block;
+  min-width: 160px;
+  height: 40px;
+  padding: 0 10px;
+  font-size: 14px;
+  line-height: 40px;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  border: 1px solid #000;
+  border-radius: 5px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: #fff;
+    background-color: #00d100;
+    border-color: #00d100;
+  }
+}
+
+/* The credentials/Save area collapses to nothing until the form has changes to save. */
+.actions {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  text-align: right;
+  transition: height var(--speed) ease;
+}
+
+.actionsOpen {
+  height: 60px;
+}
+
+.preferences {
+  margin-top: 50px;
+}
+
+@media (min-width: 40em) {
+  .heading {
+    font-size: 24px;
+  }
+
+  .settings {
+    padding-top: 80px;
+  }
+
+  .settings {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .coverPicker {
+    margin-bottom: 85px;
+  }
+
+  .right {
+    padding-left: 240px;
+  }
+}
+
+@media (min-width: 85em) {
+  .settings {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}

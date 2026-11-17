@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import { AuthView } from '@/components/auth/auth-view'
 import { LoginForm } from '@/components/auth/login-form'
 import { getSession } from '@/lib/session'
+import { getPageHeader } from '@/services/content'
 
 export const metadata: Metadata = { title: 'Log in' }
 
@@ -10,19 +12,17 @@ interface Props {
 }
 
 const EnterPage = async ({ searchParams }: Props) => {
-  const [{ next }, session] = await Promise.all([searchParams, getSession()])
+  const [{ next }, session, header] = await Promise.all([
+    searchParams,
+    getSession(),
+    getPageHeader('AUTHENTICATION').catch(() => null),
+  ])
   if (session) redirect('/')
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-8 py-16">
-      <div>
-        <h1 className="text-4xl font-light">Welcome back.</h1>
-        <p className="text-slate mt-2 text-sm">
-          Mock accounts: <code>ada@example.com</code>, <code>grace</code>, <code>mara</code>… with any password of 8+
-          characters.
-        </p>
-      </div>
+    <AuthView header={header}>
+      <h1>Welcome back.</h1>
       <LoginForm next={next} />
-    </div>
+    </AuthView>
   )
 }
 

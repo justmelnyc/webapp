@@ -1,0 +1,180 @@
+/*
+ * Ported from legacy/src/components/users/UserRenderables.css (.UserProfileCard, .Users.asGrid),
+ * assets/BackgroundImage.js (.inUserProfileCard), assets/Avatar.js (.inUserProfileCard) and the
+ * .inUserProfileCard rules of users/UserParts.css.
+ */
+.grid {
+  /* Users.asGrid */
+  display: block;
+}
+
+.card {
+  position: relative;
+  height: 260px;
+  padding: 20px;
+  margin-top: 10px;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  background-color: transparent;
+  border-radius: 5px;
+}
+
+.avatar {
+  z-index: 3;
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+}
+
+.buttons {
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+/* Phones: no dividers, no bio (the original skips the info cell when isMobile) */
+@media (max-width: 39.9375em) {
+  .card :global(.UserCell) + :global(.UserCell) {
+    border: 0;
+  }
+
+  .card :global(.UserStatsCell) {
+    margin-top: -20px;
+  }
+
+  .card :global(.UserInfoCell) {
+    display: none;
+  }
+}
+
+/* BackgroundImage.inUserProfileCard.hasOverlay6.isLink */
+.background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  height: 260px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
+  background-size: cover;
+}
+
+.background::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: '';
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .background:hover::before {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  background: transparent no-repeat 50% 50%;
+  background-size: cover;
+}
+
+@media (min-width: 40em) {
+  .grid {
+    margin-left: -20px;
+  }
+
+  .card {
+    display: inline-block;
+    width: calc(50% - 20px);
+    height: 540px;
+    margin-top: 20px;
+    margin-left: 20px;
+    vertical-align: top;
+  }
+
+  .background {
+    min-height: 540px;
+  }
+
+  .buttons {
+    margin-bottom: 35px;
+  }
+
+  .card :global(.UserCell) {
+    text-align: left;
+  }
+}
+
+@media (min-width: 60em) {
+  .card {
+    width: calc(33.33333% - 20px);
+  }
+
+  .avatar {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+@media (min-width: 85em) {
+  .grid {
+    margin-left: -40px;
+  }
+
+  .card {
+    width: calc(25% - 40px);
+    margin-top: 40px;
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .card {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 130em) {
+  .card {
+    width: calc(16.66666% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .card {
+    width: calc(14.28571% - 40px);
+  }
+}
+
+/* StreamContainer.css */
+.container {
+  padding: 10px;
+}
+
+@media (min-width: 40em) {
+  .container {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 85em) {
+  .container {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}

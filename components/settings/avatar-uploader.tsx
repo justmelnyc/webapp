@@ -1,28 +1,35 @@
 'use client'
 
+import { Uploader } from '@/components/settings/uploader'
 import { Avatar } from '@/components/ui/avatar'
-import { Spinner } from '@/components/ui/spinner'
 import { useImageUpload } from '@/hooks/use-image-upload'
-import { ImagePicker } from './image-picker'
+import { cn } from '@/utils/cn'
+import uploaderStyles from './settings-uploader.module.css'
 
 interface AvatarUploaderProps {
   src: string | null | undefined
   name: string
 }
 
+/** `.SettingsAvatarPicker`: the large avatar (120px, 180px from 40em) with its Uploader. */
 export const AvatarUploader = ({ src, name }: AvatarUploaderProps) => {
   const { preview, busy, upload } = useImageUpload('avatar')
+  const shown = preview ?? src
   return (
-    <ImagePicker
-      onPick={upload}
-      label="Change avatar"
-      disabled={busy}
-      className="group border-paper relative rounded-full border-4"
-    >
-      <Avatar src={preview ?? src} name={name} size={120} />
-      <span className="bg-ink/50 text-paper absolute inset-0 flex items-center justify-center rounded-full text-xs opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-        {busy ? <Spinner /> : 'Change'}
-      </span>
-    </ImagePicker>
+    <div className={cn('SettingsAvatarPicker', uploaderStyles.avatarPicker)}>
+      <Uploader
+        variant="avatar"
+        title="Upload Avatar"
+        lines={['360 x 360', 'Animated Gifs work too', 'Drag & Drop']}
+        onPick={(file) => void upload(file)}
+        disabled={busy}
+        isBlank={!shown}
+      />
+      <Avatar
+        src={shown}
+        name={name}
+        className={cn('isLarge', 'absolute inset-x-0 top-0 z-[1] size-120 bp2:size-180', busy && uploaderStyles.requesting)}
+      />
+    </div>
   )
 }

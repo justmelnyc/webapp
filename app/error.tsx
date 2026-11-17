@@ -1,20 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { ErrorState5xx, ErrorView } from '@/components/post-detail/error-state'
 
-interface Props {
-  error: Error & { digest?: string }
-  reset: () => void
-}
-
-const ErrorPage = ({ error, reset }: Props) => (
-  <div className="py-24 text-center">
-    <h1 className="text-4xl font-light">Something went wrong</h1>
-    <p className="text-slate mx-auto mt-3 max-w-lg">{error.message}</p>
-    <Button onClick={reset} className="mt-6">
-      Try again
-    </Button>
-  </div>
+/** The original's error view has no retry button, so the route's `error` / `reset` props go unused. */
+const ErrorPage = () => (
+  <ErrorView>
+    <ErrorState5xx />
+  </ErrorView>
 )
 
 export default ErrorPage

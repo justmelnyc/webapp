@@ -1,11 +1,11 @@
-import { UserList } from '@/components/profile/user-list'
-import { getUserList } from '@/services/users'
+import { getFollowCards } from '@/components/profile/user-card-data'
+import { UserGrid } from '@/components/profile/user-grid'
+import { getSession } from '@/lib/session'
 
 const FollowersPage = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params
-  const users = await getUserList(decodeURIComponent(username), 'followers')
-  const items = users.map(({ shortBio, formattedShortBio, ...user }) => ({ ...user, bio: formattedShortBio ?? shortBio }))
-  return <UserList users={items} emptyMessage="No followers yet." />
+  const [users, session] = await Promise.all([getFollowCards(decodeURIComponent(username), 'followers'), getSession()])
+  return <UserGrid users={users} signedIn={!!session} />
 }
 
 export default FollowersPage

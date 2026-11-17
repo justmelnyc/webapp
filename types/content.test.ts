@@ -5,7 +5,7 @@ describe('content schemas', () => {
   it('parses a mock category', () => {
     const parsed = categorySchema.parse(category())
     expect(parsed.slug).toBe('art')
-    expect(parsed.tileImage?.optimized?.metadata?.width).toBe(300)
+    expect(parsed.tileImage?.large?.metadata?.width).toBe(640)
   })
 
   it('accepts a category without a tile image', () => {

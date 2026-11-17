@@ -1,13 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
-import { CommentSection } from '@/components/comments/comment-section'
-import { WatchButton } from '@/components/post-detail/watch-button'
-import { LoveButton } from '@/components/posts/love-button'
-import { PostBody } from '@/components/posts/post-body'
-import { PostCard } from '@/components/posts/post-card'
+import { PostDetail } from '@/components/post-detail/post-detail'
 import { NotFoundError } from '@/lib/errors'
-import { getSession } from '@/lib/session'
+import { getViewer } from '@/services/viewer'
+import { avatarUrl } from '@/utils/images'
 import { getComments, getPost } from '@/services/posts'
 import type { Post } from '@/types/post'
 
@@ -40,38 +37,15 @@ export const generateMetadata = async ({ params }: PostPageProps): Promise<Metad
 
 const PostPage = async ({ params }: PostPageProps) => {
   const { username, token } = await params
-  const [post, session] = await Promise.all([loadPost(username, token), getSession()])
-  const initialComments = await getComments(post.id)
-  const signedIn = session !== null
+  const [post, viewer] = await Promise.all([loadPost(username, token), getViewer()])
+  const initialComments = viewer ? await getComments(post.id) : { comments: [], next: null, isLastPage: true }
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 py-8">
-      <PostCard>
-        <PostCard.Header post={post} viewerId={session?.id ?? null} />
-        <PostCard.Body className="text-base">
-          <PostBody regions={post.content} assets={post.assets} loading="eager" />
-        </PostCard.Body>
-        <footer className="text-ash flex items-center gap-5 text-sm">
-          <span title="Views">👁 {post.postStats.viewsCount}</span>
-          <span title="Comments">💬 {post.postStats.commentsCount}</span>
-          <LoveButton
-            postId={post.id}
-            loved={post.currentUserState.loved}
-            count={post.postStats.lovesCount}
-            signedIn={signedIn}
-          />
-          <span className="ml-auto">
-            <WatchButton postId={post.id} watching={post.currentUserState.watching} signedIn={signedIn} />
-          </span>
-        </footer>
-      </PostCard>
-      <CommentSection
-        postId={post.id}
-        viewerId={session?.id ?? null}
-        loginNext={`/${post.author.username}/post/${post.token}`}
-        initialPage={initialComments}
-      />
-    </main>
+    <PostDetail
+      post={post}
+      viewer={viewer ? { id: viewer.id, username: viewer.username, avatar: avatarUrl(viewer.avatar, 'regular') } : null}
+      initialComments={initialComments}
+    />
   )
 }
 

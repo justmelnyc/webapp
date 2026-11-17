@@ -1,14 +1,15 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { PostBody } from '@/components/posts/post-body'
-import { PostCard } from '@/components/posts/post-card'
-import { Spinner } from '@/components/ui/spinner'
-import { TextButton } from '@/components/ui/button'
+import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
+import { PostPaginator } from '@/components/streams/post-paginator'
+import { PostsAsGrid, PostsAsList } from '@/components/streams/post-columns'
+import { useColumnCount } from '@/components/streams/use-column-count'
 import { useInView } from '@/hooks/use-in-view'
 import { fetchStreamPage } from '@/lib/client/streams'
 import type { PostPage, StreamSpec } from '@/types/stream'
+import './stream.css'
 
 interface PostStreamProps {
   spec: StreamSpec
@@ -20,8 +21,10 @@ interface PostStreamProps {
   emptyMessage?: string
 }
 
-/** A masonry feed that loads further pages as you scroll. */
+/** The original's StreamContainer: posts as columns (or a list) that load further pages on scroll. */
 export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage = 'Nothing here yet.' }: PostStreamProps) => {
+  const mode = useLayoutModeStore((state) => state.mode)
+  const columnCount = useColumnCount()
   const query = useInfiniteQuery({
     queryKey: ['stream', spec],
     queryFn: ({ pageParam }) => fetchStreamPage(spec, pageParam),
@@ -29,37 +32,51 @@ export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage
     getNextPageParam: (last) => (last.isLastPage ? undefined : last.next),
     initialData: { pages: [initialPage], pageParams: [null] },
   })
-
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = query
+  // Like the original, further pages load once the reader scrolls (the 'Load More' pill is the fallback).
+  const [hasScrolled, setHasScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = (): void => setHasScrolled(true)
+    window.addEventListener('scroll', onScroll, { once: true, passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
   const loadMore = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
-  const sentinel = useInView(loadMore)
+  const loadOnScroll = useCallback(() => {
+    if (hasScrolled) loadMore()
+  }, [hasScrolled, loadMore])
+  const sentinel = useInView(loadOnScroll)
 
   const seen = new Set<string>()
   const posts = query.data.pages
     .flatMap((page) => page.posts)
     .filter((post) => (seen.has(post.id) ? false : (seen.add(post.id), true)))
 
-  if (posts.length === 0) return <p className="text-ash py-20 text-center">{emptyMessage}</p>
+  // On a profile's posts tab the whole page is one person, so the original drops the author header.
+  const showHeader = spec.type !== 'user'
 
+  if (posts.length === 0) {
+    return (
+      <section className="StreamContainer empty">
+        <p>{emptyMessage}</p>
+      </section>
+    )
+  }
   return (
-    <>
-      <div className="columns-1 gap-8 md:columns-2 xl:columns-3">
-        {posts.map((post, index) => (
-          <PostCard key={post.id} className="mb-10 break-inside-avoid">
-            <PostCard.Header post={post} viewerId={viewerId} />
-            <PostCard.Body>
-              <PostBody regions={post.summary} assets={post.assets} loading={index < 3 ? 'eager' : 'lazy'} />
-            </PostCard.Body>
-            <PostCard.Footer post={post} signedIn={signedIn} />
-          </PostCard>
-        ))}
-      </div>
-      <div ref={sentinel} className="flex min-h-12 items-center justify-center py-6">
-        {isFetchingNextPage && <Spinner />}
-        {query.isError && <TextButton onClick={() => void fetchNextPage()}>Couldn’t load more. Try again</TextButton>}
-      </div>
-    </>
+    <section className="StreamContainer">
+      {mode === 'grid' ? (
+        <PostsAsGrid posts={posts} columnCount={columnCount} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} />
+      ) : (
+        <PostsAsList posts={posts} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} />
+      )}
+      {hasNextPage && <PostPaginator isBusy={isFetchingNextPage} onLoadMore={loadMore} />}
+      <div ref={sentinel} aria-hidden />
+      {query.isError && (
+        <p role="alert" className="mt-10 text-center">
+          Couldn’t load more. <button type="button" onClick={() => void fetchNextPage()}>Try again</button>
+        </p>
+      )}
+    </section>
   )
 }

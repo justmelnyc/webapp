@@ -1,4 +1,4 @@
-import { responsive } from './media'
+import { responsive, version } from './media'
 import { gqlAuthor, gqlPost } from './posts'
 
 /** Mirrors mock/content.js `categories` entries. */
@@ -12,7 +12,12 @@ export const category = () => ({
   isCreatorType: false,
   description: 'Art on mock Ello',
   brandAccount: null,
-  tileImage: responsive('https://picsum.photos/seed/cat-Art/300/300', 300, 300),
+  tileImage: {
+    small: version('https://picsum.photos/seed/cat-Art/160/160', 160, 160),
+    regular: version('https://picsum.photos/seed/cat-Art/320/320', 320, 320),
+    large: version('https://picsum.photos/seed/cat-Art/640/640', 640, 640),
+    original: version('https://picsum.photos/seed/cat-Art/640/640', 640, 640),
+  },
 })
 
 /** Mirrors mock/content.js `pageHeader`. */

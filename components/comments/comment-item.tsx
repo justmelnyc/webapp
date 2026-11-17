@@ -1,57 +1,103 @@
 'use client'
 
 import Link from 'next/link'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { deleteComment } from '@/actions/comment-actions'
-import { PostBody } from '@/components/posts/post-body'
+import { ChevronIcon, FlagIcon, ReplyIcon, XBoxIcon } from '@/components/icons'
+import { Hint } from '@/components/post-detail/hint'
 import { Avatar } from '@/components/ui/avatar'
-import { TextButton } from '@/components/ui/button'
 import { toast } from '@/stores/toast-store'
 import type { Comment } from '@/types/post'
+import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
-import { timeAgo } from '@/utils/time'
+import { timeAgoInWords } from '@/components/post-detail/time-ago-in-words'
+import toolStyles from './comment-tools.module.css'
+import styles from './comments.module.css'
 
 interface CommentItemProps {
   comment: Comment
   postId: string
-  /** Only set when the viewer wrote this comment. */
-  onDeleted?: () => void
+  isOwnComment: boolean
+  /** The viewer may delete it: their own comment, or a comment on their own post. */
+  canDelete: boolean
+  onReply: (username: string) => void
+  onDeleted: () => void
 }
 
-export const CommentItem = ({ comment, postId, onDeleted }: CommentItemProps) => {
+/** One `.Comment` for a signed-in viewer: header, body and the CommentTools footer. */
+export const CommentItem = ({ comment, postId, isOwnComment, canDelete, onReply, onDeleted }: CommentItemProps) => {
   const [pending, startTransition] = useTransition()
+  const [isMoreToolActive, setMoreToolActive] = useState(false)
   const { author } = comment
+  const isShyToolSolo = !canDelete
 
-  const remove = () => {
+  const remove = (): void => {
     if (!window.confirm('Delete this comment?')) return
     startTransition(async () => {
       const result = await deleteComment(postId, comment.id)
       if (!result.ok) return toast.error(result.error)
-      onDeleted?.()
+      onDeleted()
     })
   }
 
   return (
-    <li className={pending ? 'flex gap-3 opacity-50' : 'flex gap-3'}>
-      <Link href={`/${author.username}`}>
-        <Avatar src={avatarUrl(author.avatar, 'regular')} name={author.username} size={36} />
-      </Link>
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <div className="flex items-center gap-3 text-sm">
-          <Link href={`/${author.username}`} className="text-slate hover:text-ink">
-            @{author.username}
+    <div className={cn('Comment', styles.comment)} style={pending ? { opacity: 0.5 } : undefined}>
+      <header className={cn('CommentHeader', styles.header)}>
+        <div className={cn('CommentHeaderAuthor', styles.author)}>
+          <Link className={cn('CommentHeaderLink', styles.link)} href={`/${author.username}`}>
+            <Avatar src={avatarUrl(author.avatar, 'regular')} name={author.username} />
+            <span className="CommentUsername DraggableUsername">{`@${author.username}`}</span>
           </Link>
-          <span className="text-ash text-xs">{timeAgo(comment.createdAt)}</span>
-          {onDeleted && (
-            <TextButton onClick={remove} disabled={pending} className="ml-auto text-xs" aria-label="Delete comment">
-              Delete
-            </TextButton>
-          )}
         </div>
-        <div className="text-[15px]">
-          <PostBody regions={comment.content} />
-        </div>
+      </header>
+      <div className={cn('CommentBody', styles.body)}>
+        {comment.content.map((region, index) =>
+          region.kind === 'text' ? (
+            <div key={index} className="TextRegion">
+              <div className="RegionContent" dangerouslySetInnerHTML={{ __html: region.data }} />
+            </div>
+          ) : null,
+        )}
       </div>
-    </li>
+      <footer
+        className={cn('PostTools CommentTools', toolStyles.tools, isMoreToolActive && toolStyles.isMoreToolActive, isShyToolSolo && toolStyles.isShyToolSolo)}
+      >
+        {!isOwnComment ? (
+          <span className="PostTool ReplyTool">
+            <button type="button" onClick={() => onReply(author.username)}>
+              <ReplyIcon />
+              <Hint>Reply</Hint>
+            </button>
+          </span>
+        ) : null}
+        <span className="PostTool TimeAgoTool">
+          <span className="PostToolValue">{timeAgoInWords(comment.createdAt)}</span>
+        </span>
+        <div className={toolStyles.shyTools}>
+          <span className="PostTool MoreTool">
+            <button type="button" onClick={() => setMoreToolActive((active) => !active)}>
+              <ChevronIcon />
+              <Hint>More</Hint>
+            </button>
+          </span>
+          {!isOwnComment ? (
+            <span className={cn('PostTool FlagTool', toolStyles.shyTool)}>
+              <button type="button" onClick={() => toast.info('Reporting is not available yet')}>
+                <FlagIcon />
+                <Hint>Flag</Hint>
+              </button>
+            </span>
+          ) : null}
+          {canDelete ? (
+            <span className={cn('PostTool DeleteTool', toolStyles.shyTool)}>
+              <button type="button" onClick={remove} disabled={pending} aria-label="Delete comment">
+                <XBoxIcon />
+                <Hint>Delete</Hint>
+              </button>
+            </span>
+          ) : null}
+        </div>
+      </footer>
+    </div>
   )
 }

@@ -1,0 +1,138 @@
+/* Port of PostActionBar.js styles (post version, not comment). */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 40px;
+  margin-top: 10px;
+  line-height: 40px;
+}
+
+.bar :global(.category-post-selector) {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.left button {
+  margin-right: 10px;
+}
+
+.left button:last-child {
+  margin-right: 0;
+}
+
+.right button + button {
+  margin-left: 10px;
+}
+
+.right button:first-child {
+  margin-left: 0;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  line-height: 40px;
+  color: #fff;
+  white-space: nowrap;
+  background-color: #000;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease, width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.button:disabled {
+  pointer-events: none;
+  background-color: #aaa;
+}
+
+.button:hover {
+  background-color: #6a6a6a;
+}
+
+.buyLinked {
+  background-color: #00d100;
+}
+
+.submit {
+  width: auto;
+  min-width: 120px;
+  padding: 0 20px;
+  background-color: #00d100;
+}
+
+.submit:hover {
+  background-color: #02b302;
+}
+
+.submit:disabled {
+  background-color: #aaa;
+}
+
+.label {
+  display: none;
+  margin: 0;
+}
+
+.submit .label {
+  display: inline-block;
+}
+
+.submit .label + svg {
+  transform: scale(1.2);
+}
+
+.cancel {
+  width: auto;
+  padding: 0 10px;
+  color: #aaa;
+  background: transparent;
+}
+
+.cancel:hover {
+  color: #6a6a6a;
+  background: transparent;
+}
+
+.cancelIcon {
+  composes: button;
+}
+
+@media (min-width: 20.0625em) {
+  .left .cancelIcon {
+    display: none;
+  }
+}
+
+@media (max-width: 20em) {
+  .right .cancel {
+    display: none;
+  }
+}
+
+@media (min-width: 40em) {
+  .cancel {
+    padding-left: 0;
+  }
+}
+
+@media (min-width: 60em) {
+  .button {
+    width: auto;
+    padding: 0 20px;
+  }
+
+  .label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .bar {
+    height: auto;
+  }
+}

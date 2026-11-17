@@ -1,0 +1,35 @@
+/* Port of HeroRenderables.js `Hero` wrapper (heroStyle): offsets the hero below the fixed navbar */
+.frame {
+  padding-top: 85px;
+  background-color: #fff;
+}
+
+.discover {
+  padding-top: 160px;
+}
+
+@media (max-width: 39.9375em) {
+  :global(.isLoggedOut) .frame {
+    padding-top: 80px;
+  }
+
+  .discover {
+    padding-top: 150px !important;
+  }
+}
+
+@media (max-width: 23.375em) {
+  .discover {
+    padding-top: 130px !important;
+  }
+}
+
+@media (min-width: 40em) {
+  .frame {
+    padding-top: 80px;
+  }
+
+  .discover {
+    padding-top: 160px !important;
+  }
+}

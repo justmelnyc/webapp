@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { responsiveImageSchema } from './image'
+import { avatarSchema, responsiveImageSchema } from './image'
 import { postSchema } from './post'
 import { authorSchema } from './user'
 
@@ -9,7 +9,8 @@ export const categorySchema = z.object({
   slug: z.string(),
   level: z.string().nullish(),
   description: z.string().nullish(),
-  tileImage: responsiveImageSchema.nullish(),
+  /** Tshirt sizes (small / regular / large / original), like avatars. */
+  tileImage: avatarSchema.nullish(),
 })
 
 export const pageHeaderSchema = z.object({

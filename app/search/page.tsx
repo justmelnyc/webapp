@@ -1,37 +1,31 @@
-import { UserList } from '@/components/profile/user-list'
-import { searchUsers } from '@/services/users'
+import { SearchControl } from '@/components/profile/search-control'
+import { searchUserCards } from '@/components/profile/user-card-data'
+import { UserGrid } from '@/components/profile/user-grid'
+import { getSession } from '@/lib/session'
+import styles from '@/components/profile/search-control.module.css'
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string | string[] }>
+  searchParams: Promise<{ q?: string | string[]; terms?: string | string[] }>
 }
 
+const MIN_TERMS = 2
+const first = (value: string | string[] | undefined): string => (Array.isArray(value) ? value[0] : value)?.trim() ?? ''
+
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const { q } = await searchParams
-  const query = (Array.isArray(q) ? q[0] : q)?.trim() ?? ''
-  const results = query ? await searchUsers(query) : []
-  const items = results.map(({ formattedShortBio, ...user }) => ({ ...user, bio: formattedShortBio }))
+  const params = await searchParams
+  const query = first(params.q) || first(params.terms)
+  const searching = query.length >= MIN_TERMS
+  const [users, session] = await Promise.all([searching ? searchUserCards(query) : [], getSession()])
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-medium">Search people</h1>
-      <form action="/search" method="get" role="search" className="flex gap-2">
-        <input
-          type="search"
-          name="q"
-          defaultValue={query}
-          placeholder="Search by name or username"
-          aria-label="Search people"
-          className="border-stone focus:border-ink min-w-0 flex-1 rounded-sm border px-3 py-2 outline-none"
-        />
-        <button type="submit" className="bg-ink text-paper rounded-sm px-4 py-2 text-sm font-medium">
-          Search
-        </button>
-      </form>
-      {!query ? (
-        <p className="text-ash">Type a name or username to find people.</p>
-      ) : (
-        <UserList users={items} emptyMessage={`No people found for "${query}".`} />
-      )}
+    <div className={`Search ${styles.view}`}>
+      <SearchControl query={query} />
+      {searching && users.length === 0 ? (
+        <section className="StreamContainer empty">
+          <div className={`ZeroState ${styles.empty}`}>Sorry, no results found.</div>
+        </section>
+      ) : null}
+      {users.length > 0 ? <UserGrid users={users} signedIn={!!session} /> : null}
     </div>
   )
 }

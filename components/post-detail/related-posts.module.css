@@ -1,0 +1,103 @@
+/* The related posts section (StreamContainer + postsAsRelated + relatedPostsStyle). */
+
+/* ---- related posts (StreamContainer + postsAsRelated) ---- */
+
+.related {
+  padding: 10px;
+}
+
+.related :global(.Posts) {
+  margin-left: -20px;
+}
+
+.relatedTitle {
+  margin: 20px;
+  font-size: 18px;
+  color: #aaa;
+}
+
+.column {
+  display: inline-block;
+  width: calc(50% - 20px);
+  margin-left: 20px;
+  vertical-align: top;
+}
+
+.column:nth-of-type(n + 3) {
+  display: none;
+}
+
+@media (min-width: 40em) {
+  .related {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 60em) {
+  .column:nth-of-type(3) {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .column:nth-of-type(4) {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 130em) {
+  .column:nth-of-type(5) {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 152.5em) {
+  .column:nth-of-type(6) {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 85em) {
+  .related {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+
+  .related :global(.Posts) {
+    margin-left: -40px;
+  }
+
+  .relatedTitle {
+    margin-left: 40px;
+  }
+
+  .column {
+    width: calc(33.33333% - 40px);
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .column {
+    width: calc(25% - 40px);
+  }
+}
+
+@media (min-width: 130em) {
+  .column {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .column {
+    width: calc(16.66666% - 40px);
+  }
+}
+
+/* The same widths below 85em (relatedPostsStyle). */
+@media (min-width: 60em) and (max-width: 84.9375em) {
+  .column {
+    width: calc(50% - 20px);
+  }
+}

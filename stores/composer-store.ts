@@ -32,6 +32,8 @@ interface ComposerState {
   removeBlock: (id: string) => void
   moveBlock: (id: string, direction: -1 | 1) => void
   toggleCategory: (id: string) => void
+  /** The omnibar's category selector is single-choice; `null` clears it. */
+  setCategory: (id: string | null) => void
   setSubmitting: (value: boolean) => void
 }
 
@@ -95,6 +97,7 @@ export const useComposerStore = create<ComposerState>((set, get) => ({
     set((s) => ({
       categoryIds: s.categoryIds.includes(id) ? s.categoryIds.filter((c) => c !== id) : [...s.categoryIds, id],
     })),
+  setCategory: (id) => set({ categoryIds: id ? [id] : [] }),
   setSubmitting: (isSubmitting) => set({ isSubmitting }),
 }))
 
