@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useOptimistic, useTransition } from 'react'
 import { setLoved } from '@/actions/post-actions'
 import { BubbleIcon, HeartIcon, RepostIcon, ShareIcon } from '@/components/icons'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './editorial-tools.module.css'
@@ -28,9 +29,10 @@ const copyLink = async (path: string): Promise<void> => {
 export const EditorialTools = ({ postId, postPath, loved, signedIn }: EditorialToolsProps) => {
   const [isLoved, setOptimistic] = useOptimistic<boolean, boolean>(loved, (_, next) => next)
   const [pending, startTransition] = useTransition()
+  const registration = useRegistrationDialog()
 
   const toggleLove = (): void => {
-    if (!signedIn) return toast.info('Log in to love posts')
+    if (!signedIn) return registration.open('editorial')
     startTransition(async () => {
       const next = !isLoved
       setOptimistic(next)

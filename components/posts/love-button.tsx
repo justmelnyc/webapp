@@ -5,6 +5,7 @@ import { setLoved } from '@/actions/post-actions'
 import { HeartIcon } from '@/components/icons'
 import { Hint } from '@/components/posts/hint'
 import { numberToHuman } from '@/components/posts/number-to-human'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 
@@ -23,13 +24,17 @@ interface LoveState {
 
 /** The original's `LoveTool`: heart button plus the love count. */
 export const LoveButton = ({ postId, loved, count, signedIn }: LoveButtonProps) => {
-  const [state, setOptimistic] = useOptimistic<LoveState, boolean>({ loved, count }, (current, next) => ({
-    loved: next,
-    count: current.count + (next ? 1 : -1),
-  }))
+  const [state, setOptimistic] = useOptimistic<LoveState, boolean>(
+    { loved, count },
+    (current, next) => ({
+      loved: next,
+      count: current.count + (next ? 1 : -1),
+    }),
+  )
   const [pending, startTransition] = useTransition()
+  const registration = useRegistrationDialog()
   const toggle = (): void => {
-    if (!signedIn) return void toast.info('Log in to love posts')
+    if (!signedIn) return registration.open('post-tools')
     startTransition(async () => {
       const next = !state.loved
       setOptimistic(next)
@@ -50,8 +55,16 @@ export const LoveButton = ({ postId, loved, count, signedIn }: LoveButtonProps) 
         <HeartIcon />
         <Hint>Love</Hint>
       </button>
-      <button type="button" tabIndex={-1} aria-hidden onClick={toggle} className={cn('PostToolDrawerButton', state.loved && 'isActive')}>
-        <span className={cn('PostToolValue', state.count < 1 && 'isZero')}>{numberToHuman(state.count, false)}</span>
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden
+        onClick={toggle}
+        className={cn('PostToolDrawerButton', state.loved && 'isActive')}
+      >
+        <span className={cn('PostToolValue', state.count < 1 && 'isZero')}>
+          {numberToHuman(state.count, false)}
+        </span>
       </button>
     </span>
   )

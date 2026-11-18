@@ -1,11 +1,30 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render as baseRender, screen, waitFor } from '@testing-library/react'
+import type { ReactElement } from 'react'
 import userEvent from '@testing-library/user-event'
 import { setLoved } from '@/actions/post-actions'
+import { RegistrationDialogProvider } from '@/components/auth/registration-dialog'
 import { useToastStore } from '@/stores/toast-store'
 import type { ActionResult } from '@/types/action'
+import type { PageHeader } from '@/types/content'
 import { LoveButton } from './love-button'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
+jest.mock('next/navigation', () => ({
+  usePathname: () => '/',
+  useRouter: () => ({ replace: jest.fn(), refresh: jest.fn() }),
+}))
+jest.mock('@/actions/signup-actions', () => ({ checkSignupEmail: jest.fn(), signup: jest.fn() }))
+jest.mock('@/actions/account-actions', () => ({ checkAvailability: jest.fn() }))
+
+// The logged-out promo header (the original's `authPromo`) is what lets the sign-up dialog open.
+const promo = {
+  id: '1',
+  kind: 'AUTHENTICATION',
+  image: { hdpi: { url: 'http://x/y.jpg' } },
+  user: { id: '1', username: 'ada', avatar: null },
+} as unknown as PageHeader
+const render = (ui: ReactElement) =>
+  baseRender(<RegistrationDialogProvider header={promo}>{ui}</RegistrationDialogProvider>)
 
 const setLovedMock = jest.mocked(setLoved)
 
@@ -71,16 +90,19 @@ describe('LoveButton', () => {
 
     await act(async () => pending.resolve({ ok: false, error: 'Nope' }))
 
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Love' })).toHaveAttribute('aria-pressed', 'false'))
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Love' })).toHaveAttribute('aria-pressed', 'false'),
+    )
     expect(screen.getByText('2')).toBeInTheDocument()
     expect(useToastStore.getState().toasts).toMatchObject([{ kind: 'error', message: 'Nope' }])
   })
 
-  it('prompts logged-out viewers instead of calling the action', async () => {
+  it('opens the sign-up dialog for logged-out viewers instead of calling the action', async () => {
     render(<LoveButton postId="p1" loved={false} count={2} signedIn={false} />)
     await userEvent.click(screen.getByRole('button', { name: 'Love' }))
     expect(setLovedMock).not.toHaveBeenCalled()
-    expect(useToastStore.getState().toasts).toMatchObject([{ kind: 'info', message: 'Log in to love posts' }])
+    expect(screen.getByRole('dialog', { name: 'Sign up' })).toBeInTheDocument()
+    expect(useToastStore.getState().toasts).toHaveLength(0)
     expect(screen.getByRole('button', { name: 'Love' })).toHaveAttribute('aria-pressed', 'false')
   })
 })

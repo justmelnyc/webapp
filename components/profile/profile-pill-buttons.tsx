@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { messageUser } from '@/actions/moderation-actions'
 import { MessageDialog } from '@/components/moderation/message-dialog'
-import { toast } from '@/stores/toast-store'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import type { MessageKind } from '@/lib/schemas/moderation'
 import styles from './profile-pill-buttons.module.css'
 
@@ -19,11 +19,18 @@ interface ProfilePillButtonsProps {
 const TITLES: Record<MessageKind, string> = { collaborate: 'Collaborate with', hire_me: 'Hire' }
 
 /** The Collab and Hire pills of `UserProfileButtons` (shown for people who are open to both), with their message dialogs. */
-export const ProfilePillButtons = ({ userId, name, signedIn, isCollaborateable, isHireable }: ProfilePillButtonsProps) => {
+export const ProfilePillButtons = ({
+  userId,
+  name,
+  signedIn,
+  isCollaborateable,
+  isHireable,
+}: ProfilePillButtonsProps) => {
   const [kind, setKind] = useState<MessageKind | null>(null)
+  const registration = useRegistrationDialog()
 
   const open = (next: MessageKind): void => {
-    if (!signedIn) return void toast.info('Log in to send a message')
+    if (!signedIn) return registration.open('hire-me-button')
     setKind(next)
   }
 
@@ -45,7 +52,14 @@ export const ProfilePillButtons = ({ userId, name, signedIn, isCollaborateable, 
           Hire
         </button>
       ) : null}
-      {kind ? <MessageDialog name={name} titlePrefix={TITLES[kind]} onSend={send} onDismiss={() => setKind(null)} /> : null}
+      {kind ? (
+        <MessageDialog
+          name={name}
+          titlePrefix={TITLES[kind]}
+          onSend={send}
+          onDismiss={() => setKind(null)}
+        />
+      ) : null}
     </>
   )
 }

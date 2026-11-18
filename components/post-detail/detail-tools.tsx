@@ -6,6 +6,7 @@ import { setLoved, setWatching } from '@/actions/post-actions'
 import { BoltIcon, BubbleIcon, EyeIcon, HeartIcon, RepostIcon, ShareIcon } from '@/components/icons'
 import { ShareDialog } from '@/components/posts/share-dialog'
 import { useRepostStore } from '@/stores/repost-store'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
@@ -29,8 +30,9 @@ const useLove = (post: Post, signedIn: boolean) => {
     count: current.count + (next ? 1 : -1),
   }))
   const [, startTransition] = useTransition()
+  const registration = useRegistrationDialog()
   const toggle = (): void => {
-    if (!signedIn) return toast.info('Log in to love posts')
+    if (!signedIn) return registration.open('post-tools')
     startTransition(async () => {
       const next = !state.loved
       setOptimistic(next)
@@ -42,7 +44,10 @@ const useLove = (post: Post, signedIn: boolean) => {
 }
 
 const useWatch = (post: Post) => {
-  const [watching, setOptimistic] = useOptimistic(post.currentUserState.watching, (_, next: boolean) => next)
+  const [watching, setOptimistic] = useOptimistic(
+    post.currentUserState.watching,
+    (_, next: boolean) => next,
+  )
   const [, startTransition] = useTransition()
   const toggle = (): void =>
     startTransition(async () => {
@@ -60,19 +65,24 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
   const isOwnPost = viewerId === post.author.id
   const detailPath = `/${post.author.username}/post/${post.token}`
   const [shareContent, setShareContent] = useState<ShareContent | null>(null)
+  const registration = useRegistrationDialog()
   const love = useLove(post, signedIn)
   const watch = useWatch(post)
   const startRepost = useRepostStore((s) => s.start)
   const { commentsCount, repostsCount, viewsCount } = post.postStats
-  const repostInert = !!viewerId && (isOwnPost || viewerId === originalAuthorOf(post).id || post.currentUserState.reposted)
+  const repostInert =
+    !!viewerId &&
+    (isOwnPost || viewerId === originalAuthorOf(post).id || post.currentUserState.reposted)
   const onRepost = (): void => {
-    if (!signedIn) return void toast.info('Log in to repost')
+    if (!signedIn) return registration.open('post-tools')
     startRepost(post.id)
   }
   const commentContent = (
     <>
       <BubbleIcon />
-      <span className={cn('PostToolValue', commentsCount < 1 && 'isZero')}>{numberToHuman(commentsCount, false)}</span>
+      <span className={cn('PostToolValue', commentsCount < 1 && 'isZero')}>
+        {numberToHuman(commentsCount, false)}
+      </span>
       <Hint>Comment</Hint>
     </>
   )
@@ -106,8 +116,14 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
           <HeartIcon />
           <Hint>Love</Hint>
         </button>
-        <button type="button" className={cn(love.loved && 'isActive', 'PostToolDrawerButton')} tabIndex={-1}>
-          <span className={cn('PostToolValue', love.count < 1 && 'isZero')}>{numberToHuman(love.count, false)}</span>
+        <button
+          type="button"
+          className={cn(love.loved && 'isActive', 'PostToolDrawerButton')}
+          tabIndex={-1}
+        >
+          <span className={cn('PostToolValue', love.count < 1 && 'isZero')}>
+            {numberToHuman(love.count, false)}
+          </span>
         </button>
       </span>
       {isOwnPost && repostsCount === 0 ? null : (
@@ -122,7 +138,9 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
             <Hint>Repost</Hint>
           </button>
           <button type="button" className="PostToolDrawerButton" tabIndex={-1}>
-            <span className={cn('PostToolValue', repostsCount < 1 && 'isZero')}>{numberToHuman(repostsCount, false)}</span>
+            <span className={cn('PostToolValue', repostsCount < 1 && 'isZero')}>
+              {numberToHuman(repostsCount, false)}
+            </span>
           </button>
         </span>
       )}
@@ -135,18 +153,28 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
       </span>
       {signedIn && !isOwnPost ? (
         <span className={cn('PostTool WatchTool', watch.watching && 'isWatchingPost')}>
-          <button type="button" className={cn(watch.watching && 'isActive')} onClick={watch.toggle} aria-pressed={watch.watching}>
+          <button
+            type="button"
+            className={cn(watch.watching && 'isActive')}
+            onClick={watch.toggle}
+            aria-pressed={watch.watching}
+          >
             <BoltIcon />
             <Hint>{watch.watching ? 'Mute' : 'Watch'}</Hint>
           </button>
         </span>
       ) : null}
       <span className={cn('PostTool ShareTool', !signedIn && 'isPill')}>
-        <button type="button" onClick={() => setShareContent(postShareContent(window.location.origin, post))}>
+        <button
+          type="button"
+          onClick={() => setShareContent(postShareContent(window.location.origin, post))}
+        >
           <ShareIcon />
           <Hint>Share</Hint>
         </button>
-        {shareContent && <ShareDialog content={shareContent} onDismiss={() => setShareContent(null)} />}
+        {shareContent && (
+          <ShareDialog content={shareContent} onDismiss={() => setShareContent(null)} />
+        )}
       </span>
       {signedIn && !isOwnPost ? <PostFlagTool postId={post.id} /> : null}
     </footer>
