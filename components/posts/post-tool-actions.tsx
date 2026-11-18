@@ -1,42 +1,60 @@
 'use client'
 
-import { useOptimistic, useTransition } from 'react'
+import { useOptimistic, useState, useTransition } from 'react'
 import { setWatching } from '@/actions/post-actions'
 import { BoltIcon, RepostIcon, ShareIcon } from '@/components/icons'
 import { Hint } from '@/components/posts/hint'
 import { numberToHuman } from '@/components/posts/number-to-human'
+import { ShareDialog } from '@/components/posts/share-dialog'
+import { useRepostStore } from '@/stores/repost-store'
 import { toast } from '@/stores/toast-store'
+import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
+import { originalAuthorOf } from '@/utils/repost'
+import { postShareContent, type ShareContent } from '@/utils/share'
 
-/** The original's `ShareTool`. Copies the post link (the share dialog is not ported). */
-export const ShareTool = ({ path, isPill }: { path: string; isPill: boolean }) => {
-  const share = (): void => {
-    const url = `${window.location.origin}${path}`
-    navigator.clipboard.writeText(url).then(
-      () => toast.success('Link copied'),
-      () => toast.error('Could not copy the link'),
-    )
-  }
+/** The original's `ShareTool`: opens the share dialog (link plus one button per channel). */
+export const ShareTool = ({ post, isPill }: { post: Pick<Post, 'token' | 'summary'> & { author: Pick<Post['author'], 'username'> }; isPill: boolean }) => {
+  const [content, setContent] = useState<ShareContent | null>(null)
   return (
     <span className={cn('PostTool ShareTool', isPill && 'isPill')}>
-      <button type="button" onClick={share} aria-label="Share">
+      <button type="button" onClick={() => setContent(postShareContent(window.location.origin, post))} aria-label="Share">
         <ShareIcon />
         <Hint>Share</Hint>
       </button>
+      {content && <ShareDialog content={content} onDismiss={() => setContent(null)} />}
     </span>
   )
 }
 
-/** The original's `RepostTool`. The rewrite has no repost action yet, so it only informs. */
-export const RepostTool = ({ count }: { count: number }) => {
-  const onRepost = (): void => toast.info('Reposting is not available yet')
+interface RepostToolProps {
+  post: Post
+  signedIn: boolean
+  viewerId?: string | null
+}
+
+/** The original's `RepostTool`: opens the inline repost editor; your own posts and reposts are inert. */
+export const RepostTool = ({ post, signedIn, viewerId }: RepostToolProps) => {
+  const start = useRepostStore((s) => s.start)
+  const count = post.postStats.repostsCount
+  const inert = !!viewerId && (viewerId === post.author.id || viewerId === originalAuthorOf(post).id || post.currentUserState.reposted)
+  const onRepost = (): void => {
+    if (!signedIn) return void toast.info('Log in to repost')
+    start(post.id)
+  }
   return (
     <span className="PostTool RepostTool" data-count={count}>
-      <button type="button" className={cn(count > 0 && 'hasPostToolDrawer')} onClick={onRepost} aria-label="Repost">
+      <button
+        type="button"
+        className={cn(count > 0 && 'hasPostToolDrawer')}
+        style={inert ? { pointerEvents: 'none' } : undefined}
+        onClick={onRepost}
+        aria-label="Repost"
+      >
         <RepostIcon />
         <Hint>Repost</Hint>
       </button>
-      <button type="button" tabIndex={-1} aria-hidden className="PostToolDrawerButton" onClick={onRepost}>
+      <button type="button" tabIndex={-1} aria-hidden className="PostToolDrawerButton">
         <span className={cn('PostToolValue', count < 1 && 'isZero')}>{numberToHuman(count, false)}</span>
       </button>
     </span>

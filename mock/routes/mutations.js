@@ -6,6 +6,8 @@ const { flatUser, postEnvelope, commentEnvelope } = require('../serialize')
 const { dimensionsOf } = require('./upload')
 const { KEYS } = require('../settings')
 const { viewer, viewerId } = require('./auth')
+const { credentialErrors } = require('../credentials')
+const { hashPassword } = require('../passwords')
 
 const router = express.Router()
 
@@ -26,8 +28,11 @@ const toRegions = (body = []) => body.map((block) => {
     const dims = dimensionsOf(url) || { width: 1200, height: 800 }
     return { kind: 'image', data: { url, alt: (block.data && block.data.alt) || '' }, linkUrl: block.link_url || null, ...dims }
   }
+  if (block.kind === 'embed' && block.data) {
+    return { kind: 'embed', data: block.data, linkUrl: block.link_url || null }
+  }
   return { kind: 'text', data: block.data }
-}).filter(r => r.kind === 'image' || String(r.data || '').replace(/<[^>]*>/g, '').trim())
+}).filter(r => r.kind === 'image' || r.kind === 'embed' || String(r.data || '').replace(/<[^>]*>/g, '').trim())
 
 // --- posts ---
 router.post('/api/v2/posts', (req, res) => {
@@ -62,6 +67,7 @@ router.delete('/api/v2/posts/:id', (req, res) => {
   if (!post || post.authorId !== req.me.id) return res.status(404).json({ error: 'not found' })
   db.posts = db.posts.filter(p => p.id !== post.id)
   db.comments = db.comments.filter(c => c.postId !== post.id)
+  require('../reposts').dropOrphans()
   save()
   return res.status(204).end()
 })
@@ -148,15 +154,19 @@ router.post('/api/v2/relationships/batches', (req, res) => {
 router.patch('/api/v2/profile', (req, res) => {
   const b = req.body || {}
   const me = req.me
+  const attrs = credentialErrors(db, me, b)
+  if (attrs) return res.status(422).json({ errors: { message: 'Invalid credentials', attrs } })
+  if (typeof b.password === 'string' && b.password) me.passwordHash = hashPassword(b.password)
   if (typeof b.name === 'string') me.name = b.name
   if (typeof b.unsanitized_short_bio === 'string') me.bio = b.unsanitized_short_bio
   if (typeof b.location === 'string') me.location = b.location
   if (Array.isArray(b.external_links)) me.links = b.external_links
-  if (typeof b.username === 'string' && b.username && !userByName(b.username)) me.username = b.username
+  if (typeof b.username === 'string' && b.username) me.username = b.username // uniqueness checked above
   if (typeof b.email === 'string' && b.email) me.email = b.email
   KEYS.forEach((key) => { if (typeof b[key] === 'boolean') me.prefs = { ...me.prefs, [key]: b[key] } })
+  if (typeof b.is_hireable === 'boolean') me.hireable = b.is_hireable
+  if (typeof b.is_collaborateable === 'boolean') me.collaborateable = b.is_collaborateable
   if (Array.isArray(b.creator_type_category_ids)) me.creatorTypeCategoryIds = b.creator_type_category_ids.map(Number)
-  // b.password / b.current_password are accepted and ignored: the mock has no real credentials.
   if (b.remote_avatar_url) me.avatarUrl = b.remote_avatar_url
   if (b.remote_cover_image_url) me.coverUrl = b.remote_cover_image_url
   save()

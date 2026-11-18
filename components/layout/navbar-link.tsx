@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
+import type { MouseEventHandler, ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 import styles from './navbar-link.module.css'
 
@@ -27,13 +27,15 @@ interface NavbarLinkProps {
   icon?: ReactNode
   /** Modifier classes (`isLogin`, `isSignUp`, `isNotificationsUnread`) plus viewport classes from navbar-link.module.css. */
   className?: string
+  onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
-const NavbarLinkBase = ({ kind, href, label, icon, className }: NavbarLinkProps & { kind: Kind }) => {
+const NavbarLinkBase = ({ kind, href, label, icon, className, onClick }: NavbarLinkProps & { kind: Kind }) => {
   const pathname = usePathname()
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={cn('NavbarLink', kind, className, styles.link, isNavbarLinkActive(pathname, href) && 'isActive')}
     >
       {icon}

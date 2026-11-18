@@ -4,12 +4,15 @@ import { useEffect, useState, type ClipboardEvent, type DragEvent, type Keyboard
 import { createPortal } from 'react-dom'
 import { ActionBar } from '@/components/composer/action-bar'
 import { ComposerBlocks } from '@/components/composer/composer-blocks'
+import { TextTools } from '@/components/composer/text-tools'
+import { useFullscreenShortcut } from '@/components/composer/use-fullscreen-shortcut'
 import { useComposerUploads } from '@/components/composer/use-composer-uploads'
 import { ChevronIcon } from '@/components/icons'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { isDraftDirty, useComposerStore } from '@/stores/composer-store'
 import type { Category } from '@/types/content'
 import { cn } from '@/utils/cn'
+import './fullscreen.css'
 import styles from './omnibar.module.css'
 
 const PLACEHOLDER = 'Drag & drop images, paste embeds, enter text and links.'
@@ -58,6 +61,7 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
   const reset = useComposerStore((s) => s.reset)
   const { addFiles, retry } = useComposerUploads()
   const host = useOmnibarHost(isOpen)
+  const isFullScreen = useFullscreenShortcut(isOpen)
   const [dragging, setDragging] = useState(false)
   const [confirmingCancel, setConfirmingCancel] = useState(false)
 
@@ -93,7 +97,7 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
     <div
       role="region"
       aria-label="Create a post"
-      className={cn('Omnibar isActive', styles.omnibar)}
+      className={cn('Omnibar isActive', isFullScreen && 'isFullScreen', styles.omnibar)}
       onKeyDown={onKeyDown}
     >
       <div className={styles.wrapper}>
@@ -112,6 +116,7 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
           <ActionBar categories={categories} onFiles={addFiles} onCancel={() => setConfirmingCancel(true)} />
         </div>
       </div>
+      <TextTools />
       <button type="button" aria-label="Navigation" className={styles.reveal} onClick={close}>
         <ChevronIcon />
         Navigation

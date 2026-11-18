@@ -1,6 +1,7 @@
 /* eslint-disable */
 const express = require('express')
 const { db, userById } = require('../db')
+const { hasPassword, verifyPassword } = require('../passwords')
 
 const router = express.Router()
 const FAR_FUTURE = 4102444800
@@ -41,10 +42,14 @@ router.get('/api/webapp-token', (req, res) => res.json({ token: tokenBody(null) 
 
 // Log in as any seeded user: email or username, any password
 router.post('/api/oauth/token', (req, res) => {
-  const { grant_type: grant, email, refresh_token: refresh } = req.body || {}
+  const { grant_type: grant, email, password, refresh_token: refresh } = req.body || {}
   const user = grant === 'refresh_token'
     ? userById(String(refresh || '').replace('rt-', ''))
     : db.users.find(u => u.email === email || u.username === email)
+  // a user who set a password through /settings must use it; seeded users still take any 8+ characters
+  if (user && grant !== 'refresh_token' && hasPassword(user) && !verifyPassword(user, password)) {
+    return res.status(401).json({ error: 'invalid_grant', error_description: 'Wrong password' })
+  }
   if (!user) return res.status(401).json({ error: 'invalid_grant', error_description: 'Unknown user' })
   return res.json(tokenBody(user))
 })

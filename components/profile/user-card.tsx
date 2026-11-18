@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { ProfilePillButtons } from '@/components/profile/profile-pill-buttons'
 import { RelationshipButton } from '@/components/profile/relationship-button'
 import { UserInfoCell, UserNamesCellCard, UserStatsCell } from '@/components/profile/user-cells'
 import { Avatar } from '@/components/ui/avatar'
 import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
 import { cleanHtml } from '@/utils/sanitize'
+import { truncateHtml } from '@/utils/truncate-html'
 import type { Avatar as AvatarImages, ResponsiveImage } from '@/types/image'
 import styles from './user-card.module.css'
 
@@ -16,6 +18,8 @@ export interface UserCardData {
   coverImage?: ResponsiveImage | null
   bioHtml?: string | null
   relationshipPriority?: string | null
+  isHireable?: boolean | null
+  isCollaborateable?: boolean | null
   postsCount: number
   followingCount: number
   followersCount: number
@@ -38,8 +42,16 @@ export const UserCard = ({ user, signedIn }: { user: UserCardData; signedIn: boo
         className={cn('inUserProfileCard', styles.avatar)}
       />
       <div className={cn('UserProfileButtons inUserProfileCard', styles.buttons)}>
+        <ProfilePillButtons
+          userId={user.id}
+          name={user.name || user.username}
+          signedIn={signedIn}
+          isCollaborateable={!!user.isCollaborateable}
+          isHireable={!!user.isHireable}
+        />
         <RelationshipButton
           userId={user.id}
+          username={user.username}
           priority={user.relationshipPriority}
           signedIn={signedIn}
           className="isPill inUserProfileCard"
@@ -54,7 +66,7 @@ export const UserCard = ({ user, signedIn }: { user: UserCardData; signedIn: boo
         followersCount={user.followersCount}
         lovesCount={user.lovesCount}
       />
-      <UserInfoCell className="inUserProfileCard" bioHtml={user.bioHtml ? cleanHtml(user.bioHtml) : ''} />
+      <UserInfoCell className="inUserProfileCard" bioHtml={user.bioHtml ? truncateHtml(cleanHtml(user.bioHtml), 160).html : ''} />
       <Link href={href} className={cn('BackgroundImage inUserProfileCard hasOverlay6 isLink', styles.background)} aria-label={`@${user.username}`}>
         <figure className={styles.backgroundImage} style={cover ? { backgroundImage: `url(${cover})` } : undefined} />
       </Link>

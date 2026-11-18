@@ -136,3 +136,22 @@
     height: auto;
   }
 }
+
+/* Inline editor inside a grid card (`.PostGrid .isPostReposting` in PostActionBar.js): icon buttons at any width */
+.compact {
+  height: auto;
+}
+
+.compact .button:not(.submit) {
+  width: 40px;
+  padding: 0 10px;
+}
+
+.compact .label {
+  display: none;
+}
+
+.compact .submit .label {
+  display: inline-block;
+  margin-right: 10px;
+}

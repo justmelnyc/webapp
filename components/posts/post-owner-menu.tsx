@@ -3,7 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { deletePost } from '@/actions/composer-actions'
-import { XBoxIcon } from '@/components/icons'
+import { PencilIcon, XBoxIcon } from '@/components/icons'
+import { useEditPost } from '@/components/posts/use-edit-post'
 import { Hint } from '@/components/posts/hint'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
@@ -38,8 +39,25 @@ const DeleteTool = ({ postId }: { postId: string }) => {
   )
 }
 
+const EditTool = ({ postId }: { postId: string }) => {
+  const { edit, pending } = useEditPost(postId)
+  return (
+    <span className="PostTool EditTool">
+      <button type="button" onClick={edit} disabled={pending} aria-label="Edit post">
+        <PencilIcon />
+        <Hint>Edit</Hint>
+      </button>
+    </span>
+  )
+}
+
 /** Owner-only actions (the original's `DeleteTool`). Only the author's cards mount the controls. */
 export const PostOwnerMenu = ({ post, viewerId }: PostOwnerMenuProps) => {
   if (!viewerId || viewerId !== post.author.id) return null
-  return <DeleteTool postId={post.id} />
+  return (
+    <span>
+      <EditTool postId={post.id} />
+      <DeleteTool postId={post.id} />
+    </span>
+  )
 }

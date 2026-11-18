@@ -1,11 +1,14 @@
 /** An API call failed. `status` is the HTTP status (0 if the request never completed). */
 export class ApiError extends Error {
   readonly status: number
+  /** The raw response body (kept so callers can read structured validation errors). */
+  readonly detail: string
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, detail = '') {
     super(message)
     this.name = 'ApiError'
     this.status = status
+    this.detail = detail
   }
 }
 

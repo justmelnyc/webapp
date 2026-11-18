@@ -1,6 +1,8 @@
-import { PostBody } from '@/components/posts/post-body'
+import { EditablePostBody } from '@/components/posts/editable-post-body'
 import { PostCard } from '@/components/posts/post-card'
+import { PostContent } from '@/components/posts/post-content'
 import type { Post } from '@/types/post'
+import { isRepost } from '@/utils/repost'
 
 interface PostProps {
   post: Post
@@ -12,14 +14,14 @@ interface PostProps {
   showHeader: boolean
 }
 
-const detailPath = (post: Post): string => `/${post.author.username}/post/${post.token}`
-
 const GridPost = ({ post, signedIn, viewerId, eager, showHeader }: PostProps) => (
   <div className="PostGrid">
-    <PostCard className={showHeader ? undefined : 'isPostHeaderHidden'}>
-      {showHeader && <PostCard.Header post={post} viewerId={viewerId} />}
+    <PostCard className={showHeader || isRepost(post) ? undefined : 'isPostHeaderHidden'}>
+      {(showHeader || isRepost(post)) && <PostCard.Header post={post} viewerId={viewerId} inUserDetail={!showHeader} />}
       <PostCard.Body>
-        <PostBody regions={post.summary} assets={post.assets} loading={eager ? 'eager' : 'lazy'} detailPath={detailPath(post)} />
+        <EditablePostBody postId={post.id}>
+          <PostContent post={post} mode="grid" eager={eager} />
+        </EditablePostBody>
       </PostCard.Body>
       <PostCard.Footer post={post} signedIn={signedIn} viewerId={viewerId} />
     </PostCard>
@@ -28,10 +30,12 @@ const GridPost = ({ post, signedIn, viewerId, eager, showHeader }: PostProps) =>
 
 const ListPost = ({ post, signedIn, viewerId, eager, showHeader }: PostProps) => (
   <div className="PostList">
-    <PostCard className={showHeader ? undefined : 'isPostHeaderHidden'}>
-      {showHeader && <PostCard.Header post={post} viewerId={viewerId} />}
+    <PostCard className={showHeader || isRepost(post) ? undefined : 'isPostHeaderHidden'}>
+      {(showHeader || isRepost(post)) && <PostCard.Header post={post} viewerId={viewerId} inUserDetail={!showHeader} />}
       <PostCard.Body>
-        <PostBody regions={post.content} assets={post.assets} loading={eager ? 'eager' : 'lazy'} />
+        <EditablePostBody postId={post.id}>
+          <PostContent post={post} mode="list" eager={eager} />
+        </EditablePostBody>
       </PostCard.Body>
       <PostCard.Footer post={post} signedIn={signedIn} viewerId={viewerId} showWatch />
     </PostCard>

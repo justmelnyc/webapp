@@ -2,12 +2,16 @@
 // Turn stored records into the shapes the app expects:
 //   gql*  -> GraphQL (v3) objects, consumed by src/reducers/v3_reducer.js
 //   flat* -> normalized v2 models, as the reducers store them in state
-const { db, userById } = require('./db')
+const { db, userById, postById } = require('./db')
+const reposts = require('./reposts')
 const media = require('./media')
 const { prefsFor } = require('./settings')
+const moderation = require('./moderation')
 
 const relationship = (user, viewerId) => {
   if (viewerId && viewerId === user.id) return 'self'
+  const marked = moderation.blockKind(db, viewerId, user.id)
+  if (marked) return marked
   const follows = viewerId && db.follows.some(f => f.followerId === viewerId && f.followeeId === user.id)
   return follows ? 'friend' : 'none'
 }
@@ -31,13 +35,19 @@ const settings = {
   isCollaboratable: false,
 }
 
+const availability = u => ({
+  isHireable: !!u.hireable,
+  isCollaborateable: !!u.collaborateable,
+  isCollaboratable: !!u.collaborateable,
+})
+
 const gqlAuthor = (u, viewerId) => ({
   id: u.id,
   username: u.username,
   name: u.name,
   avatar: media.avatar(u),
   currentUserState: { relationshipPriority: relationship(u, viewerId) },
-  settings,
+  settings: { ...settings, ...availability(u) },
 })
 
 const gqlUser = (u, viewerId) => ({
@@ -50,7 +60,7 @@ const gqlUser = (u, viewerId) => ({
   externalLinksList: u.links || [],
   userStats: userStats(u),
   metaAttributes: { title: u.name, description: u.bio || '', robots: 'index', image: null },
-  categoryUsers: [],
+  categoryUsers: moderation.categoryUsers(u),
 })
 
 // v2 profile / follower-list shape: stats and settings flattened onto the user
@@ -70,6 +80,7 @@ const flatUser = (u, viewerId) => ({
   externalLinksList: u.links || [],
   metaAttributes: { title: u.name, description: u.bio || '', robots: 'index', image: null },
   ...settings,
+  ...availability(u),
   ...prefsFor(u),
   ...userStats(u),
   relationshipPriority: relationship(u, viewerId),
@@ -87,6 +98,9 @@ const imageOf = (region) => {
 const postRegions = (post) => {
   const assets = []
   const content = post.regions.map((region, i) => {
+    if (region.kind === 'embed') {
+      return { kind: 'embed', data: region.data, linkUrl: region.linkUrl || null, links: null }
+    }
     if (region.kind !== 'image') {
       return { kind: 'text', data: region.data, linkUrl: null, links: null }
     }
@@ -95,35 +109,55 @@ const postRegions = (post) => {
     assets.push({ id, attachment: media.responsive(url, w, h) })
     return { kind: 'image', data: { url, alt: region.data.alt || '' }, linkUrl: region.linkUrl || null, links: { assets: id } }
   })
-  const firstImage = content.find(r => r.kind === 'image')
+  const firstImage = content.find(r => r.kind === 'image' || r.kind === 'embed')
   const summary = [content.find(r => r.kind === 'text'), firstImage].filter(Boolean)
   return { content, summary, assets }
 }
+
+// `body` is what the editor loads: text without its <p> wrappers, blank lines kept as \n\n (like the real API)
+const editorBody = region => (region.kind === 'text'
+  ? { ...region, data: String(region.data).replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>\s*<p>/gi, '\n\n').replace(/<\/?p>/gi, '').trim() }
+  : region)
 
 const postStats = post => ({
   lovesCount: db.loves.filter(l => l.postId === post.id).length,
   commentsCount: db.comments.filter(c => c.postId === post.id).length,
   viewsCount: post.views || 0,
-  repostsCount: 0,
+  repostsCount: reposts.repostCount(post.repostOfId || post.id), // a repost counts its original's reposts
 })
 
 const viewerState = (post, viewerId) => ({
   watching: !!viewerId && db.watches.some(w => w.userId === viewerId && w.postId === post.id),
   loved: !!viewerId && db.loves.some(l => l.userId === viewerId && l.postId === post.id),
-  reposted: false,
+  reposted: !!reposts.viewerRepost(post.repostOfId || post.id, viewerId),
 })
 
+// A repost reads like the real API: `repostContent` is the original's content, `content` is what the
+// reposter added, `summary` is the original's summary and `repostedSource` is the original post.
+const repostParts = (post) => {
+  const source = post.repostOfId && postById(post.repostOfId)
+  if (!source) return null
+  const own = postRegions(post)
+  const orig = postRegions(source)
+  return { source, own, orig, assets: [...own.assets, ...orig.assets] }
+}
+
 const gqlPost = (post, viewerId) => {
-  const { content, summary, assets } = postRegions(post)
+  const repost = repostParts(post)
+  const { content, summary, assets } = repost
+    ? { content: repost.own.content, summary: repost.orig.summary, assets: repost.assets }
+    : postRegions(post)
   return {
     id: post.id,
     token: post.token,
     createdAt: post.createdAt,
+    contentWarning: post.contentWarning || '',
+    isAdultContent: !!post.contentWarning,
     artistInviteSubmission: null,
     summary,
     content,
-    repostContent: [],
-    repostedSource: null,
+    repostContent: repost ? repost.orig.content : [],
+    repostedSource: repost ? gqlPost(repost.source, viewerId) : null,
     author: gqlAuthor(userById(post.authorId), viewerId),
     categoryPosts: [],
     assets,
@@ -134,7 +168,10 @@ const gqlPost = (post, viewerId) => {
 
 // v2 post as it sits in redux state (see parsePost in v3_reducer.js)
 const flatPost = (post, viewerId) => {
-  const { content, summary, assets } = postRegions(post)
+  const repost = repostParts(post)
+  const { content, summary, assets } = repost
+    ? { content: repost.own.content, summary: repost.orig.summary, assets: repost.assets }
+    : postRegions(post)
   const byId = assets.reduce((m, a) => ({ ...m, [a.id]: a }), {})
   const region = (r, i) => ({
     ...r,
@@ -149,10 +186,10 @@ const flatPost = (post, viewerId) => {
     createdAt: post.createdAt,
     summary: summary.map(region),
     content: content.map(region),
-    body: content,
-    repostContent: [],
-    isAdultContent: false,
-    contentWarning: '',
+    body: content.map(editorBody),
+    repostContent: repost ? repost.orig.content.map(region) : [],
+    isAdultContent: !!post.contentWarning,
+    contentWarning: post.contentWarning || '',
     ...postStats(post),
     ...viewerState(post, viewerId),
     links: { author: { id: post.authorId, type: 'users' }, categories: post.categoryIds || [] },

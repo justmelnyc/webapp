@@ -41,11 +41,17 @@ const paginate = (list, before, perPage = PER_PAGE) => {
 const byDate = (a, b) => (a.createdAt < b.createdAt ? 1 : -1)
 const loveCount = p => db.loves.filter(l => l.postId === p.id).length
 const recent = () => [...db.posts].sort(byDate)
+// The Shop streams (kind SHOP) only list posts with a buy link
+const shopOnly = (v, posts) => (v.kind === 'SHOP' ? posts.filter(p => p.isProduct) : posts)
 
 const postStream = (key, posts, v, viewer) => {
   const { items, next, isLastPage } = paginate(posts, v.before)
   return { [key]: { next, isLastPage, posts: items.map(p => gqlPost(p, viewer)) } }
 }
+
+const moderation = require('../moderation')
+// feeds hide blocked/muted authors (and authors who blocked the viewer)
+const feedStream = (key, posts, v, viewer) => postStream(key, moderation.visiblePosts(db, viewer, posts), v, viewer)
 
 const followingIds = viewer => db.follows.filter(f => f.followerId === viewer).map(f => f.followeeId)
 const trending = () => [...db.posts].sort((a, b) => loveCount(b) - loveCount(a))
@@ -61,22 +67,22 @@ const resolvers = {
   findPosts: (v, viewer) => ({ findPosts: db.posts.filter(p => (v.tokens || []).includes(p.token)).map(p => gqlPost(p, viewer)) }),
   findUser: (v, viewer) => {
     const user = userByName(v.username)
-    return user ? { findUser: gqlUser(user, viewer) } : null
+    return user && !moderation.hasBlocked(db, user.id, viewer) ? { findUser: gqlUser(user, viewer) } : null
   },
   post: (v, viewer) => {
     const post = postByRef(`~${v.token}`)
     return post ? { post: gqlPost(post, viewer) } : null
   },
-  globalPostStream: (v, viewer) => postStream('globalPostStream', v.kind === 'TRENDING' ? trending() : recent(), v, viewer),
-  subscribedPostStream: (v, viewer) => postStream('subscribedPostStream', recent().filter(p => followingIds(viewer).includes(p.authorId)), v, viewer),
-  followingPostStream: (v, viewer) => postStream('followingPostStream', recent().filter(p => p.authorId === viewer || followingIds(viewer).includes(p.authorId)), v, viewer),
+  globalPostStream: (v, viewer) => feedStream('globalPostStream', shopOnly(v, v.kind === 'TRENDING' ? trending() : recent()), v, viewer),
+  subscribedPostStream: (v, viewer) => feedStream('subscribedPostStream', shopOnly(v, recent().filter(p => followingIds(viewer).includes(p.authorId))), v, viewer),
+  followingPostStream: (v, viewer) => feedStream('followingPostStream', recent().filter(p => p.authorId === viewer || followingIds(viewer).includes(p.authorId)), v, viewer),
   categoryPostStream: (v, viewer) => {
     const cat = content.categories.find(c => c.slug === v.slug)
-    return postStream('categoryPostStream', recent().filter(p => cat && p.categoryIds.includes(cat.id)), v, viewer)
+    return feedStream('categoryPostStream', shopOnly(v, recent().filter(p => cat && p.categoryIds.includes(cat.id))), v, viewer)
   },
   userPostStream: (v, viewer) => {
     const user = userByName(v.username)
-    return postStream('userPostStream', recent().filter(p => user && p.authorId === user.id), v, viewer)
+    return postStream('userPostStream', recent().filter(p => user && p.authorId === user.id && !moderation.hasBlocked(db, user.id, viewer)), v, viewer)
   },
   userLoveStream: (v, viewer) => {
     const user = userByName(v.username)
@@ -90,8 +96,7 @@ const resolvers = {
     const { items, next, isLastPage } = paginate(comments, v.before, parseInt(v.perPage, 10) || 10)
     return { commentStream: { next, isLastPage, comments: items.map(c => gqlComment(c, viewer)) } }
   },
-  notificationStream: () => ({ notificationStream: { next: null, isLastPage: true, notifications: [] } }),
-  newNotificationStreamContent: () => ({ newNotificationStreamContent: { newContent: false } }),
+  ...require('../notifications').resolvers,
   searchUsers: (v, viewer) => {
     const q = String(v.query || '').toLowerCase()
     const users = db.users.filter(u => u.username.includes(q) || u.name.toLowerCase().includes(q)).slice(0, 10)

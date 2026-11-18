@@ -12,10 +12,12 @@ const authorFields = `
 const regionFields = `kind data linkUrl links { assets }`
 
 export const postFields = `
-  id token createdAt
+  id token createdAt contentWarning
   author { ${authorFields} }
   summary { ${regionFields} }
   content { ${regionFields} }
+  repostContent { ${regionFields} }
+  repostedSource { id token author { ${authorFields} } }
   assets { id attachment ${responsive} }
   postStats { lovesCount commentsCount viewsCount repostsCount }
   currentUserState { watching loved reposted }
@@ -58,6 +60,8 @@ export const FIND_USER = `
       location formattedShortBio
       coverImage ${responsive}
       externalLinksList { url text }
+      settings { isHireable isCollaborateable }
+      categoryUsers { id role category { id name slug } }
       userStats { followersCount followingCount lovesCount postsCount totalViewsCount }
     }
   }

@@ -55,3 +55,8 @@ Ello Web Application is released under the [MIT License](/LICENSE.txt)
 
 :metal::skull::metal:
 :peace:
+
+### Known intentional differences from the original
+- **NSFW "View" button on feeds:** the original's GraphQL reducer drops `contentWarning`, so it never shows the button on `/discover/trending` or similar feeds. The rewrite shows it (about 5-15% diff on those pages when seeded NSFW posts are in the feed).
+- **Profile hero diffs:** the hero is `100vh`; pass `--vh 900` to `tools/visual-diff/vdiff.js`.
+- **Shop/embeds/reposts:** see `mock/README.md` for what the mock simulates.

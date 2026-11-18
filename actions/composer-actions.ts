@@ -2,25 +2,16 @@
 
 import { revalidatePath } from 'next/cache'
 import { rest, restVoid } from '@/lib/api/client'
+import { buildPostBody } from '@/lib/post-body'
 import { errorMessage } from '@/lib/errors'
 import { createPostInputSchema, createPostResponseSchema, type CreatedPost } from '@/lib/schemas/post'
 import { failure, success, type ActionResult } from '@/types/action'
-import { textToHtml } from '@/utils/post-html'
-
-type ApiBlock = { kind: 'text'; data: string } | { kind: 'image'; data: { url: string; alt?: string } }
+import { normalizeBuyLink } from '@/utils/buy-link'
 
 export const createPost = async (input: unknown): Promise<ActionResult<CreatedPost>> => {
   const parsed = createPostInputSchema.safeParse(input)
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Invalid post')
-  const body: ApiBlock[] = []
-  for (const block of parsed.data.blocks) {
-    if (block.kind === 'image') {
-      body.push({ kind: 'image', data: block.alt ? { url: block.url, alt: block.alt } : { url: block.url } })
-      continue
-    }
-    const html = textToHtml(block.text)
-    if (html) body.push({ kind: 'text', data: html })
-  }
+  const body = buildPostBody(parsed.data.blocks, normalizeBuyLink(parsed.data.buyLink))
   if (body.length === 0) return failure('Add some text or an image first')
   try {
     const data = await rest('/api/v2/posts', createPostResponseSchema, {

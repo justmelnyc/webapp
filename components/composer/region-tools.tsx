@@ -3,7 +3,7 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { DragIcon, XIcon } from '@/components/icons'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { useComposerStore } from '@/stores/composer-store'
+import { useComposerApi, useComposerStore } from '@/stores/composer-store'
 import styles from './omnibar.module.css'
 
 /** Index of the block under the pointer, found through the blocks' data-block-id. */
@@ -17,12 +17,13 @@ export const RegionTools = ({ id }: { id: string }) => {
   const [confirming, setConfirming] = useState(false)
   const removeBlock = useComposerStore((s) => s.removeBlock)
   const moveBlock = useComposerStore((s) => s.moveBlock)
+  const api = useComposerApi()
   const dragging = useRef(false)
 
   const confirmRemove = (): void => {
     setConfirming(false)
     removeBlock(id)
-    if (useComposerStore.getState().blocks.length === 0) useComposerStore.getState().addText()
+    if (api.getState().blocks.length === 0) api.getState().addText()
   }
 
   const onPointerDown = (e: PointerEvent<HTMLButtonElement>): void => {
@@ -33,7 +34,7 @@ export const RegionTools = ({ id }: { id: string }) => {
 
   const onPointerMove = (e: PointerEvent<HTMLButtonElement>): void => {
     if (!dragging.current) return
-    const { blocks } = useComposerStore.getState()
+    const { blocks } = api.getState()
     const target = blockIdAt(e.clientX, e.clientY)
     if (!target || target === id) return
     const from = blocks.findIndex((b) => b.id === id)

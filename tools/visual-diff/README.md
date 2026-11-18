@@ -41,5 +41,6 @@ script prints the mismatch percentage; matching pages are 0.0%.
 | `--probe ".a\|.b"` | print computed styles and boxes of each selector on both sides, only where they differ |
 | `--dump ".sel"` | print each side's outerHTML (to learn the original's DOM) |
 | `--click ".sel"` | click an element on both sides before capturing (open menus, the omnibar) |
+| `--type "#id=value"` | set an input's value on both sides (fires input/change) and wait 2.5s, e.g. for the availability check |
 
 Natively lazy-loaded images are forced to load before the capture, and animations are frozen.

@@ -10,14 +10,22 @@ export const newPasswordSchema = z
   .string()
   .refine((value) => value.length === 0 || /^.{8,128}$/.test(value), 'Password must be at least 8 characters.')
 
+/** The original's `ERROR_MESSAGES` (constants/locales/en.js) for the credentials fields. */
+export const USERNAME_ERRORS = {
+  spaces: 'Username must not contain a space.',
+  invalidCharacters: 'Username must only contain letters, numbers, underscores & dashes.',
+  exists: 'Username already exists. Please try a new one. You can change your username at any time',
+} as const
+export const EMAIL_ERRORS = { invalid: 'That email is invalid. Please try again.' } as const
+
 /** Username, email and password: saved together with the current password (the original's credentials form). */
 export const credentialsSchema = z.object({
   username: z
     .string()
     .trim()
-    .min(3, 'Usernames are at least 3 characters')
-    .max(20, 'Usernames can be up to 20 characters')
-    .regex(/^[a-z0-9_]+$/, 'Use lowercase letters, numbers and underscores only'),
+    .max(50, 'Usernames can be up to 50 characters')
+    .refine((value) => !/\s/.test(value), USERNAME_ERRORS.spaces)
+    .refine((value) => value.length === 0 || /^[a-zA-Z0-9\-_]+$/.test(value), USERNAME_ERRORS.invalidCharacters),
   email: z.string().trim().email('Enter a valid email address'),
   password: newPasswordSchema,
   currentPassword: z.string(),
@@ -40,3 +48,34 @@ export type ImageKind = z.infer<typeof imageKindSchema>
 export const preferenceKeySchema = z.string().regex(/^[a-z_]+$/)
 
 export const creatorTypeIdsSchema = z.array(z.number().int().positive())
+
+/** POST /api/v2/availability: one field at a time, as the original asks. */
+export const availabilityInputSchema = z.union([
+  z.object({ username: z.string() }),
+  z.object({ email: z.string() }),
+])
+export type AvailabilityInput = z.infer<typeof availabilityInputSchema>
+
+export const availabilityResponseSchema = z.object({
+  availability: z.object({
+    username: z.boolean().optional(),
+    email: z.boolean().optional(),
+    suggestions: z
+      .object({
+        username: z.array(z.string()).nullish(),
+        email: z.object({ full: z.string().nullish() }).nullish(),
+      })
+      .default({}),
+  }),
+})
+export type Availability = z.infer<typeof availabilityResponseSchema>['availability']
+
+export const exportResponseSchema = z.object({ exportUrl: z.string().url() })
+
+/** A 422 from PATCH /api/v2/profile: `attrs` maps a field (snake_case) to what is wrong with it. */
+export const credentialErrorsSchema = z.object({
+  errors: z.object({ attrs: z.record(z.string(), z.string()).default({}) }),
+})
+
+export type CredentialField = 'username' | 'email' | 'password' | 'currentPassword'
+export type CredentialFieldErrors = Partial<Record<CredentialField, string>>

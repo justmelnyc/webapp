@@ -1,4 +1,4 @@
-import { credentialsSchema, creatorTypeIdsSchema, infoSchema, newPasswordSchema } from './profile'
+import { availabilityResponseSchema, credentialErrorsSchema, credentialsSchema, creatorTypeIdsSchema, infoSchema, newPasswordSchema } from './profile'
 
 describe('newPasswordSchema', () => {
   it('treats an empty field as "keep my password"', () => {
@@ -41,5 +41,23 @@ describe('creatorTypeIdsSchema', () => {
     expect(creatorTypeIdsSchema.safeParse([1, 3]).success).toBe(true)
     expect(creatorTypeIdsSchema.safeParse(['1']).success).toBe(false)
     expect(creatorTypeIdsSchema.safeParse([0]).success).toBe(false)
+  })
+})
+
+describe('availabilityResponseSchema', () => {
+  it('defaults missing suggestions', () => {
+    const parsed = availabilityResponseSchema.parse({ availability: { username: true } })
+    expect(parsed.availability.suggestions).toEqual({})
+  })
+
+  it('rejects a body without availability', () => {
+    expect(availabilityResponseSchema.safeParse({}).success).toBe(false)
+  })
+})
+
+describe('credentialErrorsSchema', () => {
+  it('reads the 422 attrs', () => {
+    const parsed = credentialErrorsSchema.parse({ errors: { message: 'x', attrs: { current_password: 'is incorrect' } } })
+    expect(parsed.errors.attrs.current_password).toBe('is incorrect')
   })
 })

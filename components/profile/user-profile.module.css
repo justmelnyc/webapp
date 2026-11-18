@@ -117,6 +117,24 @@
   color: #aaa;
 }
 
+.rolesHero {
+  right: 95px;
+}
+
+.rolesHero :global(.RolesIcon) {
+  margin-top: -3px;
+  color: #fff;
+}
+
+.rolesHero :global(.RolesIcon) g {
+  stroke-width: 0;
+}
+
+.rolesHero :global(.RolesIcon) g path {
+  fill: #fff;
+  stroke-width: 0;
+}
+
 .scroll {
   bottom: 60px;
   left: calc(50% - 20px);

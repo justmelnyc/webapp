@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { BoltIcon, CircleIcon, SearchIcon, SparklesIcon } from '@/components/icons'
+import { CircleIcon, SearchIcon, SparklesIcon } from '@/components/icons'
 import { API_ORIGIN } from '@/lib/env'
 import { getCategories } from '@/services/content'
 import type { Category } from '@/types/content'
@@ -10,6 +10,8 @@ import { NavbarIconLink, NavbarLink } from './navbar-link'
 import linkStyles from './navbar-link.module.css'
 import { NavbarOmniButton } from './navbar-omni-button'
 import { NavbarLayoutTool } from './navbar-layout-tool'
+import { NotificationsBoltLink } from '@/components/notifications/notifications-bolt-link'
+import { NotificationsDropdown } from '@/components/notifications/notifications-dropdown'
 import { NavbarMark } from './navbar-mark'
 import { NavbarProfile } from './navbar-profile'
 import styles from './navbar.module.css'
@@ -66,8 +68,7 @@ const LoggedInLinks = () => (
     <NavbarLink href="/discover/subscribed" label="Discover" icon={<SparklesIcon />} />
     <NavbarLink href="/following" label="Following" icon={<CircleIcon />} />
     <NavbarLink href="/elloartgiveaways" label="Giveaways" className={linkStyles.giveaways} />
-    {/* Pass className="isNotificationsUnread" for the red unread dot once there is a feed to ask. */}
-    <NavbarIconLink href="/notifications/all" label="Notifications" icon={<BoltIcon />} />
+    <NotificationsBoltLink />
     <NavbarIconLink href="/search" label="Search" icon={<SearchIcon />} />
   </div>
 )
@@ -89,6 +90,7 @@ export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
           />
           <NavbarLayoutTool />
           <NavbarOmniButton categories={categories} />
+          <NotificationsDropdown />
         </>
       ) : (
         <LoggedOutLinks />

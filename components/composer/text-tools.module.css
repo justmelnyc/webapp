@@ -1,0 +1,113 @@
+/* Port of TextTools.js (the bold / italic / link popover over a text selection). */
+.popovers {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-tools);
+}
+
+.tools {
+  position: fixed;
+  z-index: 2;
+  width: 93px;
+  margin-left: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    width 0.2s var(--ease-ello),
+    opacity 0.2s var(--ease-ello);
+}
+
+.tools.asShowLinkForm {
+  width: 215px;
+}
+
+.tools.isHidden {
+  pointer-events: none;
+  opacity: 0;
+}
+
+@media (max-width: 39.9375em) {
+  .tools {
+    display: none;
+  }
+}
+
+.button {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  margin-left: 1px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #aaa;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #fff;
+  border-radius: 50%;
+  transition:
+    border-radius 0.2s var(--ease-ello),
+    color 0.2s,
+    width 0.2s var(--ease-ello);
+}
+
+.button:hover,
+.button.isActive {
+  color: #000;
+}
+
+.forItalic > em {
+  margin-left: -2px;
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.asShowLinkForm .forBold,
+.asShowLinkForm .forItalic {
+  width: 0;
+}
+
+.asShowLinkForm .forLink {
+  border-radius: 50% 0 0 50%;
+}
+
+.form {
+  z-index: 0;
+  display: inline-block;
+  height: 30px;
+  vertical-align: middle;
+  transition: transform 0.2s var(--ease-ello);
+}
+
+.asShowLinkForm .form {
+  transform: translateX(-30px);
+}
+
+.input {
+  display: inline-block;
+  width: 210px;
+  height: 30px;
+  padding: 0 10px 0 35px;
+  font-size: 14px;
+  color: #000;
+  vertical-align: baseline;
+  background-color: #fff;
+  border: 0;
+  border-radius: 15px;
+  outline: 0;
+  transition:
+    background-color 0.2s var(--ease-ello),
+    color 0.2s var(--ease-ello),
+    width 0.2s var(--ease-ello),
+    height 0.2s var(--ease-ello);
+}
+
+.input:focus {
+  outline: 0;
+}
+
+.input::placeholder {
+  color: #aaa;
+}

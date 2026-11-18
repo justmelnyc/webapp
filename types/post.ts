@@ -29,6 +29,13 @@ export const regionSchema = z.discriminatedUnion('kind', [
 
 export const assetSchema = z.object({ id: z.string(), attachment: responsiveImageSchema })
 
+/** The original post a repost points at (`repostedSource`): who wrote it and where it lives. */
+export const repostedSourceSchema = z.object({
+  id: z.string(),
+  token: z.string(),
+  author: authorSchema,
+})
+
 export const postSchema = z.object({
   id: z.string(),
   token: z.string(),
@@ -36,6 +43,11 @@ export const postSchema = z.object({
   author: authorSchema,
   summary: z.array(regionSchema),
   content: z.array(regionSchema),
+  /** Set when the post is marked NSFW: the label the Content Warning button shows. */
+  contentWarning: z.string().nullish(),
+  /** Reposts only: the original's content. `content` is then what the reposter added. */
+  repostContent: z.array(regionSchema).nullish(),
+  repostedSource: repostedSourceSchema.nullish(),
   assets: z.array(assetSchema),
   postStats: z.object({
     lovesCount: z.number(),

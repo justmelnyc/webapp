@@ -1,0 +1,22 @@
+/* Port of MiniPillButtonProfile (legacy/src/components/buttons/Buttons.js) */
+.pill {
+  width: 58px;
+  height: 30px;
+  padding: 0;
+  margin-right: 5px;
+  font-size: 12px;
+  line-height: 30px;
+  color: #fff;
+  background-color: #000;
+  border: 1px solid #000;
+  border-radius: 15px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+@media (hover: hover) {
+  .pill:hover {
+    color: #fff;
+    background-color: #00d100;
+    border-color: #00d100;
+  }
+}

@@ -11,6 +11,7 @@ import styles from './category-selector.module.css'
 export const CategorySelector = ({ categories }: { categories: Category[] }) => {
   const categoryIds = useComposerStore((s) => s.categoryIds)
   const setCategory = useComposerStore((s) => s.setCategory)
+  const isEditing = useComposerStore((s) => s.mode === 'edit') // an existing post's category is shown, not changeable
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [index, setIndex] = useState<number | null>(null)
@@ -74,18 +75,20 @@ export const CategorySelector = ({ categories }: { categories: Category[] }) => 
     <aside
       ref={rootRef}
       role="searchbox"
-      className={cn('category-post-selector', styles.root)}
-      onClick={onClick}
+      className={cn('category-post-selector', isEditing && 'disabled', styles.root)}
+      onClick={isEditing ? undefined : onClick}
     >
       <span className={cn(styles.control, open && styles.open)}>
         {selected ? (
           <span className={styles.selected}>
             <b>
-              <i>Post into:</i>&nbsp;{selected.name}
+              <i>{isEditing ? 'Posted into:' : 'Post into:'}</i>&nbsp;{selected.name}
             </b>
-            <button type="button" aria-label="Remove category" onClick={() => setCategory(null)}>
-              <XIcon />
-            </button>
+            {isEditing ? null : (
+              <button type="button" aria-label="Remove category" onClick={() => setCategory(null)}>
+                <XIcon />
+              </button>
+            )}
           </span>
         ) : (
           <span className="input-with-label">

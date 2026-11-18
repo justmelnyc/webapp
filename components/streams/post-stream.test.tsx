@@ -7,6 +7,10 @@ import { PostStream } from './post-stream'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
 jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
+jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser: jest.fn(), setRelationship: jest.fn() }))
+jest.mock('@/actions/repost-actions', () => ({ createRepost: jest.fn(), loadRepostCategories: jest.fn() }))
+jest.mock('@/actions/post-edit-actions', () => ({ updatePost: jest.fn() }))
+jest.mock('@/actions/composer-actions', () => ({ createPost: jest.fn() }))
 jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }) }))
 jest.mock('@/lib/client/streams', () => ({ fetchStreamPage: jest.fn() }))
 

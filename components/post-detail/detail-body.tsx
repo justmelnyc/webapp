@@ -1,3 +1,6 @@
+import { ElloBuyButton, hasBuyLink } from '@/components/posts/ello-buy-button'
+import { EmbedRegion } from '@/components/posts/embed-region'
+import { embedFields } from '@/components/posts/embed-fields'
 import type { Asset, Region } from '@/types/post'
 import type { ResponsiveImage } from '@/types/image'
 import styles from './post-detail.module.css'
@@ -10,7 +13,14 @@ interface DetailBodyProps {
 
 /** Candidates in the original's `srcset` order and descriptors (no `sizes`, like the original). */
 const srcSetOf = (image: ResponsiveImage): string =>
-  ([['mdpi', 180], ['hdpi', 750], ['xhdpi', 1500], ['optimized', 1920]] as const)
+  (
+    [
+      ['mdpi', 180],
+      ['hdpi', 750],
+      ['xhdpi', 1500],
+      ['optimized', 1920],
+    ] as const
+  )
     .flatMap(([key, width]) => {
       const url = image[key]?.url
       return url ? [`${url} ${width}w`] : []
@@ -28,6 +38,20 @@ export const DetailBody = ({ postId, regions, assets }: DetailBodyProps) => (
               <div key={index} className="TextRegion">
                 <div className="RegionContent" dangerouslySetInnerHTML={{ __html: region.data }} />
               </div>
+            )
+          }
+          if (region.kind === 'embed') {
+            const { service, id, url, thumbnailLargeUrl } = embedFields(region.data)
+            if (!service || !thumbnailLargeUrl) return null
+            return (
+              <EmbedRegion
+                key={index}
+                service={service}
+                id={id}
+                url={url}
+                thumbnailLargeUrl={thumbnailLargeUrl}
+                linkUrl={region.linkUrl}
+              />
             )
           }
           if (region.kind !== 'image') return null
@@ -48,6 +72,7 @@ export const DetailBody = ({ postId, regions, assets }: DetailBodyProps) => (
                     src={src}
                     srcSet={attachment ? srcSetOf(attachment) : undefined}
                   />
+                  {hasBuyLink(region.linkUrl) ? <ElloBuyButton to={region.linkUrl} /> : null}
                 </div>
               </div>
             </div>

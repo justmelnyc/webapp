@@ -6,6 +6,7 @@ import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { CommentForm, type ReplyRequest } from '@/components/comments/comment-form'
 import { CommentItem } from '@/components/comments/comment-item'
 import { CommentLauncher } from '@/components/comments/comment-launcher'
+import { usePostEditStore } from '@/stores/post-edit-store'
 import { fetchCommentPage } from '@/components/comments/fetch-comments'
 import { useMediaQuery } from '@/components/layout/use-media-query'
 import type { CommentPage } from '@/types/stream'
@@ -32,6 +33,8 @@ export const CommentSection = ({ postId, postAuthorId, viewer, initialPage, plac
   const router = useRouter()
   const queryClient = useQueryClient()
   const [isEditing, setEditing] = useState(false)
+  // The original's `hasEditor`: no comment editor while the post itself is being edited.
+  const isPostEditing = usePostEditStore((s) => s.editing?.id === postId)
   const [reply, setReply] = useState<ReplyRequest | null>(null)
   const queryKey = ['comments', postId]
 
@@ -62,7 +65,7 @@ export const CommentSection = ({ postId, postAuthorId, viewer, initialPage, plac
 
   return (
     <div className={cn('CommentContent', placement === 'aside' ? styles.aside : styles.content)}>
-      {showEditor ? (
+      {isPostEditing ? null : showEditor ? (
         <CommentForm postId={postId} onCreated={changed} onCancel={() => setEditing(false)} reply={reply} />
       ) : (
         <CommentLauncher avatar={viewer.avatar} username={viewer.username} onLaunch={() => setEditing(true)} />

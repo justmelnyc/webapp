@@ -1,0 +1,21 @@
+/* Port of dismissButtonStyle in legacy/src/components/buttons/Buttons.js */
+.dismiss {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  transition: color 0.2s ease;
+}
+
+@media (min-width: 40em) {
+  .dismiss {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (hover: hover) {
+  .dismiss:hover {
+    color: #aaa;
+  }
+}

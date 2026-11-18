@@ -15,6 +15,7 @@ import {
 import { CheckIconLG, CircleIconLG, XIconLG } from '@/components/icons'
 import { cn } from '@/utils/cn'
 import styles from './form-control.module.css'
+import { Suggestions } from './form-control-suggestions'
 
 /*
  * The original's FormControl as composable parts:
@@ -236,4 +237,4 @@ const Message = ({ children, className, ...props }: ComponentProps<'p'>) => (
   </p>
 )
 
-export const FormControl = Object.assign(Root, { Label, Input, Textarea, Icon, Status, Message })
+export const FormControl = Object.assign(Root, { Label, Input, Textarea, Icon, Status, Message, Suggestions })

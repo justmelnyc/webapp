@@ -20,8 +20,16 @@ export const userStatsSchema = z.object({
   totalViewsCount: z.number(),
 })
 
+export const userRoleSchema = z.object({
+  id: z.string(),
+  role: z.enum(['FEATURED', 'CURATOR', 'MODERATOR']),
+  category: z.object({ id: z.string(), name: z.string(), slug: z.string() }),
+})
+
 /** Full profile from the GraphQL `findUser` query. */
 export const userSchema = authorSchema.extend({
+  settings: z.object({ isHireable: z.boolean().nullish(), isCollaborateable: z.boolean().nullish() }).nullish(),
+  categoryUsers: z.array(userRoleSchema).nullish(),
   location: z.string().nullish(),
   formattedShortBio: z.string().nullish(),
   coverImage: responsiveImageSchema.nullish(),
@@ -44,5 +52,6 @@ export const viewerSchema = z.object({
 
 export type Author = z.infer<typeof authorSchema>
 export type User = z.infer<typeof userSchema>
+export type UserRole = z.infer<typeof userRoleSchema>
 export type Viewer = z.infer<typeof viewerSchema>
 export type Relationship = z.infer<typeof relationshipSchema>

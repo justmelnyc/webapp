@@ -1,0 +1,196 @@
+/*
+ * Notifications, ported from legacy components/notifications/Notification.js (jss styles),
+ * components/tabs/TabList.css (.IconTab) and components/views/NotificationsContainer.css.
+ */
+
+.Notification {
+  position: relative;
+  padding: 10px 10px 5px 60px;
+  overflow: hidden;
+  line-height: 18px;
+}
+
+.Notification + .Notification {
+  border-top: 1px solid #e5e5e5;
+}
+
+.Notification > header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.NotificationAsset {
+  float: right;
+  width: 80px;
+  max-height: 80px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.NotificationAsset > * {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.NotificationBody {
+  margin-bottom: 15px;
+  word-wrap: break-word;
+}
+
+.NotificationBody > p {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #aaa;
+}
+
+.NotificationBody a {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.NotificationBody > p a {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .NotificationBody > p a:hover {
+    color: #000;
+  }
+}
+
+.Notification.hasAsset > .NotificationBody {
+  display: inline-block;
+  width: calc(100% - 90px);
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+.NotificationTexts > .TextRegion img:not(.emoji) {
+  display: none;
+}
+
+.Notification > footer {
+  margin-top: -10px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.Notification > footer a {
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .Notification > footer a:hover {
+    color: #000;
+  }
+}
+
+/* Tabs (TabList.css .IconTab) */
+
+.IconTab {
+  display: inline-block;
+  height: 30px;
+  font-size: 12px;
+  line-height: 30px;
+  color: #aaa;
+  text-align: center;
+  background-color: #e5e5e5;
+  border: 0;
+  transition: background-color var(--speed) ease, color var(--speed) ease;
+}
+
+.IconTab + .IconTab {
+  border-left: 1px solid #fff;
+}
+
+.IconTab.isActive,
+.IconTab:active {
+  color: #fff;
+  background-color: #000;
+}
+
+@media (hover: hover) {
+  .IconTab:hover {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
+/* The original sets this on both tab lists (NotificationsContainer.css) */
+.NotificationsContainerTabs > .IconTab {
+  width: calc(100% / 6);
+}
+
+/* Dropdown from the navbar bolt (NotificationsContainer.css) */
+
+.NotificationsContainer {
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  z-index: 3;
+  width: 360px;
+  padding-bottom: 10px;
+  overflow: hidden;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-top: 0;
+}
+
+.NotificationsContainer > .Scrollable {
+  height: 300px;
+  overflow-y: auto;
+}
+
+.NotificationsContainer .StreamContainer {
+  padding: 0;
+}
+
+@media (min-width: 85em) {
+  .NotificationsContainer {
+    right: 40px;
+  }
+}
+
+@media (min-height: 41.25em) {
+  .NotificationsContainer > .Scrollable {
+    height: 505px;
+  }
+}
+
+@media (min-height: 47.5em) {
+  .NotificationsContainer > .Scrollable {
+    height: 605px;
+  }
+}
+
+body.isNotificationsScrolling {
+  overflow: hidden;
+}
+
+.StreamContainer.isFullWidth {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.NotificationsContainer .StreamContainer.isBusy {
+  min-height: 120px;
+}
+
+.Notifications .StreamBusyIndicator,
+.NotificationsContainer .StreamBusyIndicator {
+  position: relative;
+  top: 20px;
+}
+
+.ZeroState {
+  font-size: 14px;
+  color: #aaa;
+}

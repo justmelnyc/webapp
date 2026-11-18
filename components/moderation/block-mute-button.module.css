@@ -1,0 +1,27 @@
+/* Port of legacy/src/components/relationships/BlockMuteButton.js, Relationship.js (.inUserProfile) and the BlockMuteButton rules of Hint.js */
+.container {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+}
+
+@media (max-width: 39.9375em) {
+  .button {
+    top: -285px;
+    right: auto;
+    left: 0;
+  }
+}
+
+.button :global(.Hint) {
+  top: 5px;
+  left: 30px;
+  font-size: 14px;
+}

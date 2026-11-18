@@ -1,0 +1,32 @@
+/*
+ * The reposter's own words under the reposted content, ported from `.RepostedBody` in
+ * legacy/src/components/posts/PostBody.css plus its Avatar rules (glamor `parent('.RepostedBody >', ...)`
+ * in assets/Avatar.js). 40em = break-2, 60em = break-3.
+ */
+
+.RepostedBody {
+  position: relative;
+  min-height: 30px;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  padding-left: 40px;
+}
+
+.RepostedBody > .Avatar {
+  position: absolute;
+  top: 40px;
+  left: 0;
+}
+
+@media (min-width: 40em) {
+  .RepostedBody {
+    min-height: 40px;
+    padding-left: 60px;
+  }
+}
+
+@media (min-width: 60em) {
+  .RepostedBody > .Avatar {
+    top: 30px;
+  }
+}

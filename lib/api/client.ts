@@ -33,7 +33,7 @@ const failure = async (response: Response): Promise<ApiError> => {
   if (response.status === 401) return new UnauthorizedError()
   if (response.status === 404) return new NotFoundError()
   const detail = await response.text().catch(() => '')
-  return new ApiError(response.status, detail.slice(0, 200) || response.statusText)
+  return new ApiError(response.status, detail.slice(0, 200) || response.statusText, detail.slice(0, 4000))
 }
 
 const graphQlEnvelope = z.object({

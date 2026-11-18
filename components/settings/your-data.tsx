@@ -24,7 +24,7 @@ const OriginalLink = ({ url }: { url: string | null | undefined }) =>
     <Dash />
   )
 
-/** The original's "Your Data" panel (the export request is not part of the mock API). */
+/** The original's "Your Data" panel. */
 export const YourData = ({ username, name, bio, links, avatarUrl, coverUrl }: YourDataProps) => (
   <TreeSection title="Your Data">
     <p className={cn('SettingsDataDescription', treeStyles.dataDescription)}>

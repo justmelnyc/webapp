@@ -1,0 +1,19 @@
+/* Port of the glamor styles in legacy/src/components/posts/ContentWarningButton.js */
+.button {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    color: #000;
+  }
+}
+
+.label {
+  margin-left: 5px;
+  border-bottom: 1px solid;
+}

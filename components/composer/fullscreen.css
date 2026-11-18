@@ -1,0 +1,10 @@
+/*
+ * The omnibar's full screen mode (MainView.css and FooterRenderables.js): with `.isFullScreen` on the omnibar,
+ * the page view and the footer are hidden. The omnibar lives in a host element right before the main view.
+ */
+@media (min-width: 40em) {
+  :has(> .Omnibar.isFullScreen) ~ .MainView,
+  :has(> .Omnibar.isFullScreen) ~ footer {
+    display: none;
+  }
+}

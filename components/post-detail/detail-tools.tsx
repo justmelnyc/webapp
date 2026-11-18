@@ -1,13 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { useOptimistic, useTransition } from 'react'
+import { useOptimistic, useState, useTransition } from 'react'
 import { setLoved, setWatching } from '@/actions/post-actions'
-import { BoltIcon, BubbleIcon, EyeIcon, FlagIcon, HeartIcon, RepostIcon, ShareIcon } from '@/components/icons'
+import { BoltIcon, BubbleIcon, EyeIcon, HeartIcon, RepostIcon, ShareIcon } from '@/components/icons'
+import { ShareDialog } from '@/components/posts/share-dialog'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
+import { postShareContent, type ShareContent } from '@/utils/share'
 import { timeAgoInWords } from './time-ago-in-words'
+import { PostFlagTool } from '@/components/posts/post-flag-tool'
 import { Hint } from './hint'
 import { numberToHuman } from './number-to-human'
 import styles from './post-detail-tools.module.css'
@@ -49,20 +52,12 @@ const useWatch = (post: Post) => {
   return { watching, toggle }
 }
 
-const share = async (path: string): Promise<void> => {
-  try {
-    await navigator.clipboard.writeText(`${window.location.origin}${path}`)
-    toast.success('Link copied')
-  } catch {
-    toast.error('Could not copy the link')
-  }
-}
-
 /** The original's `PostTools` footer: every tool renders, the surrounding context hides some. */
 export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
   const signedIn = viewerId !== null
   const isOwnPost = viewerId === post.author.id
   const detailPath = `/${post.author.username}/post/${post.token}`
+  const [shareContent, setShareContent] = useState<ShareContent | null>(null)
   const love = useLove(post, signedIn)
   const watch = useWatch(post)
   const { commentsCount, repostsCount, viewsCount } = post.postStats
@@ -139,19 +134,13 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
         </span>
       ) : null}
       <span className={cn('PostTool ShareTool', !signedIn && 'isPill')}>
-        <button type="button" onClick={() => void share(detailPath)}>
+        <button type="button" onClick={() => setShareContent(postShareContent(window.location.origin, post))}>
           <ShareIcon />
           <Hint>Share</Hint>
         </button>
+        {shareContent && <ShareDialog content={shareContent} onDismiss={() => setShareContent(null)} />}
       </span>
-      {signedIn && !isOwnPost ? (
-        <span className="PostTool FlagTool ShyTool">
-          <button type="button" onClick={() => toast.info('Reporting is not available yet')}>
-            <FlagIcon />
-            <Hint className="Flag">Report Post</Hint>
-          </button>
-        </span>
-      ) : null}
+      {signedIn && !isOwnPost ? <PostFlagTool postId={post.id} /> : null}
     </footer>
   )
 }

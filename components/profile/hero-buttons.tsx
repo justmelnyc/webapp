@@ -1,7 +1,8 @@
 'use client'
 
 import type { MouseEvent } from 'react'
-import { ChevronCircleIcon, ShareIcon } from '@/components/icons'
+import { ChevronCircleIcon, RolesIcon, ShareIcon } from '@/components/icons'
+import { useProfileRolesStore } from '@/stores/profile-roles-store'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './user-profile.module.css'
@@ -45,6 +46,22 @@ export const HeroShareUserButton = () => {
   return (
     <button type="button" className={cn('HeroShareUserButton', styles.heroButton, styles.share)} onClick={onClick} aria-label="Share profile">
       <ShareIcon />
+    </button>
+  )
+}
+
+/** `HeroUserRolesButton`: left of the share button, only for people who hold a category role. */
+export const HeroUserRolesButton = () => {
+  const isOpen = useProfileRolesStore((state) => state.isOpen)
+  const setOpen = useProfileRolesStore((state) => state.setOpen)
+  return (
+    <button
+      type="button"
+      className={cn('HeroUserRolesButton', styles.heroButton, styles.share, styles.rolesHero)}
+      aria-label="Community roles"
+      onClick={() => setOpen(!isOpen)}
+    >
+      <RolesIcon />
     </button>
   )
 }

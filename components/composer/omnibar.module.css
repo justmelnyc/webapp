@@ -235,3 +235,14 @@ textarea.editable {
     right: 40px;
   }
 }
+
+/* The inline editor on a post (BlockCollection's editorWrapperStyle without the omnibar's padding) */
+.inlineWrapper {
+  max-width: 1440px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+:global(.PostDetail) .region {
+  margin-top: 30px;
+}

@@ -4,7 +4,7 @@
 //
 //   node tools/visual-diff/vdiff.js --path /discover [--width 1280] [--vh 900] [--maxh 3000]
 //        [--login ada] [--wait 8000] [--port 9333] [--out DIR]
-//        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"]
+//        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--type "#id=value"]
 //
 // Writes legacy.png, new.png, diff.png (differences in red) and side.png (original left, rewrite
 // right) into --out and prints the percentage of mismatching pixels.
@@ -63,6 +63,11 @@ const capture = async (c, base, label) => {
   await c.send('Page.navigate', { url: base + PATH })
   await wait(WAIT)
   await c.ev(`(() => { const s = document.createElement('style'); s.textContent = ${JSON.stringify(FREEZE)}; document.head.appendChild(s) })()`)
+  if (args.type) {
+    const [sel, ...rest] = String(args.type).split('=')
+    await c.ev(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); if (!el) return; Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, ${JSON.stringify(rest.join('='))}); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })) })()`)
+    await wait(2500)
+  }
   if (args.click) { await c.ev(`document.querySelector(${JSON.stringify(args.click)}) && document.querySelector(${JSON.stringify(args.click)}).click()`); await wait(1500) }
   // Fetch natively lazy-loaded images without scrolling (scrolling would trigger infinite scroll).
   await c.ev(`document.querySelectorAll('img[loading=lazy]').forEach((i) => { i.loading = 'eager' })`)

@@ -1,3 +1,4 @@
+import { EditablePostBody } from '@/components/posts/editable-post-body'
 import { CommentSection } from '@/components/comments/comment-section'
 import type { Post } from '@/types/post'
 import type { CommentPage } from '@/types/stream'
@@ -45,7 +46,9 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
               <div className={styles.narrowOnly}>
                 <DetailHeader post={post} viewerId={viewerId} />
               </div>
-              <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+              <EditablePostBody postId={post.id}>
+                <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+              </EditablePostBody>
               <div className={styles.narrowOnly}>
                 <DetailTools post={post} viewerId={viewerId} />
               </div>

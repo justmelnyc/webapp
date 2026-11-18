@@ -1,4 +1,13 @@
-import { HeroScrollToContentButton, HeroShareUserButton, UserShareButton } from '@/components/profile/hero-buttons'
+import {
+  HeroScrollToContentButton,
+  HeroShareUserButton,
+  HeroUserRolesButton,
+  UserShareButton,
+} from '@/components/profile/hero-buttons'
+import { BlockMuteButton } from '@/components/moderation/block-mute-button'
+import { ProfilePillButtons } from '@/components/profile/profile-pill-buttons'
+import { RolesButton } from '@/components/profile/roles-button'
+import { UserRolesPanel } from '@/components/profile/user-roles-panel'
 import { RelationshipButton } from '@/components/profile/relationship-button'
 import { numberToHuman } from '@/components/profile/number-to-human'
 import {
@@ -13,6 +22,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { avatarUrl } from '@/utils/images'
 import { cn } from '@/utils/cn'
 import { cleanHtml } from '@/utils/sanitize'
+import { truncateHtml } from '@/utils/truncate-html'
 import type { User } from '@/types/user'
 import styles from './user-profile.module.css'
 
@@ -35,7 +45,10 @@ export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
   const cover = coverUrl(user)
   const priority = user.currentUserState?.relationshipPriority
   const links = (user.externalLinksList ?? []).filter((link) => isSafeUrl(link.url))
-  const bioHtml = user.formattedShortBio ? cleanHtml(user.formattedShortBio) : ''
+  const fullBio = user.formattedShortBio ? cleanHtml(user.formattedShortBio) : ''
+  const truncatedBio = truncateHtml(fullBio, 160)
+  // the original offers See More once the (truncated) bio text reaches 150 characters
+  const isBioTruncated = truncatedBio.text.length >= 150
   const displayName = user.name || user.username
   const views = stats.totalViewsCount ? numberToHuman(stats.totalViewsCount, false) : ''
 
@@ -50,6 +63,10 @@ export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
           <UserNamesCell className={cn('inUserProfile', styles.names)} name={user.name} username={user.username}>
             {user.location ? <UserLocation location={user.location} /> : null}
             <UserShareButton />
+            <RolesButton />
+            {signedIn && priority !== 'self' ? (
+              <BlockMuteButton userId={user.id} username={user.username} priority={priority} />
+            ) : null}
           </UserNamesCell>
           {views ? <UserFiguresCell className="inUserProfile" totalViewsCount={views} /> : null}
           <UserStatsCell
@@ -60,12 +77,27 @@ export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
             followersCount={stats.followersCount}
             lovesCount={stats.lovesCount}
           />
-          <UserInfoCell className="inUserProfile" bioHtml={bioHtml} />
+          <UserInfoCell className="inUserProfile" bioHtml={truncatedBio.html} fullBioHtml={isBioTruncated ? fullBio : undefined} />
           <UserLinksCell className="inUserProfile" links={links} />
           <div className={cn('UserProfileButtons inUserProfile', styles.buttons)}>
-            <RelationshipButton userId={user.id} priority={priority} signedIn={signedIn} className="isPill inUserProfile" />
+            <ProfilePillButtons
+              userId={user.id}
+              name={displayName}
+              signedIn={signedIn}
+              isCollaborateable={!!user.settings?.isCollaborateable}
+              isHireable={!!user.settings?.isHireable}
+            />
+            <RelationshipButton
+              userId={user.id}
+              username={user.username}
+              priority={priority}
+              signedIn={signedIn}
+              className="isPill inUserProfile"
+            />
           </div>
+          <UserRolesPanel roles={user.categoryUsers ?? []} />
         </div>
+        {user.categoryUsers?.length ? <HeroUserRolesButton /> : null}
         <HeroShareUserButton />
         <HeroScrollToContentButton />
       </div>

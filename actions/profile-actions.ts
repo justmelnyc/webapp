@@ -3,11 +3,13 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rest } from '@/lib/api/client'
-import { errorMessage } from '@/lib/errors'
+import { errorMessage, isApiError } from '@/lib/errors'
 import { preferencePatch } from '@/lib/preferences'
 import {
   creatorTypeIdsSchema,
+  credentialErrorsSchema,
   credentialsSchema,
+  type CredentialFieldErrors,
   imageKindSchema,
   infoSchema,
   preferenceKeySchema,
@@ -26,12 +28,42 @@ const patchProfile = async (body: Record<string, unknown>): Promise<ActionResult
   }
 }
 
-export const saveCredentials = async (input: unknown): Promise<ActionResult> => {
+export type CredentialsResult = ActionResult | { ok: false; error: string; fields: CredentialFieldErrors }
+
+/** The API's 422 names the offending fields (`attrs`, snake_case); map them onto the form's. */
+const fieldErrorsOf = (error: unknown): CredentialFieldErrors | null => {
+  if (!isApiError(error) || error.status !== 422) return null
+  try {
+    const parsed = credentialErrorsSchema.safeParse(JSON.parse(error.detail))
+    if (!parsed.success) return null
+    const { attrs } = parsed.data.errors
+    const fields: CredentialFieldErrors = {}
+    if (attrs.username) fields.username = attrs.username
+    if (attrs.email) fields.email = attrs.email
+    if (attrs.password) fields.password = attrs.password
+    if (attrs.current_password) fields.currentPassword = attrs.current_password
+    return fields
+  } catch {
+    return null
+  }
+}
+
+export const saveCredentials = async (input: unknown): Promise<CredentialsResult> => {
   const parsed = credentialsSchema.safeParse(input)
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Check your details')
   const { username, email, password, currentPassword } = parsed.data
-  // The mock API ignores `password` and `current_password`; they are sent as the original sends them.
-  return patchProfile({ username, email, current_password: currentPassword, ...(password ? { password } : {}) })
+  try {
+    await rest('/api/v2/profile', profileResponse, {
+      method: 'PATCH',
+      body: { username, email, current_password: currentPassword, ...(password ? { password } : {}) },
+    })
+    revalidatePath('/', 'layout')
+    return success(undefined)
+  } catch (error) {
+    const fields = fieldErrorsOf(error)
+    if (fields) return { ok: false, error: 'Your changes could not be saved', fields }
+    return failure(errorMessage(error))
+  }
 }
 
 export const saveInfo = async (input: unknown): Promise<ActionResult> => {

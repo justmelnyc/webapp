@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { MarkerIcon } from '@/components/icons'
+import { BioMoreButton } from '@/components/profile/bio-more-button'
 import { UserStatsLink } from '@/components/profile/user-stats-link'
 import { numberToHuman } from '@/components/profile/number-to-human'
 import { cn } from '@/utils/cn'
@@ -96,10 +97,17 @@ export const UserStatsCell = ({ className, username, postsCount, followingCount,
   )
 }
 
-/** `bioHtml` must already be sanitised. */
-export const UserInfoCell = ({ className, bioHtml }: CellProps & { bioHtml: string }) => (
+interface InfoProps extends CellProps {
+  /** Must already be sanitised (and truncated, as the original's `truncatedShortBio`). */
+  bioHtml: string
+  /** The whole sanitised bio: when given, a See More button opens it in a dialog. */
+  fullBioHtml?: string
+}
+
+export const UserInfoCell = ({ className, bioHtml, fullBioHtml }: InfoProps) => (
   <div className={cn('UserCell UserInfoCell', styles.cell, styles.info, className)}>
     {bioHtml ? <div className={styles.bio} dangerouslySetInnerHTML={{ __html: bioHtml }} /> : null}
+    {fullBioHtml ? <BioMoreButton html={fullBioHtml} /> : null}
   </div>
 )
 

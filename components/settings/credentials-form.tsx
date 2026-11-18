@@ -7,9 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { saveCredentials } from '@/actions/profile-actions'
 import { FieldError, outcome } from '@/components/settings/field-status'
 import { FormButton } from '@/components/ui/button'
-import { FormControl } from '@/components/ui/form-control'
+import { FormControl, type ControlStatus } from '@/components/ui/form-control'
+import { useAvailability } from '@/hooks/use-availability'
 import { credentialsSchema, type CredentialsInput } from '@/lib/schemas/profile'
 import { toast } from '@/stores/toast-store'
+import { emailClientError, emailFromServer, usernameClientError, usernameFromServer } from '@/utils/availability'
 import { cn } from '@/utils/cn'
 import styles from './settings.module.css'
 
@@ -30,21 +32,59 @@ export const CredentialsForm = ({ username, email }: CredentialsFormProps) => {
     register,
     handleSubmit,
     reset,
+    setValue,
+    setError,
     control,
     formState: { errors, dirtyFields },
   } = useForm<CredentialsInput>({ resolver: zodResolver(credentialsSchema), mode: 'onChange', defaultValues: defaults })
   const password = useWatch({ control, name: 'password' })
-  const changed = (field: 'username' | 'email'): boolean => !!dirtyFields[field] && !errors[field]
-  const requiresSave = changed('username') || changed('email') || (password.length > 0 && !errors.password)
+  const usernameCheck = useAvailability({
+    field: 'username',
+    current: username,
+    clientError: usernameClientError,
+    fromServer: usernameFromServer,
+  })
+  const emailCheck = useAvailability({
+    field: 'email',
+    current: email,
+    clientError: emailClientError,
+    fromServer: emailFromServer,
+  })
+  const [currentPasswordFailed, setCurrentPasswordFailed] = useState(false)
+  const settled = (state: { status: string }): boolean => state.status !== 'failure' && state.status !== 'request'
+  const changed = (field: 'username' | 'email'): boolean =>
+    !!dirtyFields[field] && !errors[field] && settled(field === 'username' ? usernameCheck.state : emailCheck.state)
+  const requiresSave =
+    changed('username') || changed('email') || (password.length > 0 && !errors.password) || currentPasswordFailed
+  const statusOf = (field: 'username' | 'email'): ControlStatus => {
+    const { status } = field === 'username' ? usernameCheck.state : emailCheck.state
+    if (status !== 'indeterminate' && !errors[field]) return status
+    return outcome(!!dirtyFields[field] && status === 'indeterminate', errors[field]?.message)
+  }
+  const checkMessage = (field: 'username' | 'email'): string | undefined => {
+    const { message } = field === 'username' ? usernameCheck.state : emailCheck.state
+    return errors[field]?.message ?? (message || undefined)
+  }
 
   const onSubmit = async (input: CredentialsInput): Promise<void> => {
     setSaving(true)
     const result = await saveCredentials(input)
     setSaving(false)
     if (!result.ok) {
-      toast.error(result.error)
+      const fields = 'fields' in result ? result.fields : null
+      if (!fields) {
+        toast.error(result.error)
+        return
+      }
+      for (const [field, message] of Object.entries(fields)) {
+        if (field !== 'currentPassword') setError(field as 'username' | 'email' | 'password', { type: 'server', message })
+      }
+      setCurrentPasswordFailed(!!fields.currentPassword)
       return
     }
+    setCurrentPasswordFailed(false)
+    usernameCheck.reset()
+    emailCheck.reset()
     reset({ ...input, password: '', currentPassword: '' })
     toast.success('Profile saved')
     router.refresh()
@@ -54,7 +94,7 @@ export const CredentialsForm = ({ username, email }: CredentialsFormProps) => {
     <form id="SettingsForm" onSubmit={handleSubmit(onSubmit)} className="SettingsForm" noValidate>
       <FormControl
         appearance="box-grey"
-        status={outcome(!!dirtyFields.username, errors.username?.message)}
+        status={statusOf('username')}
         initialValue={username}
         className="UsernameControl"
       >
@@ -65,14 +105,21 @@ export const CredentialsForm = ({ username, email }: CredentialsFormProps) => {
           autoComplete="username"
           placeholder="Enter your username"
           aria-invalid={!!errors.username}
-          {...register('username')}
+          {...register('username', { onChange: (e) => usernameCheck.check(e.target.value) })}
         />
         <FormControl.Status />
-        <FieldError message={errors.username?.message} />
+        <FieldError message={checkMessage('username')} />
+        <FormControl.Suggestions
+          suggestions={usernameCheck.state.suggestions}
+          onPick={(suggestion) => {
+            setValue('username', suggestion, { shouldDirty: true, shouldValidate: true })
+            usernameCheck.check(suggestion)
+          }}
+        />
       </FormControl>
       <FormControl
         appearance="box-grey"
-        status={outcome(!!dirtyFields.email, errors.email?.message)}
+        status={statusOf('email')}
         initialValue={email}
         className="EmailControl"
       >
@@ -83,10 +130,10 @@ export const CredentialsForm = ({ username, email }: CredentialsFormProps) => {
           autoComplete="email"
           placeholder="Enter your email"
           aria-invalid={!!errors.email}
-          {...register('email')}
+          {...register('email', { onChange: (e) => emailCheck.check(e.target.value) })}
         />
         <FormControl.Status />
-        <FieldError message={errors.email?.message} />
+        <FieldError message={checkMessage('email')} />
       </FormControl>
       <FormControl
         appearance="box-grey"
@@ -110,7 +157,11 @@ export const CredentialsForm = ({ username, email }: CredentialsFormProps) => {
         className={cn('SettingsCredentialActions', styles.actions, requiresSave && ['requiresSave', styles.actionsOpen])}
       >
         <p>To save changes you must re-enter your current Ello password.</p>
-        <FormControl appearance="box-grey" className="PasswordControl">
+        <FormControl
+          appearance="box-grey"
+          status={currentPasswordFailed ? 'failure' : 'indeterminate'}
+          className="PasswordControl"
+        >
           <FormControl.Label htmlFor="current_password">Password - Please enter your current one.</FormControl.Label>
           <FormControl.Input
             id="current_password"

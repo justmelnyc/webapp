@@ -5,12 +5,15 @@ import { Hint } from '@/components/posts/hint'
 import { LoveButton } from '@/components/posts/love-button'
 import { numberToHuman } from '@/components/posts/number-to-human'
 import { PostFollowButton } from '@/components/posts/post-follow-button'
+import { PostFlagTool } from '@/components/posts/post-flag-tool'
 import { PostOwnerMenu } from '@/components/posts/post-owner-menu'
+import { RepostHeader } from '@/components/posts/repost-header'
 import { RepostTool, ShareTool, WatchTool } from '@/components/posts/post-tool-actions'
 import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
+import { isRepost } from '@/utils/repost'
 import { timeAgoInWords } from '@/components/posts/time-ago-in-words'
 import './post-body.css'
 import './post-header.css'
@@ -27,10 +30,13 @@ const Root = ({ className, ...props }: ComponentProps<'article'>) => (
 interface HeaderProps {
   post: Post
   viewerId?: string | null
+  /** A profile's own posts page: only reposts keep a header there. */
+  inUserDetail?: boolean
 }
 
-/** Avatar, @username, follow icon and the age at the right (`PostHeader UserPostHeader`). */
-const Header = ({ post, viewerId }: HeaderProps) => {
+/** Avatar, @username, follow icon and the age at the right (`PostHeader UserPostHeader`); reposts get `RepostHeader`. */
+const Header = ({ post, viewerId, inUserDetail }: HeaderProps) => {
+  if (isRepost(post)) return <RepostHeader post={post} viewerId={viewerId} inUserDetail={inUserDetail} />
   const { author } = post
   return (
     <header className="PostHeader UserPostHeader">
@@ -96,7 +102,7 @@ const Footer = ({ post, signedIn, viewerId, showWatch }: FooterProps) => {
         </Link>
       </span>
       <LoveButton postId={post.id} loved={post.currentUserState.loved} count={lovesCount} signedIn={signedIn} />
-      {!(isOwn && repostsCount === 0) && <RepostTool count={repostsCount} />}
+      {!(isOwn && repostsCount === 0) && <RepostTool post={post} signedIn={signedIn} viewerId={viewerId} />}
       <span className="PostTool LightBoxTriggerTool">
         <Link href={path} aria-label="Open post">
           <LightBoxTriggerSmall />
@@ -106,7 +112,8 @@ const Footer = ({ post, signedIn, viewerId, showWatch }: FooterProps) => {
       {showWatch && !isOwn && (
         <WatchTool postId={post.id} watching={post.currentUserState.watching} signedIn={signedIn} />
       )}
-      <ShareTool path={path} isPill={!signedIn} />
+      <ShareTool post={post} isPill={!signedIn} />
+      {signedIn && !isOwn ? <PostFlagTool postId={post.id} /> : null}
     </footer>
   )
 }

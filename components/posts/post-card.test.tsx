@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/react'
-import { gqlPost } from '@/test/fixtures/posts'
+import { gqlAuthor, gqlPost, textRegion } from '@/test/fixtures/posts'
 import { postSchema } from '@/types/post'
 import { PostCard } from './post-card'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
 jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
+jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser: jest.fn(), setRelationship: jest.fn() }))
+jest.mock('@/actions/post-edit-actions', () => ({ loadEditablePost: jest.fn() }))
 
 const post = postSchema.parse(
   gqlPost('p1', {
@@ -23,6 +25,20 @@ describe('PostCard', () => {
     expect(screen.getByRole('link', { name: '5m' })).toHaveAttribute('href', '/ada/post/tokp1')
     expect(screen.getByRole('img', { name: 'ada' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Follow' })).toBeInTheDocument()
+  })
+
+  it('Header of a repost shows the original author and "by @reposter"', () => {
+    const repost = postSchema.parse(
+      gqlPost('p2', {
+        author: gqlAuthor('theo', 'u2'),
+        repostContent: [textRegion('<p>Original</p>')],
+        repostedSource: { id: 'p9', token: 'tok9', author: gqlAuthor('mara', 'u3') },
+      }),
+    )
+    const { container } = render(<PostCard.Header post={repost} />)
+    expect(container.querySelector('header')).toHaveClass('RepostHeader')
+    expect(screen.getByRole('link', { name: /@mara/ })).toHaveAttribute('href', '/mara')
+    expect(screen.getByRole('link', { name: /by @theo/ })).toHaveAttribute('href', '/theo')
   })
 
   it('Footer shows view, comment and love counts and loved state', () => {

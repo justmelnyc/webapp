@@ -1,0 +1,181 @@
+/*
+ * Repost header ("@original  by @reposter"), ported from the `.RepostHeader` rules of
+ * legacy/src/components/posts/PostHeader.css. Load after post-header.css: the legacy sheet orders
+ * these after the plain `.PostHeaderAuthor` rules. 40em = break-2, `max-width: 39.9375em` = break-2-max.
+ */
+
+.RepostHeader {
+  position: relative;
+  height: 60px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.RepostHeaderAuthor,
+.RepostHeaderReposter {
+  position: relative;
+}
+
+.RepostHeaderAuthor,
+.RepostHeader .RelationshipContainer {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.RepostHeaderAuthor {
+  max-width: calc(100% - 90px);
+}
+
+.RepostHeader .RelationshipContainer {
+  margin-top: -2px;
+  margin-left: 10px;
+}
+
+.PostHeader.RepostHeader {
+  display: flex;
+  align-items: center;
+}
+
+.PostHeader.RepostHeader .author-with-relationship {
+  display: block;
+  max-width: calc(100% - 90px);
+}
+
+.PostHeader.RepostHeader .author-with-relationship .container {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderAuthor {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter {
+  display: block;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink {
+  display: flex;
+  align-items: center;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .RepostHeaderReposter .PostHeaderLink svg {
+  margin-right: 4px;
+  overflow: visible;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .DraggableUsername {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink {
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar {
+  top: auto;
+}
+
+@media (max-width: 39.9375em) {
+  .PostHeader.RepostHeader .author-with-relationship .PostHeaderLink .Avatar {
+    top: 4px;
+  }
+}
+
+.RepostHeaderAuthor {
+  padding-left: 40px;
+  line-height: 45px;
+}
+
+.RepostHeaderReposter {
+  max-width: calc(100% - 120px);
+  margin-top: -12px;
+  margin-left: 40px;
+  line-height: 15px;
+}
+
+/* Weird layout for reposts headers when in a UserDetail template */
+.PostHeader.RepostHeader.inUserDetail .author-with-relationship .PostHeaderLink .Avatar {
+  top: -10px;
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter {
+  position: absolute;
+  top: 29px;
+  left: 0;
+  z-index: 2;
+  margin-left: 0;
+}
+
+@media (max-width: 39.9375em) {
+  .RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter {
+    top: 18px;
+  }
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .DraggableUsername {
+  margin-left: 10px;
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderReposter .DraggableUsername {
+  display: none;
+}
+
+.RepostHeader.inUserDetail .author-with-relationship .RepostHeaderAuthor {
+  padding-left: 65px;
+}
+
+@media (max-width: 39.9375em) {
+  .RepostHeader.inUserDetail .author-with-relationship .RepostHeaderAuthor {
+    padding-left: 55px;
+  }
+
+  .Posts.asGrid .RepostHeader .RelationshipContainer {
+    display: none;
+  }
+
+  .Posts.asGrid .RepostHeaderAuthor,
+  .Posts.asGrid .RepostHeaderReposter {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 40em) {
+  .RepostHeader {
+    height: 80px;
+  }
+
+  .RepostHeaderAuthor {
+    padding-left: 60px;
+    line-height: 60px;
+  }
+
+  .RepostHeaderReposter {
+    margin-top: -20px;
+    margin-left: 60px;
+    line-height: 20px;
+  }
+
+  .RepostHeader.inUserDetail > .RepostHeaderAuthor {
+    padding-left: 75px;
+    line-height: 80px;
+  }
+
+  .RepostHeader.inUserDetail > .RepostHeaderReposter {
+    top: 52px;
+    left: -60px;
+  }
+}
+
+
+/* Avatar placement (glamor `parent('.RepostHeader.inUserDetail ', ...)` in assets/Avatar.js) */
+.RepostHeader.inUserDetail .Avatar {
+  left: 25px;
+}

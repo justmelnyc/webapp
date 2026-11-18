@@ -1,12 +1,13 @@
 'use client'
 
-import { useRef, type ChangeEvent } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 import { ArrowIcon, BrowseIcon, MoneyIconCircle, XIconLG } from '@/components/icons'
+import { BuyLinkDialog } from '@/components/composer/buy-link-dialog'
 import { CategorySelector } from '@/components/composer/category-selector'
 import { useSubmitPost } from '@/components/composer/use-submit-post'
 import { useMediaQuery } from '@/components/layout/use-media-query'
 import { ACCEPTED_IMAGE_TYPES } from '@/constants/upload'
-import { canPost, useComposerStore } from '@/stores/composer-store'
+import { canPost, hasMedia as hasMediaIn, hasUploadsInFlight, useComposerStore } from '@/stores/composer-store'
 import type { Category } from '@/types/content'
 import styles from './action-bar.module.css'
 
@@ -14,24 +15,35 @@ interface ActionBarProps {
   categories: Category[]
   onFiles: (files: File[]) => void
   onCancel: () => void
+  /** Narrow hosts (a grid card's inline editor) use the compact layout at any width. */
+  compact?: boolean
 }
 
 const CancelText = ({ onCancel }: { onCancel: () => void }) => (
-  <button type="button" className={`PostActionButton forCancel label ${styles.cancel}`} onClick={onCancel}>
+  <button
+    type="button"
+    className={`PostActionButton forCancel label ${styles.cancel}`}
+    onClick={onCancel}
+  >
     <span>Cancel</span>
   </button>
 )
 
 /** The original's PostActionBar (post version): Cancel, Upload, Sell, category selector and Post. */
-export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => {
+export const ActionBar = ({ categories, onFiles, onCancel, compact = false }: ActionBarProps) => {
   const blocks = useComposerStore((s) => s.blocks)
   const isSubmitting = useComposerStore((s) => s.isSubmitting)
   const { submit, isPending } = useSubmitPost()
   const inputRef = useRef<HTMLInputElement>(null)
-  const isDesktop = useMediaQuery('(min-width: 40em)')
+  const isDesktop = useMediaQuery('(min-width: 40em)') && !compact
+  const mode = useComposerStore((s) => s.mode)
   const busy = isSubmitting || isPending
-  const hasMedia = blocks.some((b) => b.kind === 'image')
-  const disableSubmit = busy || !canPost(blocks)
+  const submitLabel = { post: 'Post', edit: 'Update', repost: 'Repost' }[mode]
+  const buyLink = useComposerStore((s) => s.buyLink)
+  const setBuyLink = useComposerStore((s) => s.setBuyLink)
+  const [selling, setSelling] = useState(false)
+  const hasMedia = hasMediaIn(blocks)
+  const disableSubmit = busy || (mode === 'repost' ? hasUploadsInFlight(blocks) : !canPost(blocks))
 
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
     onFiles(Array.from(e.target.files ?? []))
@@ -39,13 +51,22 @@ export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => 
   }
 
   const upload = (
-    <button type="button" className={`PostActionButton forUpload ${styles.button}`} onClick={() => inputRef.current?.click()}>
+    <button
+      type="button"
+      className={`PostActionButton forUpload ${styles.button}`}
+      onClick={() => inputRef.current?.click()}
+    >
       <span className={styles.label}>Upload</span>
       <BrowseIcon />
     </button>
   )
   const sell = (
-    <button type="button" className={`PostActionButton forMoney ${styles.button}`} disabled={!hasMedia}>
+    <button
+      type="button"
+      className={`PostActionButton forMoney ${buyLink ? 'isBuyLinked ' : ''}${styles.button} ${buyLink ? styles.buyLinked : ''}`}
+      disabled={!hasMedia}
+      onClick={() => setSelling(true)}
+    >
       <span className={styles.label}>Sell</span>
       <MoneyIconCircle />
     </button>
@@ -53,11 +74,11 @@ export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => 
   const submitButton = (
     <button
       type="button"
-      className={`PostActionButton forSubmit forPost ${styles.button} ${styles.submit}`}
+      className={`PostActionButton forSubmit for${submitLabel} ${styles.button} ${styles.submit}`}
       disabled={disableSubmit}
       onClick={submit}
     >
-      <span className={styles.label}>{busy ? 'Posting...' : 'Post'}</span>
+      <span className={styles.label}>{busy && mode === 'post' ? 'Posting...' : submitLabel}</span>
       <ArrowIcon />
     </button>
   )
@@ -74,6 +95,17 @@ export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => 
     />
   )
 
+  const dialog = selling ? (
+    <BuyLinkDialog
+      text={buyLink}
+      onConfirm={(url) => {
+        setBuyLink(url)
+        setSelling(false)
+      }}
+      onDismiss={() => setSelling(false)}
+    />
+  ) : null
+
   if (isDesktop) {
     return (
       <div className={styles.bar}>
@@ -87,12 +119,13 @@ export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => 
           {submitButton}
         </div>
         {fileInput}
+        {dialog}
       </div>
     )
   }
 
   return (
-    <div className={styles.bar}>
+    <div className={compact ? `${styles.bar} ${styles.compact}` : styles.bar}>
       {selector}
       <div className={styles.left}>
         {upload}
@@ -112,6 +145,7 @@ export const ActionBar = ({ categories, onFiles, onCancel }: ActionBarProps) => 
         {submitButton}
       </div>
       {fileInput}
+      {dialog}
     </div>
   )
 }

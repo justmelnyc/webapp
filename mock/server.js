@@ -3,8 +3,15 @@
 // Point AUTH_DOMAIN in .env at http://localhost:7770; dev.js proxies /api here.
 // State persists in mock/.data (delete it, or `yarn mock:reset`, to start over).
 const express = require('express')
-const { db } = require('./db')
+const { db, save, nextId } = require('./db')
 const { PORT } = require('./media')
+require('./reposts').seedReposts()
+
+// Shop products (idempotent): see products.js
+if (require('./products').seedProducts(db, nextId)) save()
+
+// Posts with video / audio embeds (idempotent): see embeds.js
+if (require('./embeds').seedEmbedPosts(db, nextId)) save()
 
 const app = express()
 
@@ -20,7 +27,7 @@ app.use((req, res, next) => {
   return next()
 })
 
-;['auth', 'media', 'upload', 'graphql', 'rest', 'mutations'].forEach((name) => {
+;['auth', 'notifications', 'media', 'upload', 'graphql', 'rest', 'embeds', 'moderation', 'reposts', 'mutations', 'account'].forEach((name) => {
   app.use(require(`./routes/${name}`).router)
 })
 

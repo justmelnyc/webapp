@@ -15,6 +15,7 @@ const SEARCH_USER_CARDS = `
       users {
         id username name avatar ${AVATAR} coverImage ${COVER} formattedShortBio
         currentUserState { relationshipPriority }
+        settings { isHireable isCollaborateable }
         userStats { followersCount followingCount lovesCount postsCount }
       }
     }
@@ -30,6 +31,8 @@ const flatUserSchema = z.object({
   coverImage: responsiveImageSchema.nullish(),
   formattedShortBio: z.string().nullish(),
   relationshipPriority: z.string().nullish(),
+  isHireable: z.boolean().nullish(),
+  isCollaborateable: z.boolean().nullish(),
   followersCount: z.number().default(0),
   followingCount: z.number().default(0),
   lovesCount: z.number().default(0),
@@ -44,6 +47,7 @@ const searchUserSchema = z.object({
   coverImage: responsiveImageSchema.nullish(),
   formattedShortBio: z.string().nullish(),
   currentUserState: z.object({ relationshipPriority: z.string().nullish() }).nullish(),
+  settings: z.object({ isHireable: z.boolean().nullish(), isCollaborateable: z.boolean().nullish() }).nullish(),
   userStats: z.object({
     followersCount: z.number().default(0),
     followingCount: z.number().default(0),
@@ -67,9 +71,11 @@ export const searchUserCards = async (query: string): Promise<UserCardData[]> =>
     { query },
     z.object({ searchUsers: z.object({ users: z.array(searchUserSchema) }) }),
   )
-  return data.searchUsers.users.map(({ formattedShortBio, currentUserState, userStats, ...user }) => ({
+  return data.searchUsers.users.map(({ formattedShortBio, currentUserState, settings, userStats, ...user }) => ({
     ...user,
     ...userStats,
+    isHireable: settings?.isHireable,
+    isCollaborateable: settings?.isCollaborateable,
     bioHtml: formattedShortBio,
     relationshipPriority: currentUserState?.relationshipPriority,
   }))

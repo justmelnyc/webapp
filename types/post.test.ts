@@ -44,7 +44,6 @@ describe('postSchema', () => {
 
   it('strips unknown top-level keys', () => {
     const post = postSchema.parse(gqlPost())
-    expect(post).not.toHaveProperty('repostContent')
     expect(post.author).not.toHaveProperty('settings')
   })
 
