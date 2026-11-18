@@ -2,7 +2,7 @@
 // Notifications for the mock. Records live in db.notifications (persisted in mock/.data/db.json).
 //
 // Most notifications are DERIVED from the rest of the data by `sync()`: a love on your post, a comment,
-// a new follower. They get a stable key so each source produces one notification, and they disappear
+// a repost of your post, a new follower. They get a stable key so each source produces one notification, and they disappear
 // again when the source does (unlove, delete). The first sync also seeds mentions, reposts and watches.
 // Read state is `db.notificationReads[userId]`: a notification is unread when it is newer than that.
 const { db, save, nextId, userById, postById } = require('./db')
@@ -112,7 +112,13 @@ const sync = () => {
   db.follows.forEach((f) => {
     derive(`follow:${f.followerId}:${f.followeeId}`, { userId: f.followeeId, kind: 'new_follower_post', actorId: f.followerId, subjectUserId: f.followerId }, now - 6 * DAY)
   })
-  const derivedPrefix = /^(love|comment|follow):/
+  // a repost tells the original's author (the subject is the repost itself; it goes away with it)
+  db.posts.forEach((p) => {
+    const original = p.repostOfId && postById(p.repostOfId)
+    if (!original || original.authorId === p.authorId) return
+    derive(`repost:${p.id}`, { userId: original.authorId, kind: 'repost_notification', actorId: p.authorId, postId: p.id, createdAt: p.createdAt }, Date.parse(p.createdAt))
+  })
+  const derivedPrefix = /^(love|comment|follow|repost):/
   const kept = db.notifications.filter(n => !derivedPrefix.test(n.key) || live.has(n.key))
   if (kept.length !== db.notifications.length) changed = true
   db.notifications = kept

@@ -32,8 +32,14 @@ export const TextBlock = ({ block, autoFocus }: { block: TextBlockData; autoFocu
   }, [block.text])
 
   useEffect(() => {
-    if (autoFocus && ref.current) placeCaretAtEnd(ref.current)
+    if (!autoFocus || !ref.current) return
+    placeCaretAtEnd(ref.current)
+    // a strict-mode remount refocuses an already focused element, which fires no focus event
+    if (document.activeElement === ref.current) document.body.classList.add('isEditorFocused')
   }, [autoFocus])
+
+  // The original marks the body while a text block has focus (the phone footer hides meanwhile).
+  useEffect(() => () => document.body.classList.remove('isEditorFocused'), [])
 
   const commit = (): void => {
     const el = ref.current
@@ -72,7 +78,11 @@ export const TextBlock = ({ block, autoFocus }: { block: TextBlockData; autoFocu
       suppressContentEditableWarning
       className={`editable text ${styles.editable}`}
       onInput={commit}
-      onBlur={commit}
+      onFocus={() => document.body.classList.add('isEditorFocused')}
+      onBlur={() => {
+        document.body.classList.remove('isEditorFocused')
+        commit()
+      }}
       onKeyDown={onKeyDown}
       onPaste={onPaste}
     />

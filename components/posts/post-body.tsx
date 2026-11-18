@@ -39,7 +39,9 @@ const listSrcSet = (asset: Asset | undefined): string | undefined => {
     [attachment.xhdpi, '1500w'],
     [attachment.optimized, '1920w'],
   ]
-  const entries = candidates.flatMap(([version, width]) => (version?.url ? [`${version.url} ${width}`] : []))
+  const entries = candidates.flatMap(([version, width]) =>
+    version?.url ? [`${version.url} ${width}`] : [],
+  )
   return entries.length > 0 ? entries.join(', ') : undefined
 }
 
@@ -101,7 +103,11 @@ const RegionImage = ({ region, assets, loading, detailPath }: RegionImageProps) 
     <div className="ImageRegion">
       <div className="RegionContent">
         <Link href={detailPath}>{image}</Link>
-        <Link href={detailPath} className={buyLink ? 'lightbox-trigger with-buy' : 'lightbox-trigger'} tabIndex={-1}>
+        <Link
+          href={detailPath}
+          className={buyLink ? 'lightbox-trigger with-buy' : 'lightbox-trigger'}
+          tabIndex={-1}
+        >
           <span className="label">Open Lightbox</span>
           <span className="icon">
             <LightBoxTrigger />
@@ -113,41 +119,73 @@ const RegionImage = ({ region, assets, loading, detailPath }: RegionImageProps) 
   )
 }
 
+interface BodyRegionsProps {
+  regions: Region[]
+  assets?: Asset[]
+  loading?: 'eager' | 'lazy'
+  detailPath?: string
+}
+
+/** The original's `RegionItems`: just the region blocks, without the `PostBody` wrapper. */
+export const PostBodyRegions = ({
+  regions,
+  assets = [],
+  loading = 'lazy',
+  detailPath,
+}: BodyRegionsProps) => (
+  <div>
+    {regions.map((region, index) => {
+      if (region.kind === 'text') {
+        if (detailPath) return <HotTextRegion key={index} html={region.data} path={detailPath} />
+        return (
+          <div key={index} className="TextRegion">
+            <div className="RegionContent" dangerouslySetInnerHTML={{ __html: region.data }} />
+          </div>
+        )
+      }
+      if (region.kind === 'image') {
+        return (
+          <RegionImage
+            key={index}
+            region={region}
+            assets={assets}
+            loading={loading}
+            detailPath={detailPath}
+          />
+        )
+      }
+      if (region.kind === 'embed') {
+        const { service, id, url, thumbnailLargeUrl } = embedFields(region.data)
+        if (!service || !thumbnailLargeUrl) return null
+        return (
+          <EmbedRegion
+            key={index}
+            service={service}
+            id={id}
+            url={url}
+            thumbnailLargeUrl={thumbnailLargeUrl}
+            detailPath={detailPath}
+            linkUrl={region.linkUrl}
+          />
+        )
+      }
+      return null
+    })}
+  </div>
+)
+
 /** Renders post content blocks. Text HTML is already sanitized by the data layer. */
-export const PostBody = ({ regions, assets = [], loading = 'lazy', detailPath, contentWarning, children }: PostBodyProps) => (
+export const PostBody = ({
+  regions,
+  assets = [],
+  loading = 'lazy',
+  detailPath,
+  contentWarning,
+  children,
+}: PostBodyProps) => (
   <div className="PostBody">
     {contentWarning ? <ContentWarningButton contentWarning={contentWarning} /> : null}
-    <div>
-      {regions.map((region, index) => {
-        if (region.kind === 'text') {
-          if (detailPath) return <HotTextRegion key={index} html={region.data} path={detailPath} />
-          return (
-            <div key={index} className="TextRegion">
-              <div className="RegionContent" dangerouslySetInnerHTML={{ __html: region.data }} />
-            </div>
-          )
-        }
-        if (region.kind === 'image') {
-          return <RegionImage key={index} region={region} assets={assets} loading={loading} detailPath={detailPath} />
-        }
-        if (region.kind === 'embed') {
-          const { service, id, url, thumbnailLargeUrl } = embedFields(region.data)
-          if (!service || !thumbnailLargeUrl) return null
-          return (
-            <EmbedRegion
-              key={index}
-              service={service}
-              id={id}
-              url={url}
-              thumbnailLargeUrl={thumbnailLargeUrl}
-              detailPath={detailPath}
-              linkUrl={region.linkUrl}
-            />
-          )
-        }
-        return null
-      })}
-    </div>
+    <PostBodyRegions regions={regions} assets={assets} loading={loading} detailPath={detailPath} />
     {children}
   </div>
 )

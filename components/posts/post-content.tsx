@@ -1,4 +1,4 @@
-import { PostBody } from '@/components/posts/post-body'
+import { PostBody, PostBodyRegions } from '@/components/posts/post-body'
 import { RepostEditorGate } from '@/components/posts/repost-editor-gate'
 import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
@@ -18,7 +18,7 @@ interface PostContentProps {
  * summary in a grid) and, in a list, the reposter's own words below it with their avatar.
  */
 export const PostContent = ({ post, mode, eager }: PostContentProps) => (
-  <RepostEditorGate post={post}>
+  <RepostEditorGate post={post} layout={mode}>
     <PostRegions post={post} mode={mode} eager={eager} />
   </RepostEditorGate>
 )
@@ -41,7 +41,7 @@ const PostRegions = ({ post, mode, eager }: PostContentProps) => {
       {post.content.length > 0 && (
         <div className="PostBody RepostedBody">
           <Avatar href={`/${post.author.username}`} src={avatarUrl(post.author.avatar, 'regular')} name={post.author.username} />
-          <PostBody regions={post.content} assets={post.assets} loading={loading} />
+          <PostBodyRegions regions={post.content} assets={post.assets} loading={loading} />
         </div>
       )}
     </PostBody>

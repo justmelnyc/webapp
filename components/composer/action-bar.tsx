@@ -17,6 +17,8 @@ interface ActionBarProps {
   onCancel: () => void
   /** Narrow hosts (a grid card's inline editor) use the compact layout at any width. */
   compact?: boolean
+  /** DOM id of the bar (the original's `editorId`), used to scroll it into view. */
+  id?: string
 }
 
 const CancelText = ({ onCancel }: { onCancel: () => void }) => (
@@ -30,7 +32,7 @@ const CancelText = ({ onCancel }: { onCancel: () => void }) => (
 )
 
 /** The original's PostActionBar (post version): Cancel, Upload, Sell, category selector and Post. */
-export const ActionBar = ({ categories, onFiles, onCancel, compact = false }: ActionBarProps) => {
+export const ActionBar = ({ categories, onFiles, onCancel, compact = false, id }: ActionBarProps) => {
   const blocks = useComposerStore((s) => s.blocks)
   const isSubmitting = useComposerStore((s) => s.isSubmitting)
   const { submit, isPending } = useSubmitPost()
@@ -108,7 +110,7 @@ export const ActionBar = ({ categories, onFiles, onCancel, compact = false }: Ac
 
   if (isDesktop) {
     return (
-      <div className={styles.bar}>
+      <div className={styles.bar} id={id}>
         <div className={styles.left}>
           <CancelText onCancel={onCancel} />
         </div>
@@ -125,7 +127,7 @@ export const ActionBar = ({ categories, onFiles, onCancel, compact = false }: Ac
   }
 
   return (
-    <div className={compact ? `${styles.bar} ${styles.compact}` : styles.bar}>
+    <div className={compact ? `${styles.bar} ${styles.compact}` : styles.bar} id={id}>
       {selector}
       <div className={styles.left}>
         {upload}

@@ -129,6 +129,12 @@
   flex: none;
 }
 
+/* The stream's absolute `.PostHeaderTools { top, right }` (post-header.css) stays loaded after client navigation. */
+.header .headerTools {
+  top: auto;
+  right: auto;
+}
+
 .headerTools > a,
 .headerTools > span {
   float: right;
@@ -145,7 +151,8 @@
   }
 }
 
-.relationship {
+/* Out-specifies the stream's `.PostHeader .RelationshipContainer` (post-header.css), which stays loaded after client navigation. */
+.header .relationship:global(.RelationshipContainer) {
   display: inline-block;
   margin-top: -2px;
   margin-right: 2px;
@@ -153,7 +160,7 @@
   vertical-align: middle;
 }
 
-.relationship[data-priority='self'] {
+.header .relationship:global(.RelationshipContainer)[data-priority='self'] {
   display: none;
 }
 

@@ -155,3 +155,9 @@
   display: inline-block;
   margin-right: 10px;
 }
+
+/* FilterSelectorControl.js: `.PostGrid .isPostReposting` makes the selector full width above the buttons */
+.compact :global(.category-post-selector) {
+  width: 100%;
+  margin: 0 0 10px;
+}

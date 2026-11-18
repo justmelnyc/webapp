@@ -1,10 +1,12 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useOptimistic, useState, useTransition } from 'react'
 import { setWatching } from '@/actions/post-actions'
 import { BoltIcon, RepostIcon, ShareIcon } from '@/components/icons'
 import { Hint } from '@/components/posts/hint'
 import { numberToHuman } from '@/components/posts/number-to-human'
+import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
 import { ShareDialog } from '@/components/posts/share-dialog'
 import { useRepostStore } from '@/stores/repost-store'
 import { toast } from '@/stores/toast-store'
@@ -35,12 +37,16 @@ interface RepostToolProps {
 
 /** The original's `RepostTool`: opens the inline repost editor; your own posts and reposts are inert. */
 export const RepostTool = ({ post, signedIn, viewerId }: RepostToolProps) => {
+  const router = useRouter()
   const start = useRepostStore((s) => s.start)
+  const mode = useLayoutModeStore((s) => s.mode)
   const count = post.postStats.repostsCount
   const inert = !!viewerId && (viewerId === post.author.id || viewerId === originalAuthorOf(post).id || post.currentUserState.reposted)
   const onRepost = (): void => {
     if (!signedIn) return void toast.info('Log in to repost')
     start(post.id)
+    // a grid card on a phone is too narrow for the editor: the original continues on the post page
+    if (mode === 'grid' && window.innerWidth < 640) router.push(`/${post.author.username}/post/${post.token}`)
   }
   return (
     <span className="PostTool RepostTool" data-count={count}>

@@ -5,9 +5,11 @@ import { useOptimistic, useState, useTransition } from 'react'
 import { setLoved, setWatching } from '@/actions/post-actions'
 import { BoltIcon, BubbleIcon, EyeIcon, HeartIcon, RepostIcon, ShareIcon } from '@/components/icons'
 import { ShareDialog } from '@/components/posts/share-dialog'
+import { useRepostStore } from '@/stores/repost-store'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
+import { originalAuthorOf } from '@/utils/repost'
 import { postShareContent, type ShareContent } from '@/utils/share'
 import { timeAgoInWords } from './time-ago-in-words'
 import { PostFlagTool } from '@/components/posts/post-flag-tool'
@@ -60,7 +62,13 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
   const [shareContent, setShareContent] = useState<ShareContent | null>(null)
   const love = useLove(post, signedIn)
   const watch = useWatch(post)
+  const startRepost = useRepostStore((s) => s.start)
   const { commentsCount, repostsCount, viewsCount } = post.postStats
+  const repostInert = !!viewerId && (isOwnPost || viewerId === originalAuthorOf(post).id || post.currentUserState.reposted)
+  const onRepost = (): void => {
+    if (!signedIn) return void toast.info('Log in to repost')
+    startRepost(post.id)
+  }
   const commentContent = (
     <>
       <BubbleIcon />
@@ -107,8 +115,8 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
           <button
             type="button"
             className={cn(repostsCount > 0 && 'hasPostToolDrawer')}
-            style={isOwnPost || post.currentUserState.reposted ? { pointerEvents: 'none' } : undefined}
-            onClick={() => toast.info('Reposting is not available yet')}
+            style={repostInert ? { pointerEvents: 'none' } : undefined}
+            onClick={onRepost}
           >
             <RepostIcon />
             <Hint>Repost</Hint>

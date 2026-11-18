@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 import { AppShell } from '@/components/layout/app-shell'
@@ -11,6 +11,14 @@ import { getViewer } from '@/services/viewer'
 export const metadata: Metadata = {
   title: { default: 'Ello', template: '%s | Ello' },
   description: 'Ello, running against a local mock API.',
+}
+
+// The original's viewport meta (it also disables pinch zoom).
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {

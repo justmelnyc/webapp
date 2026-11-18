@@ -5,6 +5,9 @@ import { flagPost } from '@/actions/moderation-actions'
 import { FlagIcon } from '@/components/icons'
 import { FlagDialog } from '@/components/moderation/flag-dialog'
 import { Hint } from '@/components/posts/hint'
+import '@/components/posts/post-hints.css'
+import '@/components/posts/post-tools.css'
+import '@/components/posts/post-tools-more.css'
 
 /** The original's `FlagTool` (Report Post): opens the flag dialog. Shown to signed in readers on other people's posts. */
 export const PostFlagTool = ({ postId }: { postId: string }) => {

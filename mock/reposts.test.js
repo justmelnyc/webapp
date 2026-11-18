@@ -14,7 +14,10 @@ jest.mock('./db', () => {
   return { db, save: jest.fn(), nextId: () => String(++db.seq), postById: id => db.posts.find(p => p.id === String(id)) }
 })
 
+jest.mock('./notifications', () => ({ sync: jest.fn() }))
+
 const { db } = require('./db')
+const notifications = require('./notifications')
 const reposts = require('./reposts')
 
 describe('reposts', () => {
@@ -25,6 +28,7 @@ describe('reposts', () => {
     expect(reposts.repostCount('10')).toBe(1)
     expect(reposts.viewerRepost('10', '1')).toBe(post)
     expect(reposts.viewerRepost('10', '3')).toBeNull()
+    expect(notifications.sync).toHaveBeenCalled() // the original's author gets a notification
   })
 
   it('refuses a second repost, a repost of your own post and an unknown post', () => {

@@ -7,6 +7,7 @@ import { updatePost } from '@/actions/post-edit-actions'
 import { createRepost } from '@/actions/repost-actions'
 import type { CreatePostInput } from '@/lib/schemas/post'
 import { isEditorEmpty } from '@/utils/editor-html'
+import { useRepostStore } from '@/stores/repost-store'
 import { useComposerApi, type ComposerBlock } from '@/stores/composer-store'
 import { toast } from '@/stores/toast-store'
 
@@ -46,6 +47,7 @@ export const useSubmitPost = (): { submit: () => void; isPending: boolean } => {
         return
       }
       api.getState().reset()
+      if (state.mode === 'repost') useRepostStore.getState().stop() // close the inline repost editor
       toast.success(SUCCESS[state.mode])
       router.refresh()
     })

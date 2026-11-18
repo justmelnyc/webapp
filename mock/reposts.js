@@ -27,6 +27,8 @@ const createRepost = (source, authorId, regions = [], extra = {}) => {
   }
   db.posts.unshift(post)
   save()
+  // tell the original's author right away (sync derives `repost:<id>` from the post, keeps it while it exists)
+  require('./notifications').sync()
   return post
 }
 

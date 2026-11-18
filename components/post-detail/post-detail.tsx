@@ -1,3 +1,5 @@
+import { HideWhileEditing } from './hide-while-editing'
+import { RepostEditorGate } from '@/components/posts/repost-editor-gate'
 import { EditablePostBody } from '@/components/posts/editable-post-body'
 import { CommentSection } from '@/components/comments/comment-section'
 import type { Post } from '@/types/post'
@@ -27,13 +29,15 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
   const viewerId = viewer?.id ?? null
   const comments = (placement: 'inline' | 'aside') =>
     viewer ? (
-      <CommentSection
-        postId={post.id}
-        postAuthorId={post.author.id}
-        viewer={viewer}
-        initialPage={initialComments}
-        placement={placement}
-      />
+      <HideWhileEditing postId={post.id}>
+        <CommentSection
+          postId={post.id}
+          postAuthorId={post.author.id}
+          viewer={viewer}
+          initialPage={initialComments}
+          placement={placement}
+        />
+      </HideWhileEditing>
     ) : null
 
   return (
@@ -47,7 +51,9 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
                 <DetailHeader post={post} viewerId={viewerId} />
               </div>
               <EditablePostBody postId={post.id}>
-                <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+                <RepostEditorGate post={post} layout="detail">
+                  <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+                </RepostEditorGate>
               </EditablePostBody>
               <div className={styles.narrowOnly}>
                 <DetailTools post={post} viewerId={viewerId} />

@@ -4,7 +4,7 @@
 //
 //   node tools/visual-diff/vdiff.js --path /discover [--width 1280] [--vh 900] [--maxh 3000]
 //        [--login ada] [--wait 8000] [--port 9333] [--out DIR]
-//        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--type "#id=value"]
+//        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--clickwait ms] [--until ".sel"] [--type "#id=value"]
 //
 // Writes legacy.png, new.png, diff.png (differences in red) and side.png (original left, rewrite
 // right) into --out and prints the percentage of mismatching pixels.
@@ -68,16 +68,24 @@ const capture = async (c, base, label) => {
     await c.ev(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); if (!el) return; Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, ${JSON.stringify(rest.join('='))}); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })) })()`)
     await wait(2500)
   }
-  if (args.click) { await c.ev(`document.querySelector(${JSON.stringify(args.click)}) && document.querySelector(${JSON.stringify(args.click)}).click()`); await wait(1500) }
+  // --click "a >> b": click several elements in turn (e.g. switch to list view, then open the repost editor)
+  if (args.click) { for (const sel of String(args.click).split(' >> ')) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); await wait(+args.clickwait || 1500) }
+    // --until ".sel": keep waiting (up to 15s) for something that loads late after the click
+    if (args.until) for (let i = 0; i < 60 && !(await c.ev(`!!document.querySelector(${JSON.stringify(args.until)})`)); i += 1) await wait(250)
+    if (args.until) await wait(500)
+    // the original scrolls the opened editor into view after 0.5-1s; capture from the top like a fresh load
+    await wait(1200); await c.ev('window.scrollTo(0, 0)'); await wait(1500) }
   // Fetch natively lazy-loaded images without scrolling (scrolling would trigger infinite scroll).
   await c.ev(`document.querySelectorAll('img[loading=lazy]').forEach((i) => { i.loading = 'eager' })`)
   await c.ev(`Promise.all([...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 4000) })))`)
   await wait(600)
+  await c.ev('window.scrollTo(0, 0)'); await wait(1500)
   const full = await c.ev('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)')
   const height = Math.min(full, MAXH)
   const VH = +args.vh || 0
   await c.send('Emulation.setDeviceMetricsOverride', { width: WIDTH, height: VH || height, deviceScaleFactor: 1, mobile: WIDTH < 600 })
   await wait(700)
+  await c.ev('window.scrollTo(0, 0)'); await wait(1500)
   const full2 = VH ? await c.ev('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)') : 0
   const shot = VH ? await c.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: { x: 0, y: 0, width: WIDTH, height: Math.min(full2, MAXH), scale: 1 } }) : await c.send('Page.captureScreenshot', { format: 'png' })
   fs.writeFileSync(path.join(OUT, `${label}.png`), Buffer.from(shot.result.data, 'base64'))

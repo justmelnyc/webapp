@@ -194,7 +194,8 @@
   opacity: 1;
 }
 
-.tools :global(.ShyTool) {
+.tools :global(.ShyTool),
+:global(.PostDetails) .tools:global(.PostTools) :global(.ShyTool) {
   pointer-events: auto;
   opacity: 1;
   transition: opacity var(--speed) ease;

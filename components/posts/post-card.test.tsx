@@ -6,6 +6,7 @@ import { PostCard } from './post-card'
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
 jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
 jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser: jest.fn(), setRelationship: jest.fn() }))
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }) }))
 jest.mock('@/actions/post-edit-actions', () => ({ loadEditablePost: jest.fn() }))
 
 const post = postSchema.parse(

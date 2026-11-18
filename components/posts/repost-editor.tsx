@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, type DragEvent } from 'react'
-import { loadRepostCategories } from '@/actions/repost-actions'
+import { loadRepostContext, type RepostContext } from '@/actions/repost-actions'
 import { ActionBar } from '@/components/composer/action-bar'
 import { EmbedBlock } from '@/components/composer/embed-block'
 import { ImageBlock } from '@/components/composer/image-block'
@@ -9,7 +9,6 @@ import omnibar from '@/components/composer/omnibar.module.css'
 import { RegionTools } from '@/components/composer/region-tools'
 import { TextBlock } from '@/components/composer/text-block'
 import { useComposerUploads } from '@/components/composer/use-composer-uploads'
-import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
 import { RepostBlock } from '@/components/posts/repost-block'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import {
@@ -18,24 +17,35 @@ import {
   isDraftDirty,
   useComposerStore,
 } from '@/stores/composer-store'
+import { useScrollToRepostActions } from '@/hooks/use-scroll-to-repost-actions'
 import { useRepostStore } from '@/stores/repost-store'
-import type { Category } from '@/types/content'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
 import { originalIdOf, repostedRegions } from '@/utils/repost'
 
-const Editor = ({ post }: { post: Post }) => {
+/** Loaded once per page: a remounted editor (resize, re-render) shows the same context at once. */
+let cachedContext: RepostContext | null = null
+
+/** Where the editor opens: a grid card (compact), a list item or the post page. */
+export type RepostLayout = 'grid' | 'list' | 'detail'
+
+const Editor = ({ post, layout }: { post: Post; layout: RepostLayout }) => {
   const blocks = useComposerStore((s) => s.blocks)
-  const mode = useLayoutModeStore((s) => s.mode)
   const stop = useRepostStore((s) => s.stop)
   const { addFiles, retry } = useComposerUploads()
   const [dragging, setDragging] = useState(false)
   const [confirming, setConfirming] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([])
+  const [context, setContext] = useState<RepostContext>(cachedContext ?? { username: '', categories: [] })
   useEffect(() => {
-    void loadRepostCategories().then(setCategories)
+    if (cachedContext) return
+    void loadRepostContext().then((loaded) => {
+      cachedContext = loaded
+      setContext(loaded)
+    })
   }, [])
   const isDirty = isDraftDirty(blocks)
+  const actionsId = `repost-editor-${post.id}`
+  useScrollToRepostActions(actionsId, layout === 'grid')
 
   const onDrop = (e: DragEvent<HTMLDivElement>): void => {
     e.preventDefault()
@@ -57,7 +67,7 @@ const Editor = ({ post }: { post: Post }) => {
         onDrop={onDrop}
       >
         <div className={cn('editor-region', omnibar.region)} data-num-blocks={blocks.length + 1}>
-          <RepostBlock username={post.author.username} regions={repostedRegions(post)} />
+          <RepostBlock username={context.username} regions={repostedRegions(post)} />
           {blocks.map((block, index) => (
             <div key={block.id} className={cn('editor-block', omnibar.block)} data-block-id={block.id}>
               {block.kind === 'text' && <TextBlock block={block} autoFocus={index === 0} />}
@@ -67,7 +77,7 @@ const Editor = ({ post }: { post: Post }) => {
             </div>
           ))}
         </div>
-        <ActionBar categories={categories} onFiles={addFiles} onCancel={cancel} compact={mode === 'grid'} />
+        <ActionBar id={actionsId} categories={context.categories} onFiles={addFiles} onCancel={cancel} compact={layout === 'grid'} />
       </div>
       {confirming && (
         <ConfirmDialog title="Cancel repost?" onConfirm={stop} onDismiss={() => setConfirming(false)} />
@@ -77,14 +87,14 @@ const Editor = ({ post }: { post: Post }) => {
 }
 
 /** The original's inline repost `Editor`: the locked original on top, then a draft for your own words. */
-export const RepostEditor = ({ post }: { post: Post }) => {
+export const RepostEditor = ({ post, layout }: { post: Post; layout: RepostLayout }) => {
   const [store] = useState(createComposerStore)
   useEffect(() => {
     store.getState().startRepost(originalIdOf(post))
   }, [store, post])
   return (
     <ComposerStoreContext.Provider value={store}>
-      <Editor post={post} />
+      <Editor post={post} layout={layout} />
     </ComposerStoreContext.Provider>
   )
 }

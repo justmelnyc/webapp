@@ -6,6 +6,7 @@ import { errorMessage } from '@/lib/errors'
 import { buildPostBody } from '@/lib/post-body'
 import { createPostResponseSchema } from '@/lib/schemas/post'
 import { repostInputSchema } from '@/lib/schemas/repost'
+import { getSession } from '@/lib/session'
 import { getCategories } from '@/services/content'
 import type { Category } from '@/types/content'
 import { failure, success, type ActionResult } from '@/types/action'
@@ -40,5 +41,15 @@ export const removeRepost = async (postId: string): Promise<ActionResult> => {
   }
 }
 
-/** The categories the inline editor's selector offers (the omnibar gets the same list from the navbar). */
-export const loadRepostCategories = async (): Promise<Category[]> => getCategories().catch(() => [])
+export interface RepostContext {
+  /** The signed-in reposter (the editor's "by @username" label). */
+  username: string
+  /** The categories the inline editor's selector offers (the omnibar gets the same list from the navbar). */
+  categories: Category[]
+}
+
+/** What the inline repost editor needs beyond the post: who is reposting and the category list. */
+export const loadRepostContext = async (): Promise<RepostContext> => {
+  const [session, categories] = await Promise.all([getSession(), getCategories().catch((): Category[] => [])])
+  return { username: session?.username ?? '', categories }
+}

@@ -133,6 +133,10 @@
   :global(.isProfileMenuActive) > .footer {
     display: none;
   }
+
+  :global(body.isEditorFocused) .footer {
+    display: none;
+  }
 }
 
 @media (min-width: 40em) {

@@ -79,6 +79,51 @@ describe('derived notifications', () => {
   })
 })
 
+describe('repost notifications', () => {
+  const repost = (id, authorId, repostOfId, createdAt = '2026-01-15T00:00:00.000Z') => ({ id, token: `r${id}`, authorId, repostOfId, createdAt, regions: [] })
+
+  it('tells the original author about a repost, with the repost as the subject', () => {
+    db.posts.push(repost('p9', '2', 'p1'))
+    const list = n.forUser('1', 'reposts').filter(x => x.key === 'repost:p9')
+    expect(list).toHaveLength(1)
+    expect(list[0]).toMatchObject({ userId: '1', kind: 'repost_notification', actorId: '2', postId: 'p9' })
+    expect(n.serialize(list[0], '1')).toMatchObject({ kind: 'repost_notification', subjectType: 'Post', subject: { __typename: 'Post', id: 'p9' } })
+    expect(n.forUser('2').some(x => x.key === 'repost:p9')).toBe(false)
+  })
+
+  it('is created once and goes away with the repost', () => {
+    db.posts.push(repost('p9', '2', 'p1'))
+    n.sync()
+    n.sync()
+    expect(db.notifications.filter(x => x.key === 'repost:p9')).toHaveLength(1)
+    db.posts = db.posts.filter(p => p.id !== 'p9')
+    expect(n.forUser('1').some(x => x.key === 'repost:p9')).toBe(false)
+  })
+
+  it('ignores a repost whose original is gone and a repost of your own post', () => {
+    db.posts.push(repost('p8', '2', 'nope'), repost('p7', '1', 'p2'))
+    n.sync()
+    expect(db.notifications.some(x => x.key === 'repost:p8' || x.key === 'repost:p7')).toBe(false)
+  })
+
+  it('lights the unread dot for a repost made after the stream was read', () => {
+    n.sync()
+    tick()
+    n.markRead('1')
+    expect(n.newContent('1')).toBe(false)
+    tick()
+    db.posts.push(repost('p9', '2', 'p1', new Date(clock).toISOString()))
+    expect(n.newContent('1')).toBe(true)
+  })
+
+  it('does not flag an old repost as new', () => {
+    n.sync()
+    db.posts.push(repost('p9', '2', 'p1', '2026-01-20T00:00:00.000Z'))
+    expect(n.newContent('1')).toBe(false)
+    expect(n.forUser('1', 'reposts').some(x => x.key === 'repost:p9')).toBe(true)
+  })
+})
+
 describe('categories', () => {
   it('filters by tab and sorts newest first', () => {
     expect(new Set(kinds('1', 'loves'))).toEqual(new Set(['love_notification']))
