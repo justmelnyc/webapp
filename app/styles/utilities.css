@@ -1,0 +1,56 @@
+/* immutable.css helper classes and animation.css keyframes. */
+/* Utility classes from immutable.css */
+.hidden {
+  display: none !important;
+  visibility: hidden;
+}
+
+.invisible {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.unselectable {
+  user-select: none;
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Keyframes (animation.css) */
+@keyframes animateLavaLamp {
+  0% { background-color: rgba(0, 0, 0, 0.1); }
+  25% { background-color: rgba(128, 0, 128, 0.1); }
+  50% { background-color: rgba(0, 128, 0, 0.1); }
+  75% { background-color: rgba(128, 0, 128, 0.1); }
+  100% { background-color: rgba(0, 0, 0, 0.1); }
+}
+
+@keyframes animateCommentsLoading {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(9px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes animateIsBusy {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(720deg); }
+}
+
+@keyframes animateIsBusyButton {
+  from { transform: rotate(0deg) scale(0.5); }
+  to { transform: rotate(720deg) scale(0.5); }
+}
+
+@keyframes animateUploaderMover {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100% + 10px)); }
+}
+
+/* Rendered post/comment HTML: the original's body text rules apply (see base layer). */
+.rich-text {
+  font-size: 14px;
+}

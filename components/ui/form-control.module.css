@@ -1,0 +1,232 @@
+/* Port of legacy/src/components/forms/FormControl.css (the pieces the auth and settings forms use). */
+.control {
+  position: relative;
+}
+
+.box {
+  margin-bottom: 10px;
+}
+
+/* ---- input ---- */
+
+.input {
+  display: inline-block;
+  width: 100%;
+  min-height: 40px;
+  font-size: 14px;
+  color: #000;
+  vertical-align: baseline;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  border-radius: 0;
+  outline: 0;
+  transition:
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    width var(--speed) var(--ease-ello),
+    height var(--speed) var(--ease-ello);
+}
+
+.input:focus {
+  border-color: #000;
+  outline: 0;
+}
+
+.input::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+
+.box .input {
+  height: 60px;
+  padding: 0 30px;
+  color: #000;
+  background-color: #d8d8d8;
+  border: 1px solid #d8d8d8;
+}
+
+.box .input:focus {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.box.grey .input {
+  background-color: #f2f2f2;
+  border: 1px solid #f2f2f2;
+}
+
+.box.grey .input:focus {
+  color: #000;
+  background-color: #fff;
+  border-color: #f2f2f2;
+}
+
+.hasValue:not(.initial) > .input {
+  border-color: #000;
+}
+
+.box.hasValue:not(.initial) > .input {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.box.grey.hasValue:not(.initial) > .input {
+  color: #000;
+  background-color: #fff;
+  border-color: #f2f2f2;
+}
+
+.failing > .input,
+.box.failing > .input,
+.box.grey.failing > .input {
+  border-color: #f00;
+}
+
+/* ---- textarea ---- */
+
+textarea.input:not(.boxInput) {
+  height: 30px;
+  min-height: 0;
+  margin-top: 10px;
+}
+
+textarea.input.boxInput {
+  height: 120px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: -5px;
+}
+
+.hasValue > textarea.input:not(.boxInput),
+.hasFocus > textarea.input:not(.boxInput) {
+  height: 115px;
+}
+
+@media (min-width: 60em) {
+  .hasValue > textarea.input:not(.boxInput),
+  .hasFocus > textarea.input:not(.boxInput) {
+    height: 85px;
+  }
+}
+
+/* ---- label ---- */
+
+.label {
+  position: absolute;
+  right: 0;
+  bottom: -15px;
+  display: inline-block;
+  font-size: 14px;
+  color: #aaa;
+  vertical-align: baseline;
+  opacity: 0;
+  transition: transform var(--speed2) var(--ease-ello), opacity var(--speed2) var(--ease-ello), color var(--speed2) var(--ease-ello);
+}
+
+.box .label {
+  top: 20px;
+  right: 11px;
+  bottom: auto;
+  left: auto;
+  font-size: 11px;
+  text-align: right;
+}
+
+.failing > .label,
+.hasValue > .label {
+  opacity: 1;
+  transform: translate3d(0, 10px, 0);
+}
+
+.box.failing > .label,
+.box.hasValue > .label {
+  transform: translate3d(0, -13px, 0);
+}
+
+.failing > .label {
+  color: #f00 !important;
+}
+
+/* ---- status icon ---- */
+
+.status {
+  position: absolute;
+  top: 28px;
+  right: 10px;
+  transition: opacity var(--speed2);
+}
+
+.status:empty {
+  opacity: 0;
+}
+
+.initialHidden.initial > .status {
+  display: none;
+}
+
+/* ---- Hoppy status message ---- */
+
+.message {
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: height var(--speed) ease, margin var(--speed) ease, opacity var(--speed) ease;
+}
+
+.messageVisible {
+  height: 40px;
+  margin: 10px 0;
+  opacity: 1;
+  transition-delay: 1s, 1s, 1s;
+}
+
+/* ---- icon (FormIcon): the Input after it gets room for the icon ---- */
+
+.icon {
+  position: absolute;
+  top: calc(50% - 15px);
+  left: 20px;
+  color: #aaa;
+}
+
+.icon ~ .input {
+  padding-left: 50px !important;
+}
+
+/* ---- username suggestions (UsernameControl's renderFeedback) ---- */
+
+.suggestionList {
+  height: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: height var(--speed) var(--ease-ello);
+}
+
+.hasSuggestions {
+  height: max-content;
+}
+
+.suggestionIntro {
+  margin: 5px 0 0;
+}
+
+.suggestionButton {
+  margin-top: 5px;
+  margin-right: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid currentcolor;
+  transition: color var(--speed);
+}
+
+.suggestionButton:last-of-type {
+  margin-right: 0;
+}
+
+@media (hover: hover) {
+  .suggestionButton:hover {
+    color: #000;
+  }
+}

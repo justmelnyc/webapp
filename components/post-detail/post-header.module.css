@@ -1,0 +1,195 @@
+/* Post header (PostHeader.css) as it renders on the detail page. */
+
+/* ---- header ---- */
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .header {
+    height: 80px;
+  }
+}
+
+:global(.PostDetailAsideTop) .header {
+  padding-right: 20px;
+  padding-left: 20px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.header :global(.PostHeaderLeft) {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.header :global(.Avatar) {
+  position: relative;
+  top: auto;
+  left: auto;
+}
+
+@media (max-width: 39.9375em) {
+  .header :global(.Avatar) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (min-width: 40em) {
+  :global(.Post) .header :global(.Avatar) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.header :global(.PostHeaderLinks) {
+  flex: none;
+  width: calc(100% - 60px);
+  max-width: calc(100% - 60px);
+  padding-left: 10px;
+  overflow: hidden;
+}
+
+@media (max-width: 39.9375em) {
+  .header :global(.PostHeaderLinks) {
+    width: calc(100% - 30px);
+    max-width: 100%;
+    padding-top: 2px;
+    line-height: 18px;
+  }
+
+  .header :global(.FullNameLink),
+  .header :global(.UserNameLink) {
+    line-height: 14px;
+  }
+}
+
+@media (min-width: 60em) {
+  .header :global(.PostHeaderLinks) {
+    padding-left: 20px;
+  }
+}
+
+.header :global(.FullNameLink),
+.header :global(.UserNameLink) {
+  display: inline-block;
+  width: 100%;
+  padding-right: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.header :global(.DraggableUsername) {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header :global(.PostHeaderAuthorName) {
+  display: inline-block;
+  margin-right: 0;
+  color: #000;
+  vertical-align: middle;
+}
+
+@media (min-width: 40em) {
+  .header :global(.PostHeaderAuthorName) {
+    padding-top: 1px;
+    margin-bottom: -1px;
+  }
+}
+
+@media (hover: hover) {
+  .header :global(.PostHeaderLinks) a:hover,
+  .timeAgo:hover {
+    color: #535353;
+  }
+
+  .header :global(.PostHeaderLinks) a:hover :global(.PostHeaderAuthorName) {
+    color: currentcolor;
+  }
+}
+
+.headerTools {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+/* The stream's absolute `.PostHeaderTools { top, right }` (post-header.css) stays loaded after client navigation. */
+.header .headerTools {
+  top: auto;
+  right: auto;
+}
+
+.headerTools > a,
+.headerTools > span {
+  float: right;
+}
+
+.timeAgo {
+  padding-left: 5px;
+}
+
+@media (min-width: 60em) {
+  :global(.PostDetailAsideTop) .timeAgo {
+    display: block;
+    pointer-events: none;
+  }
+}
+
+/* Out-specifies the stream's `.PostHeader .RelationshipContainer` (post-header.css), which stays loaded after client navigation. */
+.header .relationship:global(.RelationshipContainer) {
+  display: inline-block;
+  margin-top: -2px;
+  margin-right: 2px;
+  margin-left: 0;
+  vertical-align: middle;
+}
+
+.header .relationship:global(.RelationshipContainer)[data-priority='self'] {
+  display: none;
+}
+
+/* ---- owner tools in the header (EditTool / DeleteTool) ---- */
+
+.headerTools :global(.PostTool) {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+}
+
+.headerTools :global(.PostTool) > button {
+  padding-right: 5px;
+  padding-left: 5px;
+  color: #aaa;
+  transition: color var(--speed) ease;
+}
+
+.headerTools :global(.PostTool) :global(.SVGIcon) {
+  transform: scale(1.5);
+}
+
+.headerTools :global(.PostTool) :global(.SVGIcon) > :global(g) {
+  stroke-width: 0.9375;
+}
+
+@media (hover: hover) {
+  .headerTools :global(.PostTool) > button:hover {
+    color: #000;
+  }
+}

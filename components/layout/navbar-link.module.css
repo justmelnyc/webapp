@@ -1,0 +1,229 @@
+/*
+ * Navbar links, ported rule by rule from legacy/src/components/navbar/* (glamor styles).
+ * `.no-touch :hover` becomes `@media (hover: hover)`. Breakpoints: min 40em / 60em,
+ * maxBreak3 = max-width 59.9375em. `.isLoggedIn` / `.isLoggedOut` live on the AppShell root.
+ */
+
+/* ---- links group ---- */
+
+.links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+}
+
+@media (min-width: 60em) {
+  :global(.isLoggedIn) .links {
+    top: calc(50% + 5px);
+    right: 200px;
+    left: auto;
+    margin-top: -20px;
+  }
+
+  :global(.isLoggedOut) .links {
+    top: calc(50% + 5px);
+    right: 175px;
+    left: auto;
+    margin-top: -20px;
+  }
+}
+
+/* ---- single link ---- */
+
+.link {
+  position: relative;
+  height: 40px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 40px;
+  color: #aaa;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s ease, background-color 0.2s ease;
+}
+
+.link::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  content: '';
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.links > .link + .link {
+  margin-left: 30px;
+}
+
+.link:global(.isSignUp) {
+  position: absolute;
+  right: 0;
+  width: 80px;
+  height: 30px;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  background-color: #00d100;
+  border-radius: 5px;
+}
+
+.link:global(.isSignUp):active,
+.link:global(.isSignUp):global(.isActive) {
+  background-color: #00b100;
+}
+
+:global(.isLoggedOut) .link[href='/enter'] {
+  position: absolute;
+  top: 0;
+  right: 110px;
+  left: auto;
+  margin: 0;
+}
+
+@media (hover: hover) {
+  .link:global(.isSignUp):hover {
+    background-color: #00b100;
+  }
+}
+
+/* The original renders "Editorial" only below 60em; it is the first link, so the next one loses its gap. */
+.editorial + .link {
+  margin-left: 0;
+}
+
+@media (min-width: 60em) {
+  .editorial {
+    display: none;
+  }
+
+  .link:global(.isSignUp) {
+    height: 40px;
+    line-height: 40px;
+  }
+}
+
+@media (max-width: 59.9375em) {
+  .link {
+    margin-top: 30px;
+  }
+
+  :global(.isLoggedOut) .links > .link + .link {
+    margin-left: 18px;
+  }
+
+  :global(.isLoggedIn) .link[href^='/notifications'] {
+    position: absolute;
+    top: -3px;
+    left: 55px;
+    margin: 0;
+  }
+
+  :global(.isLoggedIn) .link[href^='/search'] {
+    position: absolute;
+    top: -3px;
+    left: 100px;
+    margin: 0;
+  }
+
+  :global(.isLoggedOut) .link[href^='/search'] {
+    position: absolute;
+    top: -5px;
+    left: 60px;
+    margin: 0;
+  }
+
+  :global(.isLoggedOut) .link[href='/join'] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: auto;
+    margin: 0;
+  }
+
+  :global(.isLoggedOut) .link[href='/enter'] {
+    top: -5px;
+    right: 100px;
+  }
+}
+
+/* Logged in, the navbar shows Giveaways above 500px and the avatar menu shows it below. */
+@media (max-width: 500px) {
+  .giveaways {
+    display: none;
+  }
+}
+
+/* Invites moves into the avatar menu between 640 and 700px and below 372px. */
+@media (min-width: 640px) and (max-width: 700px), (max-width: 371.98px) {
+  .invites {
+    display: none;
+  }
+}
+
+/* ---- link label ---- */
+
+.label {
+  position: relative;
+  display: inline-block;
+}
+
+.label::after {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  content: '';
+  background-color: transparent;
+  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), background-color 0.2s ease;
+}
+
+.link:global(.isSignUp) > .label::after {
+  display: none;
+}
+
+.link:global(.isActive) > .label,
+.link:active > .label {
+  color: #000;
+}
+
+.link:global(.isSignUp):global(.isActive) > .label,
+.link:global(.isSignUp):active > .label {
+  color: #fff;
+}
+
+.link:global(.isActive) > .label::after,
+.link:active > .label::after,
+.link:hover > .label::after {
+  width: 100%;
+  background-color: currentcolor;
+}
+
+.link:global(.isNotificationsUnread) > .label::before {
+  position: absolute;
+  top: 5px;
+  left: -5px;
+  width: 5px;
+  height: 5px;
+  content: '';
+  background-color: #f00;
+  border-radius: 50%;
+}
+
+@media (hover: hover) {
+  .link:hover > .label {
+    color: #000;
+  }
+
+  .link:global(.isSignUp):hover > .label {
+    color: #fff;
+  }
+
+  .link:global(.IconOnly):hover > .label::after {
+    transition-delay: 0.6s;
+  }
+}
+

@@ -1,0 +1,229 @@
+/*
+ * Stream container, post columns and paginator, ported from legacy/src/components/streams/
+ * StreamContainer.css + Paginator.css and the Column rules of posts/Post.css.
+ * Global class names on purpose: icons-posts.css and friends key off `.Post`, `.PostTool`...
+ * `.no-touch :hover` becomes `@media (hover: hover)`. Breakpoints: 40em / 60em / 85em / 107.5em /
+ * 130em / 152.5em. The category-drawer variants of the original are not ported (no drawer).
+ */
+
+@keyframes paginatorLoading {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.StreamContainer {
+  padding: 10px;
+}
+
+.StreamContainer.empty {
+  padding: 0;
+}
+
+.StreamContainer.isBusy {
+  min-height: 180px;
+  text-align: center;
+}
+
+.StreamBusyIndicator {
+  position: relative;
+  top: 80px;
+}
+
+.StreamContainer.inAllCategories {
+  padding-top: 0;
+}
+
+@media (min-width: 40em) {
+  .StreamContainer {
+    padding: 20px;
+  }
+
+  .StreamContainer.isBusy {
+    min-height: 220px;
+  }
+
+  .StreamBusyIndicator {
+    top: 120px;
+  }
+}
+
+@media (min-width: 85em) {
+  .StreamContainer {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .StreamContainer.isBusy {
+    min-height: 340px;
+  }
+
+  .StreamBusyIndicator {
+    top: 240px;
+  }
+}
+
+/* Columns (posts as grid) */
+
+.Posts.asGrid {
+  margin-left: -20px;
+}
+
+.Post {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.Column {
+  display: inline-block;
+  width: calc(50% - 20px);
+  margin-left: 20px;
+  vertical-align: top;
+}
+
+@media (min-width: 60em) {
+  .Column {
+    width: calc(33.33333% - 20px);
+  }
+}
+
+@media (min-width: 85em) {
+  .Posts.asGrid {
+    margin-left: -40px;
+  }
+
+  .Post {
+    margin-bottom: 40px;
+  }
+
+  .Column {
+    width: calc(25% - 40px);
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .Column {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 130em) {
+  .Column {
+    width: calc(16.66666% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .Column {
+    width: calc(14.28571% - 40px);
+  }
+}
+
+/* Lists */
+
+.Posts.asList {
+  max-width: 1360px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.Posts.asList .ImageRegion img {
+  height: auto;
+}
+
+@media (min-width: 60em) {
+  .Posts.asList .PostBody > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+  }
+}
+
+.Posts.asGrid .ImageRegion img {
+  width: 100%;
+  height: auto;
+}
+
+/* Paginator */
+
+.Paginator {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0;
+  overflow: hidden;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+  background-color: transparent;
+  transition: transform var(--speed) var(--ease-ello), height var(--speed) var(--ease-ello), background-color var(--speed) var(--ease-ello);
+  transform: translate3d(0, 100%, 0);
+}
+
+.Paginator.isCentered {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.Paginator.isBusy {
+  height: 40px;
+  line-height: 40px;
+  background: linear-gradient(225deg, #f00, #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, #f00);
+  background-size: 1600% 1600%;
+  transform: translate3d(0, 0, 0);
+  animation: paginatorLoading 10s ease infinite;
+}
+
+.Discover .Paginator,
+.Following .Paginator,
+.Editorial .Paginator,
+.UserDetails .Paginator,
+.Search .Paginator,
+.TabListStreamContainer .Paginator {
+  position: static;
+  width: calc(100% - 20px);
+  max-width: 420px;
+  height: 40px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  line-height: 40px;
+  color: #fff;
+  vertical-align: middle;
+  background-color: #aaa;
+  border-radius: 5px;
+  transform: none;
+}
+
+.Discover .Paginator,
+.Editorial .Paginator,
+.Following .Paginator {
+  margin-top: 0;
+}
+
+.Discover .Paginator button,
+.Following .Paginator button,
+.UserDetails .Paginator button,
+.Search .Paginator button,
+.Editorial .Paginator button {
+  width: 100%;
+}
+
+.Paginator.isBusy .PaginatorButton span {
+  display: none;
+}
+
+@media (hover: hover) {
+  .Discover .Paginator:hover,
+  .Following .Paginator:hover,
+  .Editorial .Paginator:hover,
+  .UserDetails .Paginator:hover,
+  .Search .Paginator:hover {
+    background-color: #000;
+  }
+}

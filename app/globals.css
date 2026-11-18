@@ -1,0 +1,18 @@
+/*
+ * Design tokens and base styles, ported 1:1 from the original app:
+ *   legacy/src/styles/jso.js, legacy/src/lib/styles/{properties,base,immutable}.css
+ * Never invent a value: take it from those files or measure it against the running original.
+ *
+ * Conventions:
+ *  - 1 spacing unit = 1px (so `p-10` is 10px, like the original's `p10`).
+ *  - Tailwind's preflight is NOT imported; the original's base layer below is the reset.
+ *  - Breakpoints keep the original's numbers: bp2 = 40em ... bp7 = 152.5em.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/elements.css';
+@import './styles/utilities.css';

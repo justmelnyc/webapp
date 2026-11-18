@@ -1,0 +1,92 @@
+/* Design tokens, ported 1:1 from legacy/src/styles/jso.js and lib/styles/properties.css. */
+@theme {
+  --spacing: 1px;
+
+  /* Colors (jso.js) */
+  --color-*: initial;
+  --color-black: #000;
+  --color-white: #fff;
+  --color-g4d: #4d4d4d;
+  --color-g53: #535353;
+  --color-g66: #666;
+  --color-g99: #999;
+  --color-gaa: #aaa;
+  --color-gcc: #ccc;
+  --color-ge5: #e5e5e5;
+  --color-gea: #eaeaea;
+  --color-gf1: #f1f1f1;
+  --color-gf2: #f2f2f2;
+  --color-green: #00d100;
+  --color-dark-green: #16a905;
+  --color-yellow: #ffc600;
+  --color-pale-yellow: #ffc;
+  --color-red: #f00;
+  --color-dark-red: #c90000;
+  --color-danger: #f00;
+  --color-success: #06a54f;
+  --color-modal: rgba(26, 26, 26, 0.9);
+  --color-transparent: transparent;
+
+  /* Transitional aliases for components not yet ported. Do not use in new code. */
+  --color-ink: #000;
+  --color-paper: #fff;
+  --color-mist: #f2f2f2;
+  --color-stone: #e5e5e5;
+  --color-ash: #999;
+  --color-slate: #666;
+  --color-ello-green: #00d100;
+  --color-ello-red: #f00;
+
+  /* Fonts (jso.js font stacks) */
+  --font-*: initial;
+  --font-sans: 'AtlasGroteskRegular', 'AtlasGrotesk-Regular', 'Helvetica Neue', 'HelveticaNeue', 'Helvetica', sans-serif;
+  --font-bold: 'AtlasGroteskBold', 'AtlasGrotesk-Bold', 'Helvetica Neue', 'HelveticaNeue', 'Helvetica', sans-serif;
+  --font-black: 'AtlasGroteskBlack', 'AtlasGrotesk-Black', 'Helvetica Neue', 'HelveticaNeue', 'Helvetica', sans-serif;
+  --font-light: 'AtlasGroteskLight', 'AtlasGrotesk-Light', 'Helvetica Neue', 'HelveticaNeue', 'Helvetica', sans-serif;
+  --font-mono: 'AtlasTypewriterRegular', 'AtlasTypewriter-Regular', 'Andale Mono', 'Consolas', 'Lucida Console', 'Menlo', 'Luxi Mono', monospace;
+
+  /* Type scale (fontSize12 ... fontSize56) */
+  --text-*: initial;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-24: 24px;
+  --text-28: 28px;
+  --text-32: 32px;
+  --text-38: 38px;
+  --text-48: 48px;
+  --text-56: 56px;
+
+  /* Breakpoints (minBreak2 ... minBreak7) */
+  --breakpoint-*: initial;
+  --breakpoint-bp2: 40em;
+  --breakpoint-bp3: 60em;
+  --breakpoint-bp4: 85em;
+  --breakpoint-bp5: 107.5em;
+  --breakpoint-bp6: 130em;
+  --breakpoint-bp7: 152.5em;
+
+  /* Containers (maxSiteWidth / maxViewWidth) */
+  --container-site: 1360px;
+  --container-view: 1440px;
+
+  /* Easing */
+  --ease-ello: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-quart: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+:root {
+  --speed: 0.2s;
+  --speed2: 0.4s;
+
+  --z-popover: 1020;
+  --z-footer: 1030;
+  --z-decapitated: 1035;
+  --z-navbar: 1040;
+  --z-omnibar: 1060;
+  --z-tools: 1070;
+  --z-modal: 1080;
+  --z-grid: 3000;
+}

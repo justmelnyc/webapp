@@ -1,0 +1,55 @@
+/* FollowButton.js / Relationship.js, in its `isInHeader` form (an icon the size of a tool). */
+.button {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 30px;
+  color: #aaa;
+  text-align: center;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.button[data-priority='friend'],
+.button[data-priority='noise'] {
+  color: #fff;
+}
+
+@media (min-width: 40em) and (hover: hover) {
+  .button {
+    overflow: visible;
+    font-size: 12px;
+  }
+
+  .button:hover {
+    color: #fff;
+    background-color: transparent;
+  }
+
+  .label {
+    position: absolute;
+    top: -25px;
+    left: -50%;
+    height: 22px;
+    padding-right: 11px;
+    padding-left: 11px;
+    line-height: 22px;
+    white-space: nowrap;
+    visibility: hidden;
+    background-color: #000;
+    border-radius: 11px;
+    opacity: 0;
+    transition: opacity 0.2s ease, visibility 0s ease 0.2s;
+  }
+
+  .button:hover .label {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.5s, 0s;
+  }
+}

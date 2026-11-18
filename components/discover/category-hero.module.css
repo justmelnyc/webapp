@@ -1,0 +1,219 @@
+/* promotionCategoryStyle, categoryCaptionStyle, categoryHeadingStyle, subscribeHolderStyle (HeroRenderables.js) */
+.promotion {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 240px;
+  overflow: hidden;
+  color: #fff;
+}
+
+.promotionCollapsed {
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mobile {
+  display: none;
+}
+
+.mobileActions {
+  align-self: flex-end;
+  width: 100%;
+  padding: 0;
+  font-size: 14px;
+}
+
+.caption,
+.captionCollapsed {
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 14px;
+}
+
+.captionCollapsed {
+  display: flex;
+  align-items: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.heading {
+  font-family: var(--font-black);
+}
+
+.label,
+.labelCollapsed {
+  display: inline;
+}
+
+.check {
+  position: absolute;
+  display: inline-block;
+  width: 40px;
+  margin-top: -6px;
+  margin-left: -44px;
+  transform: scale(1.6);
+}
+
+.check :global(.svg-stroke-bevel),
+.check circle {
+  stroke: #fff;
+}
+
+.check circle {
+  fill: none;
+  stroke: #fff;
+}
+
+.subscribeHolder {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.subscribeInner {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: 5px;
+  left: -38px;
+}
+
+@media (max-width: 39.9375em) {
+  .desktop {
+    display: none;
+  }
+
+  .mobile {
+    display: block;
+  }
+
+  .caption,
+  .captionCollapsed {
+    min-height: 200px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .subscribeHolder {
+    margin-top: 20px;
+  }
+
+  .heading {
+    padding-right: 20px;
+    padding-left: 0;
+    padding-top: 0;
+  }
+
+  .label,
+  .labelCollapsed {
+    font-size: 56px;
+    line-height: 1;
+  }
+
+  .check {
+    width: 26px;
+    margin-top: -2px;
+    margin-left: 0;
+    transform: scale(1.25);
+  }
+}
+
+@media (max-width: 26.25em) {
+  .heading {
+    padding-right: 0;
+  }
+
+  .label,
+  .labelCollapsed {
+    font-size: 13.15vw;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 40em) {
+  .promotion {
+    align-items: center;
+    min-height: 380px;
+  }
+
+  .caption {
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .heading {
+    display: inline-block;
+    padding-top: 35px;
+    padding-right: 40px;
+    padding-left: 40px;
+    text-align: center;
+  }
+
+  .check {
+    width: 30px;
+    margin-top: -2px;
+    margin-left: 15px;
+    transform: scale(1.75);
+  }
+
+  .label {
+    font-size: 144px;
+    line-height: 1;
+    border-bottom: 8px solid;
+  }
+}
+
+@media (min-width: 60em) {
+  .caption {
+    padding-right: 40px;
+    padding-left: 40px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 40em) and (max-width: 107.4375em) {
+  .check {
+    margin-top: 14px;
+  }
+
+  .label {
+    font-size: 10vw;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 40em) and (max-width: 84.9375em) {
+  .check {
+    margin-top: 10px;
+  }
+
+  .label {
+    font-size: 9vw;
+    line-height: 1.3;
+    border-bottom-width: 7px;
+  }
+}
+
+@media (min-width: 40em) and (max-width: 59.9375em) {
+  .check {
+    margin-top: 8px;
+    margin-left: 10px;
+    transform: scale(1.25);
+  }
+
+  .label {
+    font-size: 8.5vw;
+    line-height: 1.2;
+    border-bottom-width: 5px;
+  }
+}

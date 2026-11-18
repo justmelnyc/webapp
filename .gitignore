@@ -1,6 +1,14 @@
 .DS_Store
 .env
+.env.local
 node_modules
-public/static/emojis.json
-public/static/*.map
-webpack-stats/*.json
+.next
+coverage
+next-env.d.ts
+*.tsbuildinfo
+mock/.data
+legacy/public/static/*.js
+legacy/public/static/*.css
+legacy/public/static/*.html
+legacy/public/static/*.map
+legacy/public/static/*.txt

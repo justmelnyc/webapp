@@ -1,0 +1,32 @@
+/* Port of EditorialParts.js ToolButton / EditorialTools */
+.tools {
+  display: flex;
+  padding-top: 10px;
+}
+
+.button {
+  color: #fff;
+  transition: color 0.2s ease;
+}
+
+.button:hover {
+  color: #aaa;
+}
+
+.button:hover :global(.HeartIcon) > g,
+.button:hover :global(.BubbleIcon) > g,
+.active :global(.HeartIcon) > g {
+  fill: currentcolor;
+}
+
+.button :global(.BubbleIcon) > g:nth-child(2) {
+  display: none;
+}
+
+.spacer {
+  margin-left: 20px;
+}
+
+.end {
+  margin-left: auto;
+}

@@ -1,0 +1,33 @@
+/*
+ * The read-only "by @you" block at the top of the inline repost editor: `.editor-block.readonly`
+ * and `.RepostBlockLabel` in legacy/src/components/editor/Editor.css, tools in RepostBlock.js.
+ */
+.readonly {
+  padding: 30px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #e5e5e5;
+}
+
+.readonly img {
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.label {
+  margin-bottom: 10px;
+}
+
+.tools {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 2;
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .tools {
+    right: 35px;
+  }
+}

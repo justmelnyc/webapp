@@ -1,0 +1,155 @@
+/*
+ * Post header (avatar, @username, follow icon, age), ported from legacy/src/components/posts/
+ * PostHeader.css for the plain `PostHeader UserPostHeader` markup. Repost / category / artist
+ * invite headers are not rendered by the rewrite and are not ported.
+ * `.no-touch :hover` becomes `@media (hover: hover)`. 40em = break-2, 60em = break-3.
+ */
+
+.PostHeader {
+  position: relative;
+  height: 60px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.PostHeaderAuthor {
+  position: relative;
+  display: inline-block;
+  max-width: calc(100% - 90px);
+  padding-left: 40px;
+  line-height: 60px;
+  vertical-align: middle;
+}
+
+.PostHeader .RelationshipContainer {
+  display: inline-block;
+  margin-top: -2px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.PostHeader .DraggableUsername {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.PostHeader.UserPostHeader {
+  display: flex;
+  align-items: center;
+}
+
+.PostHeader.UserPostHeader .DraggableUsername {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  line-height: 1;
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink .Avatar {
+  top: auto;
+}
+
+.PostHeaderTools {
+  position: absolute;
+  top: 20px;
+  right: 0;
+}
+
+.PostHeaderTools > a,
+.PostHeaderTools > span {
+  float: right;
+}
+
+.PostHeaderTools .PostTool > button {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.PostHeaderTools .PostTool .SVGIcon {
+  transform: scale(1.5);
+}
+
+.PostHeaderTools .SVGIcon > g {
+  stroke-width: 0.9375;
+}
+
+.PostHeaderTools .SVGIcon line {
+  stroke-width: 1;
+}
+
+.PostHeaderTimeAgoLink {
+  padding-left: 5px;
+}
+
+@media (hover: hover) {
+  .PostHeaderLink:hover,
+  .PostHeaderTimeAgoLink:hover {
+    color: #535353;
+  }
+}
+
+.Following .PostHeader .RelationshipContainer {
+  display: none;
+}
+
+@media (max-width: 39.9375em) {
+  .Posts.asGrid .PostHeaderTimeAgoLink,
+  .Posts.asGrid .PostHeader .RelationshipContainer {
+    display: none;
+  }
+
+  .Posts.asGrid .PostHeaderAuthor {
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 40em) {
+  .PostHeader {
+    height: 80px;
+  }
+
+  .PostHeaderTools {
+    top: 30px;
+  }
+
+  .PostHeaderAuthor {
+    padding-left: 60px;
+    line-height: 80px;
+  }
+}
+
+@media (min-width: 60em) {
+  .Posts.asList .PostHeaderTimeAgoLink {
+    display: none;
+  }
+}
+
+/* Avatar placement inside a header (glamor `parent('.PostHeader ', ...)` in assets/Avatar.js) */
+
+.PostHeader .Avatar {
+  position: absolute;
+  top: 15px;
+  left: 0;
+}
+
+@media (min-width: 40em) {
+  .PostHeader .Avatar {
+    top: 20px;
+  }
+}
+
+.PostHeader.UserPostHeader .PostHeaderLink .Avatar {
+  top: auto;
+}
+
+/* Post.css: when the page is one person's posts the header is dropped but its room is kept. */
+.Post.isPostHeaderHidden {
+  padding-top: 15px;
+}

@@ -1,0 +1,80 @@
+/* Port of HeroParts.js: creditsStyle / creditsStyleExpanded / creditsAuthorStyle */
+.collapsed {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+}
+
+.expanded {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  font-size: 14px;
+  color: #fff;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.expanded:hover {
+  color: #ccc;
+}
+
+.author {
+  display: inline-block;
+  margin-right: 15px;
+  margin-left: 10px;
+  line-height: 1.2;
+  border-bottom: 1px solid;
+}
+
+.avatar {
+  flex: none;
+}
+
+@media (min-width: 40em) {
+  .collapsed,
+  .expanded {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  /* HeroHeader / .Editorial context */
+  .editorial {
+    right: 40px;
+  }
+}
+
+@media (min-width: 85em) {
+  .editorial {
+    right: 60px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .expanded {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 100%;
+    padding-left: 10px;
+    white-space: nowrap;
+  }
+
+  .by {
+    display: inline-block;
+  }
+
+  .author {
+    position: relative;
+    display: inline-block;
+    max-width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .withLabel {
+    max-width: calc(100% - 136px);
+  }
+}

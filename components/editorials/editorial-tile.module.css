@@ -1,0 +1,95 @@
+/* Port of EditorialRenderables.js baseStyle/headerStyle/linkStyle + EditorialParts.js overlay/title */
+.base {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background-color: transparent;
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  transition: opacity 0.2s ease;
+}
+
+.body {
+  align-self: flex-end;
+  width: 100%;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 4;
+}
+
+.subtitle p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  color: #fff;
+}
+
+.tools {
+  position: relative;
+  z-index: 4;
+}
+
+.link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  color: rgba(0, 0, 0, 0);
+  background-color: currentcolor;
+}
+
+.linkText {
+  visibility: hidden;
+}
+
+.title {
+  font-family: var(--font-black);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 38px;
+  color: #fff;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.15);
+  transition: background-color 0.4s ease;
+}
+
+.overlay::after {
+  position: absolute;
+  inset: 50% 0 0;
+  z-index: 1;
+  content: '';
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.666) 0%, rgba(0, 0, 0, 0) 80%);
+}
+
+.base:hover .overlay {
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+@media (min-width: 40em) {
+  .base {
+    padding: 40px;
+  }
+
+  .title {
+    font-size: 38px;
+    line-height: 42px;
+  }
+
+  .subtitle p {
+    font-size: 24px;
+    line-height: 30px;
+  }
+}

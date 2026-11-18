@@ -1,0 +1,152 @@
+/*
+ * Post body regions, ported from legacy PostBody.css plus the glamor styles of
+ * regions/ImageRegion.js (imageRegionStyle, streamImageStyle, lightBoxTriggerStyle).
+ */
+
+.PostBody h1,
+.PostBody h2,
+.PostBody h3,
+.PostBody h4,
+.PostBody h5,
+.PostBody h6 {
+  font-family: var(--font-bold);
+}
+
+.ImageRegion + .ImageRegion,
+.ImageRegion + .EmbedRegion,
+.EmbedRegion + .ImageRegion,
+.EmbedRegion + .EmbedRegion {
+  margin-top: 10px;
+}
+
+.PostBody + .PostBody,
+.TextRegion + .TextRegion,
+.TextRegion + .ImageRegion,
+.TextRegion + .EmbedRegion,
+.ImageRegion + .TextRegion,
+.EmbedRegion + .TextRegion {
+  margin-top: 20px;
+}
+
+.TextRegion {
+  width: 100%;
+  max-width: 780px;
+  word-wrap: break-word;
+}
+
+.EmbedRegion {
+  position: relative;
+  max-width: 1280px;
+  overflow: hidden;
+}
+
+.EmbedRegion.vimeo,
+.EmbedRegion.youtube {
+  width: 100%;
+}
+
+.TextRegion .hashtag-link {
+  display: inline;
+  cursor: pointer;
+  border-bottom: 1px solid;
+  transition: color var(--speed) ease;
+}
+
+@media (hover: hover) {
+  .TextRegion .hashtag-link:hover {
+    color: #aaa;
+  }
+}
+
+.RegionContent {
+  position: relative;
+  transition: background-color var(--speed2), transform 300ms ease, margin-bottom 300ms ease;
+  transform-origin: 0 0;
+  will-change: transform, margin-bottom;
+}
+
+.RegionContent.isHot {
+  cursor: pointer;
+}
+
+.ImageRegion {
+  display: inline-block;
+  text-align: center;
+}
+
+.ImageRegion > .RegionContent {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0);
+}
+
+.ImageAttachment {
+  transition: opacity var(--speed2);
+}
+
+.RegionContent > *:first-child,
+.RegionContent:first-child > *:first-child {
+  margin-top: 0;
+}
+
+.RegionContent > *:last-child,
+.RegionContent:last-child > *:last-child {
+  margin-bottom: 0;
+}
+
+.EmbedRegionContent {
+  background-color: #000;
+}
+
+/* Static (list mode) image: a holder around the image and a lightbox trigger button */
+
+.ImageRegion > .StreamImage {
+  position: relative;
+  display: inline;
+}
+
+.StreamImage > .ImgHolder {
+  position: relative;
+  display: inline-block;
+  background-color: #f2f2f2;
+}
+
+.ImageRegion .lightbox-trigger {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #000;
+  border-radius: 40px;
+  opacity: 0;
+  transition: opacity var(--speed) ease;
+  transition-delay: 350ms;
+}
+
+.ImageRegion .lightbox-trigger .label {
+  display: none;
+}
+
+.ImageRegion .lightbox-trigger .icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.ImageRegion .lightbox-trigger .icon .LightBoxTrigger {
+  vertical-align: baseline;
+}
+
+.ImageRegion .lightbox-trigger .icon .LightBoxTrigger polygon {
+  fill: #fff;
+}
+
+.ImageRegion .ImgHolder:hover .lightbox-trigger,
+.ImageRegion .RegionContent:hover .lightbox-trigger {
+  cursor: pointer;
+  opacity: 1;
+}

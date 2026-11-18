@@ -1,0 +1,33 @@
+/* Port of components/assets/BackgroundImage.js (glamor baseStyle) */
+.root {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
+  background-size: cover;
+  transition: background-color 0.2s ease, opacity 0.4s ease;
+}
+
+.root::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: '';
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.overlay3::before { background-color: rgba(0, 0, 0, 0.3); }
+.overlay4::before { background-color: rgba(0, 0, 0, 0.4); }
+.overlay5::before { background-color: rgba(0, 0, 0, 0.5); }
+.overlay6::before { background-color: rgba(0, 0, 0, 0.6); }
+
+.image {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  background: transparent no-repeat 50% 50%;
+  background-size: cover;
+  transition: opacity 0.4s ease;
+}

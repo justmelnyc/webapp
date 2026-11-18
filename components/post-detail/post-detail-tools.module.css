@@ -1,0 +1,236 @@
+/*
+ * Post tools as they render on the detail page. Ported from PostHeader.css,
+ * PostTools.css, Hint.js and the `postDetailStyle` overrides in PostDetail.js. The original's
+ * class names (PostTool, LoveTool, ...) stay as global hooks: icons.css styles their icons.
+ * Contexts: `.post` (below 60em, inside `.Post`), `.top` (aside header) and `.bottom`.
+ */
+
+/* ---- the PostTools footer ---- */
+
+.tools {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: transform var(--speed) var(--ease);
+}
+
+.post .tools {
+  height: auto;
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+
+.top .tools {
+  border-bottom: 1px solid #f2f2f2;
+}
+
+@media (min-width: 60em) {
+  .post .tools,
+  .top .tools {
+    padding-right: 10px;
+    padding-left: 15px;
+    max-width: 640px;
+  }
+
+  .post .tools {
+    padding-top: 30px;
+    padding-bottom: 40px;
+  }
+
+  .top .tools {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.tools :global(.PostTool) {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  transition: transform var(--speed) var(--ease);
+}
+
+.tools :global(.PostTool) > a,
+.tools :global(.PostTool) > button {
+  padding-right: 8px;
+  padding-left: 4px;
+  color: #aaa;
+  transition: color var(--speed) ease;
+}
+
+.tools :global(.PostTool) > a {
+  vertical-align: middle;
+}
+
+.tools :global(.PostTool) > button:global(.hasPostToolDrawer) {
+  padding-right: 5px;
+}
+
+.tools :global(.PostTool) > button:global(.PostToolDrawerButton) {
+  padding-left: 0 !important;
+}
+
+@media (min-width: 60em) {
+  .tools :global(.PostTool) > a,
+  .tools :global(.PostTool) > button {
+    padding-right: 12px;
+    padding-left: 4px;
+  }
+
+  .tools :global(.PostTool) > button:global(.hasPostToolDrawer) {
+    padding-right: 5px;
+  }
+}
+
+@media (hover: hover) {
+  .tools :global(.PostTool) a:hover,
+  .tools :global(.PostTool) button:hover {
+    color: #000;
+  }
+}
+
+.tools :global(.PostToolValue):global(.isZero) {
+  display: none;
+}
+
+/* postDetailStyle: bigger values and icons in the top / post contexts */
+.post .tools :global(.PostToolValue),
+.top .tools :global(.PostToolValue) {
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+.post .tools :global(.SVGIcon) + :global(.PostToolValue),
+.top .tools :global(.SVGIcon) + :global(.PostToolValue) {
+  margin-left: 15px;
+}
+
+.post .tools :global(.SVGIcon),
+.top .tools :global(.SVGIcon) {
+  transform: scale(1.5);
+}
+
+.post .tools :global(.SVGIcon) > :global(g),
+.top .tools :global(.SVGIcon) > :global(g) {
+  stroke-width: 0.9375;
+}
+
+.post .tools :global(.CommentTool),
+.post .tools :global(.WatchTool),
+.post .tools :global(.FlagTool),
+.post .tools :global(.TimeAgoTool),
+.top .tools :global(.CommentTool),
+.top .tools :global(.WatchTool),
+.top .tools :global(.FlagTool),
+.top .tools :global(.TimeAgoTool) {
+  display: none;
+}
+
+.tools :global(.ShareTool) {
+  position: static;
+}
+
+.tools :global(.ViewsTool) {
+  margin-left: -8px;
+  pointer-events: none;
+}
+
+.tools :global(.ViewsTool):global(.isPill) {
+  height: 22px;
+  margin-right: 0 !important;
+  margin-left: 0;
+  line-height: 22px;
+}
+
+.tools :global(.ViewsTool):global(.isPill) > a {
+  padding-right: 11px;
+  padding-left: 11px;
+  color: #aaa;
+  background-color: transparent;
+  border-radius: 11px;
+}
+
+.tools :global(.ViewsTool):global(.isPill) > a :global(.SVGIcon),
+.tools :global(.ViewsTool):global(.isPill) > a :global(.PostToolValue) {
+  position: relative;
+  top: 1px;
+}
+
+.tools :global(.ShareTool):global(.isPill) {
+  right: 0;
+  height: 22px;
+  line-height: 22px;
+}
+
+.tools :global(.ShareTool):global(.isPill) > button {
+  padding-right: 11px;
+  padding-left: 11px;
+  background-color: #e8e8e8;
+  border-radius: 11px;
+  transition: color var(--speed) ease, background-color var(--speed) ease;
+}
+
+@media (hover: hover) {
+  .tools :global(.ShareTool):global(.isPill) > button:hover {
+    background-color: #ccc;
+  }
+}
+
+.tools :global(.ShareTool):global(.isPill) > button > :global(.Hint) {
+  position: static;
+  display: inline-block;
+  padding: 0;
+  color: #535353;
+  visibility: visible;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  opacity: 1;
+}
+
+.tools :global(.ShyTool),
+:global(.PostDetails) .tools:global(.PostTools) :global(.ShyTool) {
+  pointer-events: auto;
+  opacity: 1;
+  transition: opacity var(--speed) ease;
+}
+
+/* PostDetailAsideBottom: only the watch and flag tools */
+.bottom .tools {
+  height: auto;
+  padding: 0 0 15px;
+  justify-content: flex-start;
+}
+
+.bottom .tools :global(.PostTool) {
+  display: none;
+}
+
+.bottom .tools :global(.WatchTool),
+.bottom .tools :global(.FlagTool) {
+  display: block;
+}
+
+@media (min-width: 60em) {
+  .bottom .tools {
+    padding-right: 10px;
+    padding-left: 10px;
+    justify-content: flex-end;
+  }
+}
+
+.categoryHistory {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+/* `.PostTool[data-count="0"] > button.PostToolDrawerButton` */
+.tools :global(.PostTool)[data-count='0'] > button:global(.PostToolDrawerButton) {
+  display: none;
+}

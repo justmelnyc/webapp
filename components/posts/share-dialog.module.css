@@ -1,0 +1,80 @@
+/* Port of the glamor styles in legacy/src/components/dialogs/ShareDialog.js (+ Dialog.js, DismissButton). */
+.dialog {
+  position: relative;
+  max-width: 290px;
+  padding: 10px;
+  margin: 0 auto;
+  color: #000;
+  background-color: #fff;
+}
+
+.control {
+  display: inline-block;
+  width: 100%;
+  padding: 20px;
+  font-size: 14px;
+  color: #fff;
+  vertical-align: baseline;
+  background-color: #000;
+  border: 1px solid #000;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.control:focus {
+  background-color: #666;
+  border-color: #666;
+  outline: 0;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -10px;
+}
+
+.link {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-top: 10px;
+  margin-left: 10px;
+  background-color: #000;
+}
+
+.dismiss {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  transition: color var(--speed, 0.2s) ease;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: #666;
+  }
+
+  .dismiss:hover {
+    color: #aaa;
+  }
+}
+
+@media (min-width: 40em) {
+  .dialog {
+    max-width: 630px;
+    padding: 20px;
+  }
+
+  .dismiss {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (min-width: 85em) {
+  .dialog {
+    padding: 40px;
+  }
+}

@@ -1,0 +1,66 @@
+/* Ported from legacy/src/components/relationships/FollowButton.js (buttonStyle) and Relationship.js */
+.container {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.button {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  padding: 0 10px 0 4px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #00d100;
+  border: 1px solid #00d100;
+  border-radius: 15px;
+  transition:
+    background-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+    border-radius 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+    color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
+    width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) {
+  .button:hover {
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+  }
+}
+
+.button[data-priority='self'] {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.button[data-priority='self'],
+.button[data-priority='friend'],
+.button[data-priority='noise'] {
+  color: #fff;
+  background-color: #aaa;
+  border-color: #aaa;
+}
+
+.button[data-priority='block'],
+.button[data-priority='mute'],
+.button[data-priority='block']:hover,
+.button[data-priority='mute']:hover {
+  color: #fff !important;
+  background-color: #f00;
+  border-color: #f00;
+}
+
+@media (hover: hover) {
+  .button[data-priority='self']:hover,
+  .button[data-priority='friend']:hover,
+  .button[data-priority='noise']:hover {
+    background-color: #000;
+    border-color: #000;
+  }
+}

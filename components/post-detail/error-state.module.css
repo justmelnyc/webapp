@@ -1,0 +1,40 @@
+/* errors/Errors.js (`ErrorState`) inside `.MainView > .StreamContainer.isError` (StreamContainer.css). */
+
+.stream {
+  max-width: 780px;
+  padding: 10px;
+  margin: 0 auto;
+}
+
+@media (min-width: 40em) {
+  .stream {
+    padding: 20px;
+  }
+}
+
+@media (min-width: 85em) {
+  .stream {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.error {
+  max-width: 780px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+@media (min-width: 40em) {
+  .error {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.image {
+  display: block;
+  margin: 0 auto 75px;
+}

@@ -1,0 +1,100 @@
+// GraphQL documents for the v3 API. The mock ignores selection sets but a real server would not.
+const image = `{ url metadata { width height type size } }`
+const avatar = `{ small ${image} regular ${image} large ${image} original ${image} }`
+const responsive = `{ xhdpi ${image} hdpi ${image} mdpi ${image} ldpi ${image} optimized ${image} original ${image} }`
+
+const authorFields = `
+  id username name
+  avatar ${avatar}
+  currentUserState { relationshipPriority }
+`
+
+const regionFields = `kind data linkUrl links { assets }`
+
+export const postFields = `
+  id token createdAt contentWarning
+  author { ${authorFields} }
+  summary { ${regionFields} }
+  content { ${regionFields} }
+  repostContent { ${regionFields} }
+  repostedSource { id token author { ${authorFields} } }
+  assets { id attachment ${responsive} }
+  postStats { lovesCount commentsCount viewsCount repostsCount }
+  currentUserState { watching loved reposted }
+`
+
+const stream = (field: string, args: string, vars: string) => `
+  query(${vars}) {
+    ${field}(${args}) { next isLastPage posts { ${postFields} } }
+  }
+`
+
+export const GLOBAL_STREAM = stream('globalPostStream', 'kind: $kind, before: $before', '$kind: StreamKind!, $before: String')
+export const FOLLOWING_STREAM = stream('followingPostStream', 'kind: $kind, before: $before', '$kind: StreamKind!, $before: String')
+export const CATEGORY_STREAM = stream('categoryPostStream', 'slug: $slug, kind: $kind, before: $before', '$slug: String!, $kind: StreamKind!, $before: String')
+export const USER_STREAM = stream('userPostStream', 'username: $username, before: $before', '$username: String!, $before: String')
+
+export const USER_LOVES = `
+  query($username: String!, $before: String) {
+    userLoveStream(username: $username, before: $before) { next isLastPage loves { id post { ${postFields} } } }
+  }
+`
+
+export const FIND_POST = `
+  query($username: String!, $token: String!) { post(username: $username, token: $token) { ${postFields} } }
+`
+
+export const COMMENTS = `
+  query($id: String, $perPage: String, $before: String) {
+    commentStream(id: $id, perPage: $perPage, before: $before) {
+      next isLastPage
+      comments { id createdAt author { ${authorFields} } content { ${regionFields} } parentPost { id } }
+    }
+  }
+`
+
+export const FIND_USER = `
+  query($username: String!) {
+    findUser(username: $username) {
+      ${authorFields}
+      location formattedShortBio
+      coverImage ${responsive}
+      externalLinksList { url text }
+      settings { isHireable isCollaborateable }
+      categoryUsers { id role category { id name slug } }
+      userStats { followersCount followingCount lovesCount postsCount totalViewsCount }
+    }
+  }
+`
+
+export const SEARCH_USERS = `
+  query($query: String!) {
+    searchUsers(query: $query, perPage: 10) { users { ${authorFields} formattedShortBio } }
+  }
+`
+
+export const CATEGORIES = `query { allCategories { id name slug level description tileImage ${avatar} } }`
+export const CATEGORY_NAV = `query { categoryNav { id name slug level tileImage ${avatar} } }`
+
+export const PAGE_HEADERS = `
+  query($kind: PageHeaderKind!, $slug: String) {
+    pageHeaders(kind: $kind, slug: $slug) {
+      id kind header subheader image ${responsive}
+      ctaLink { text url }
+      user { ${authorFields} }
+    }
+  }
+`
+
+export const EDITORIALS = `
+  query($before: String) {
+    editorialStream(before: $before) {
+      next isLastPage
+      editorials {
+        id kind title subtitle path url
+        oneByOneImage ${responsive} twoByOneImage ${responsive} twoByTwoImage ${responsive}
+        post { ${postFields} }
+      }
+    }
+  }
+`

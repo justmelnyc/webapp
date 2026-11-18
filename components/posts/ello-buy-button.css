@@ -1,0 +1,67 @@
+/* Port of legacy/src/components/editor/ElloBuyButton.js (its glamor styles) */
+.ElloBuyButton {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  line-height: 39px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: #00d100;
+  border-radius: 20px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.ElloBuyButton::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: '';
+}
+
+@media (hover: hover) {
+  .ElloBuyButton:hover {
+    color: #000;
+    background-color: #eaeaea;
+  }
+}
+
+.editable[contenteditable] + .ElloBuyButton {
+  display: none;
+}
+
+.EmbedRegion .ElloBuyButton,
+.ImageRegion .ElloBuyButton,
+.RegionContent .ElloBuyButton {
+  top: 10px;
+  right: 10px;
+}
+
+.Notification .ElloBuyButton {
+  width: 15px;
+  height: 15px;
+  line-height: 14px;
+}
+
+.Notification .RegionContent .ElloBuyButton {
+  top: 5px;
+  right: 5px;
+}
+
+.Notification .ElloBuyButton svg {
+  transform: scale(0.7);
+  transform-origin: 2px 2px;
+}
+
+.EmbedRegion .embetter .ElloBuyButton {
+  line-height: 40px;
+}
+
+.ImageRegion .lightbox-trigger.with-buy {
+  right: 60px;
+}

@@ -1,0 +1,107 @@
+/* Port of legacy/src/components/views/Authentication.css + HeroPromotionAuth + Sprites (app stores). */
+.authentication {
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+  color: #fff;
+  background-color: transparent;
+}
+
+.dialog {
+  position: relative;
+  z-index: 1;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.dialog h1 {
+  padding-top: 100px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.dialog h1 + h2 {
+  margin-top: 30px;
+}
+
+.dialog h1 + .form,
+.dialog h2 + .form {
+  margin-top: 40px;
+}
+
+.form {
+  max-width: 320px;
+}
+
+.dialog a:focus,
+.dialog a:active,
+.dialog a:hover {
+  color: #fff;
+}
+
+.alt {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* 350 / 16 = 21.875em */
+@media (min-width: 21.875em) {
+  .dialog {
+    width: 320px;
+  }
+}
+
+@media (min-width: 40em) {
+  .dialog {
+    margin: auto;
+  }
+
+  .dialog h1 {
+    padding-top: 0;
+  }
+}
+
+/* ---- hero (HeroPromotionAuth): fixed and behind the form ---- */
+
+.hero {
+  position: fixed;
+  inset: 0;
+}
+
+.stores {
+  position: absolute;
+  bottom: 12px;
+  left: 10px;
+  z-index: 2;
+  display: none;
+}
+
+.store {
+  display: inline-block;
+  width: 135px;
+  height: 40px;
+  background: transparent url('./app-store-sprite.png') no-repeat 0 0;
+  background-size: cover;
+}
+
+.store + .store {
+  margin-left: 10px;
+}
+
+.google {
+  background-position: -135px 0;
+}
+
+@media (min-width: 40em) {
+  .stores {
+    display: block;
+    left: 20px;
+  }
+}
+
+@media (min-width: 85em) {
+  .stores {
+    left: 40px;
+  }
+}

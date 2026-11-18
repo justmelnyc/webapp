@@ -1,0 +1,3 @@
+/** embetter's `fallbackThumbnail` placeholder (legacy/src/vendor/embetter.js), used when a thumbnail fails to load. */
+export const EMBED_FALLBACK_THUMBNAIL =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC'

@@ -1,0 +1,167 @@
+/*
+ * Ports of the glamor styles in legacy/src/components/dialogs/BlockMuteDialog.js, FlagDialog.js,
+ * MessageDialog.js and DialogRenderables.js (TextMarkupDialog).
+ */
+
+/* ---------- BlockMuteDialog ---------- */
+.blockDialog {
+  max-width: 400px;
+  text-align: left;
+}
+
+@media (min-width: 40em) {
+  .blockDialog {
+    max-width: 800px;
+  }
+}
+
+.blockHeading {
+  height: 30px;
+  margin-bottom: 40px;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+@media (min-width: 40em) {
+  .blockHeading {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 40em) {
+  .column {
+    display: inline-block;
+    max-width: calc(33.33333% - 30px);
+    vertical-align: top;
+  }
+}
+
+.sibling {
+  margin-top: 40px;
+}
+
+@media (min-width: 40em) {
+  .sibling {
+    margin-top: 0;
+    margin-left: 30px;
+  }
+}
+
+.blockButton {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 40px;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #fff;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.blockButton.active {
+  color: #fff;
+  background-color: #000;
+  border-color: #000;
+}
+
+@media (hover: hover) {
+  .blockButton.active:hover {
+    color: #000;
+    background-color: #fff;
+    border-color: #fff;
+  }
+}
+
+/* ---------- FlagDialog ---------- */
+.flagDialog {
+  max-width: 480px;
+  color: #000;
+  text-align: left;
+  background-color: #fff;
+}
+
+@media (min-width: 40em) {
+  .flagDialog {
+    min-width: 480px;
+    max-width: 580px;
+  }
+}
+
+.flagHeading {
+  height: 40px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  line-height: 40px;
+}
+
+@media (min-width: 40em) {
+  .flagHeading {
+    font-size: 24px;
+  }
+}
+
+.flagFootnote {
+  margin: 20px 0 0;
+}
+
+.flagFootnote::before {
+  margin-left: -10px;
+  content: '* ';
+}
+
+.flagButton {
+  height: 60px;
+  font-size: 14px;
+  line-height: 60px;
+  color: #fff;
+  background-color: #000;
+  border: 1px solid #000;
+  transition: background-color 0.2s ease, border-color 0.2s ease, width 0.2s ease;
+}
+
+@media (hover: hover) {
+  .flagButton:hover {
+    background-color: #666;
+    border-color: #666;
+  }
+}
+
+.choice {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.choice + .choice {
+  margin-top: 10px;
+}
+
+.choice.active {
+  width: calc(100% - 140px);
+  background-color: #666;
+  border-color: #666;
+}
+
+.okay {
+  text-align: center;
+}
+
+.submit {
+  position: absolute;
+  right: 20px;
+  z-index: 1;
+  min-width: 120px;
+}
+
+@media (min-width: 85em) {
+  .submit {
+    right: 40px;
+  }
+}

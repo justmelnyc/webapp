@@ -1,0 +1,174 @@
+/*
+ * Layout of the post detail view, ported from legacy/src/components/views/PostDetail.js (glamor)
+ * and MainView.css. Original class names are kept as global hooks (PostBody, ImageRegion, ...)
+ * so the ported rules can stay verbatim.
+ */
+
+/* The original's empty `.Hero` spacer that offsets the view below the fixed navbar. */
+.spacer {
+  padding-top: 85px;
+  background-color: #fff;
+}
+
+@media (max-width: 39.9375em) {
+  :global(.isLoggedOut) .spacer {
+    padding-top: 80px;
+  }
+}
+
+@media (min-width: 40em) {
+  .spacer {
+    padding-top: 80px;
+  }
+}
+
+/* `.PostDetail.MainView` */
+.root {
+  position: relative;
+  padding-bottom: 30px;
+  background-color: #fff;
+}
+
+@media (max-width: 39.9375em) {
+  .root {
+    padding-bottom: 0;
+  }
+}
+
+@media (min-width: 60em) {
+  .root {
+    height: calc(100vh - 80px);
+    overflow: hidden;
+  }
+}
+
+.details {
+  position: relative;
+}
+
+/* `listStyle` */
+.list {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+@media (min-width: 60em) {
+  .list {
+    width: calc(100vw - 420px);
+    height: 100vh;
+    padding-right: 20px;
+    padding-bottom: 40px;
+    padding-left: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .list :global(.PostBody) > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+  }
+}
+
+/* `.Post` wraps header, body and tools below 60em; above it only the body shows. */
+.post {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 60em) {
+  .post {
+    margin-bottom: 0;
+  }
+}
+
+.narrowOnly {
+  display: block;
+}
+
+@media (min-width: 60em) {
+  .narrowOnly {
+    display: none;
+  }
+}
+
+/* `asideStyle` */
+.aside {
+  display: none;
+}
+
+@media (min-width: 60em) {
+  .aside {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 420px;
+    height: 100vh;
+    padding-bottom: 160px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-left: 1px solid #f2f2f2;
+  }
+}
+
+/* ---- regions (PostBody.css, ImageRegion.js) ---- */
+
+.body :global(.TextRegion) {
+  width: 100%;
+  max-width: 780px;
+  word-wrap: break-word;
+}
+
+.body :global(.RegionContent) {
+  position: relative;
+}
+
+.body :global(.RegionContent) > :first-child {
+  margin-top: 0;
+}
+
+.body :global(.RegionContent) > :last-child {
+  margin-bottom: 0;
+}
+
+.body :global(.ImageRegion) {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.body :global(.ImageRegion) + :global(.ImageRegion),
+.body :global(.ImageRegion) + :global(.EmbedRegion),
+.body :global(.EmbedRegion) + :global(.ImageRegion) {
+  margin-top: 10px;
+}
+
+.body :global(.TextRegion) + :global(.TextRegion),
+.body :global(.TextRegion) + :global(.ImageRegion),
+.body :global(.TextRegion) + :global(.EmbedRegion),
+.body :global(.ImageRegion) + :global(.TextRegion),
+.body :global(.EmbedRegion) + :global(.TextRegion) {
+  margin-top: 20px;
+}
+
+/* streamImageStyle */
+.imageHolder {
+  position: relative;
+  display: inline;
+}
+
+.imageHolder > :global(.ImgHolder) {
+  position: relative;
+  display: inline-block;
+  background-color: #f2f2f2;
+}
+
+.body :global(.ImageAttachment) {
+  max-width: 100%;
+  height: auto;
+  font-size: 12px;
+  transition: opacity 0.4s;
+}

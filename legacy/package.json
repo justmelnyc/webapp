@@ -1,0 +1,149 @@
+{
+  "name": "ello-webapp",
+  "version": "3.0.21",
+  "private": true,
+  "scripts": {
+    "clean": "rm -f .yarnclean public/static/*.css public/static/*.html public/static/*.js public/static/*.map",
+    "build": "yarn run clean && webpack --config webpack.prod.config.js --env commitsha=`git rev-parse HEAD` --progress",
+    "dev": "NODE_ENV=development babel-node src/server/dev.js",
+    "start": "yarn dev",
+    "mock": "node mock/server.js",
+    "mock:reset": "rm -rf mock/.data",
+    "lint": "yarn lint:js && yarn lint:css",
+    "lint:css": "stylelint 'src/**/*.css'",
+    "lint:js": "eslint src test",
+    "lint:js:fix": "eslint src test --fix",
+    "pretest": "yarn lint",
+    "test": "yarn test:all",
+    "test:all": "NODE_ENV=test mocha",
+    "test:watch": "NODE_ENV=test mocha --watch"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "eslintConfig": {
+    "extends": "ello",
+    "globals": {
+      "AndroidInterface": false
+    }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-primer",
+    "rules": {
+      "comment-empty-line-before": null,
+      "selector-class-pattern": null,
+      "selector-no-type": null,
+      "no-unsupported-browser-features": [
+        true,
+        {
+          "browsers": "> 5%, last 2 firefox versions, last 2 chrome versions, last 2 safari versions, last 2 edge versions, ie 11, not OperaMini all",
+          "ignore": [
+            "calc",
+            "flexbox",
+            "viewport-units",
+            "will-change"
+          ]
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "classnames": "2.2.5",
+    "core-js": "^3.51.0",
+    "exif-js": "2.3.0",
+    "glamor": "3.0.0-1",
+    "honeybadger-js": "0.5.4",
+    "humps": "2.0.1",
+    "immutable": "^3.8.3",
+    "isomorphic-fetch": "^3.0.0",
+    "jwt-decode": "2.2.0",
+    "lodash": "^4.18.1",
+    "moment": "^2.31.0",
+    "mousetrap": "1.6.2",
+    "prop-types": "15.6.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-helmet": "^6.1.0",
+    "react-redux": "^7",
+    "react-router": "^3.2.6",
+    "react-router-redux": "4.0.8",
+    "react-router-scroll": "0.4.4",
+    "react-slick": "^0.31.0",
+    "redux": "3.7.2",
+    "redux-logger": "3.0.6",
+    "redux-persist": "4.8.3",
+    "redux-persist-immutable": "4.3.1",
+    "redux-persist-transform-immutable": "4.3.0",
+    "redux-saga": "0.15.6",
+    "regenerator-runtime": "^0.14.1",
+    "reselect": "3.0.1",
+    "transit-immutable-js": "0.7.0",
+    "trunc-html": "1.1.2",
+    "tween.js": "16.6.0",
+    "url-regex": "3.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^8.1.0",
+    "@babel/core": "^8.1.2",
+    "@babel/node": "^8.1.2",
+    "@babel/plugin-transform-react-constant-elements": "^8.0.5",
+    "@babel/preset-env": "^8.0.7",
+    "@babel/preset-flow": "^8.0.1",
+    "@babel/preset-react": "^8.0.1",
+    "@babel/register": "^8.1.2",
+    "autoprefixer": "^10.6.2",
+    "babel-eslint": "7.2.3",
+    "babel-loader": "^10.1.1",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-polyfill-corejs3": "^1.0.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "chai": "3.5.0",
+    "chai-generator": "2.1.0",
+    "chai-immutable": "1.6.0",
+    "css-loader": "^7.1.5",
+    "dotenv": "^18.0.10",
+    "eslint": "3.19.0",
+    "eslint-config-ello": "1.0.5",
+    "express": "4.16.3",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.8",
+    "http-proxy": "1.17.0",
+    "image-size": "^2.1.0",
+    "jsdom": "11.11.0",
+    "mini-css-extract-plugin": "^2.10.2",
+    "mocha": "^11",
+    "multer": "^2.5.0",
+    "postcss": "^8.5.33",
+    "postcss-apply": "^0.12.0",
+    "postcss-calc": "^11.3.0",
+    "postcss-color-function": "^4.1.0",
+    "postcss-custom-media": "^12.0.3",
+    "postcss-custom-properties": "^15.0.4",
+    "postcss-import": "^17.0.1",
+    "postcss-loader": "^8.2.1",
+    "postcss-pxtorem": "^6.1.0",
+    "postcss-reporter": "^7.1.0",
+    "postcss-url": "^10.1.4",
+    "react-test-renderer": "18.3.1",
+    "sinon": "2.4.1",
+    "sinon-chai": "2.12.0",
+    "style-loader": "^4.0.0",
+    "stylelint": "7.12.0",
+    "stylelint-config-primer": "1.4.0",
+    "webpack": "^5.112.2",
+    "webpack-cli": "^7.3.1",
+    "webpack-dev-middleware": "^8.6.1",
+    "webpack-hot-middleware": "^2.26.1"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11",
+    "not op_mini all"
+  ],
+  "resolutions": {
+    "lodash": "^4.18.1",
+    "lodash-es": "^4.18.1"
+  }
+}

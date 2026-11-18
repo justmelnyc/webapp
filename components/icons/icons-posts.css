@@ -1,0 +1,174 @@
+/* Icon rules scoped to Post tools, comments, notifications. See icons.css header. */
+@layer components {
+  /* Posts and comments and notifications
+------------------------------------- */
+  .WatchTool > button.isActive > .BoltIcon > g,
+  .Post .isCommentsActive .BubbleIcon > g,
+  .Post .BubbleIcon > g:nth-child(2) {
+    fill: #000;
+    stroke: #000;
+  }
+
+  @media (hover: hover) {
+    .CommentTool > button:hover > .BubbleIcon > g,
+    .FlagTool > button:hover > .FlagIcon > g:nth-of-type(2) {
+      fill: #000;
+    }
+  }
+
+  @media (hover: hover) {
+    .CommentTool.isLightBox > button:hover > .BubbleIcon > g,
+    .FlagTool.isLightBox > button:hover > .FlagIcon > g:nth-of-type(2) {
+      fill: #fff;
+    }
+  }
+
+  @media (hover: hover) {
+    .IconTab.isActive .BubbleIcon > g,
+    .IconTab.isActive .HeartIcon > g,
+    .IconTab:hover .BubbleIcon > g,
+    .IconTab:hover .HeartIcon > g {
+      fill: #fff;
+    }
+  }
+
+  /* Hide the tail */
+  .NotificationsContainerTabs .BubbleIcon > g:nth-child(2),
+  .Post .BubbleIcon > g:nth-child(2),
+  .StyleGuide .BubbleIcon > g:nth-child(2),
+  .PostTool.isLightBox .BubbleIcon.SVGIcon > g:nth-child(2) {
+    display: none;
+  }
+
+  /* Animating */
+  .Post .isCommentsRequesting .BubbleIcon > g:nth-child(1) {
+    display: none;
+  }
+
+  .Post .isCommentsRequesting .BubbleIcon > g:nth-child(2) {
+    display: inline;
+  }
+
+  .Post .isCommentsRequesting .BubbleIcon polygon {
+    animation: animateCommentsLoading 0.75s infinite cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  .PostTool .ShareIcon,
+  .PostTool .HeartIcon,
+  .PostTool .EyeIcon,
+  .PostTool .BubbleIcon {
+    margin-top: -2px;
+  }
+
+  .PostTool .PencilIcon,
+  .PostTool .RepostIcon {
+    margin-top: -4px;
+  }
+
+  .PostTool .XBoxIcon {
+    padding-left: 1px;
+  }
+
+  .PencilIcon > g,
+  .Post .XBoxIcon > g {
+    stroke-linecap: square;
+    transition-delay: 0.1s, 0s, 0s;
+  }
+
+  .RepostHeader .RepostIcon > g {
+    stroke: #535353;
+  }
+
+  /* Animations ?? */
+  .ViewsTool .EyeIcon > circle {
+    fill: currentColor;
+    stroke: transparent;
+    transition:
+      fill var(--speed) ease,
+      stroke var(--speed) ease;
+  }
+
+  @media (hover: hover) {
+    .ViewsTool > a:hover > .EyeIcon > circle {
+      stroke: #000;
+      transition-delay: var(--speed), 0s;
+    }
+  }
+
+  @media (hover: hover) {
+    .ViewsTool > a:hover > .EyeIcon > g {
+      stroke: #000;
+    }
+  }
+
+  @media (hover: hover) {
+    .ViewsTool.isLightBox > a:hover > .EyeIcon > g {
+      stroke: #fff;
+    }
+  }
+
+  @media (hover: hover) {
+    .LoveTool > button:hover > .HeartIcon > g {
+      fill: #000;
+    }
+  }
+
+  @media (hover: hover) {
+    .LoveTool.isLightBox > button:hover > .HeartIcon > g {
+      fill: #fff;
+    }
+  }
+
+  .LoveTool > button.isActive > .HeartIcon > g {
+    fill: #f00;
+    stroke: #f00;
+  }
+
+  @media (hover: hover) {
+    .LoveTool > button.isActive:hover > .HeartIcon > g {
+      fill: #f99;
+      stroke: #f99;
+    }
+  }
+
+  @media (hover: hover) {
+    .ShareTool > button:hover > .ShareIcon > g:nth-of-type(2) {
+      transform: translate3d(0, -1px, 0);
+    }
+  }
+
+  @media (hover: hover) {
+    .DeleteTool > button:hover > .XBoxIcon > g:nth-of-type(2) {
+      transform: rotate(90deg);
+    }
+  }
+
+  .ShareTool.isPill .ShareIcon {
+    display: none;
+  }
+
+  .CommentTools .ReplyTool .SVGIcon {
+    margin-top: -2px;
+  }
+
+  .CommentTools .MoreTool .SVGIcon {
+    transform: rotate(180deg);
+  }
+
+  .CommentTools.isMoreToolActive .MoreTool .SVGIcon {
+    color: #000;
+    transform: none;
+  }
+
+  /* // MAX WIDTH! */
+  @media (max-width: 39.9375em) {
+    .CommentTools .MoreTool .SVGIcon {
+      transform: rotate(180deg);
+    }
+
+    .CommentTools.isMoreToolActive .MoreTool .SVGIcon {
+      color: #000;
+      transform: none;
+    }
+  }
+}
