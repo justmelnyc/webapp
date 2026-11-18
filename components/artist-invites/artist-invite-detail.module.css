@@ -1,0 +1,128 @@
+/* detailContainerStyle, contentColumnStyle and guideStyle of ArtistInviteRenderables.js */
+.detail {
+  display: block;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.detail :global(.ArrowIcon) {
+  transform: rotate(90deg);
+}
+
+.detail :global(.RoundedRect) {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 40em) {
+  .detail {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .detail :global(.RoundedRect.ScrollButton) {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .detail :global(.RoundedRect.SubmitButton) {
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
+}
+
+@media (min-width: 60em) {
+  .detail :global(.RoundedRect.ScrollButton) {
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+
+  .detail :global(.RoundedRect.SubmitButton) {
+    margin-bottom: 50px;
+  }
+}
+
+@media (min-width: 85em) {
+  .detail {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.upcoming {
+  padding-bottom: 60px;
+}
+
+.content {
+  max-width: 1440px;
+  padding-right: 40px;
+  padding-left: 40px;
+  margin: 0 auto;
+}
+
+@media (max-width: 84.9375em) {
+  .content {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.column {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+@media (min-width: 40em) {
+  .column {
+    width: calc(50% - 10px);
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+
+  .column:nth-child(2n) {
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 60em) {
+  .column {
+    width: calc(50% - 20px);
+    margin-right: 40px;
+    margin-bottom: 40px;
+  }
+}
+
+.guide {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.guideHeader {
+  max-width: 100%;
+  margin-bottom: 20px;
+  overflow: hidden;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 60em) {
+  .guideHeader {
+    font-size: 38px;
+  }
+}
+
+@media (min-width: 40em) {
+  .guideContent {
+    margin-bottom: 30px;
+  }
+}
+
+/* (the original's 60px at 60em never applied: its 40em rule wins) */

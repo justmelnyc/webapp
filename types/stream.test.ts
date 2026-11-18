@@ -5,6 +5,7 @@ describe('streamSpecSchema', () => {
   it.each([
     [{ type: 'global', kind: 'TRENDING' }],
     [{ type: 'following' }],
+    [{ type: 'following', kind: 'TRENDING' }],
     [{ type: 'category', slug: 'art', kind: 'RECENT' }],
     [{ type: 'user', username: 'ada' }],
     [{ type: 'loves', username: 'ada' }],
@@ -16,6 +17,7 @@ describe('streamSpecSchema', () => {
     [{ type: 'global' }],
     [{ type: 'global', kind: 'trending' }],
     [{ type: 'category', kind: 'RECENT' }],
+    [{ type: 'following', kind: 'HOT' }],
     [{ type: 'user' }],
     [{ type: 'unknown' }],
     [{ kind: 'FEATURED' }],

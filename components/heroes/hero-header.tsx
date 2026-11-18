@@ -1,15 +1,22 @@
 import { BackgroundImage } from '@/components/heroes/background-image'
-import { HeroCredits, heroCreditsEditorial } from '@/components/heroes/hero-credits'
+import { HeroCredits, heroCreditsEditorial, heroCreditsInvites } from '@/components/heroes/hero-credits'
 import type { PageHeader } from '@/types/content'
+import { cn } from '@/utils/cn'
 import { cleanHtml } from '@/utils/sanitize'
 import { responsiveUrl } from '@/utils/images'
+
+interface HeroHeaderProps {
+  header: PageHeader
+  /** `.Editorial` (home) has no side padding on phones and a 20px bottom margin; the invites page keeps the defaults. */
+  page?: 'editorial' | 'invites'
+}
 
 /**
  * Port of HeroRenderables.js `HeroHeader`, the home page (`.Editorial`) hero: a 430px image
  * (600px from 85em) with the heading and sub-heading over it and a "Posted by" credit.
  */
-export const HeroHeader = ({ header }: { header: PageHeader }) => (
-  <div className="HeroHeader relative mx-auto h-[430px] w-full max-bp2:[.isLoggedOut_&]:mt-20 max-w-view px-0 text-white bp2:px-20 bp4:mb-20 bp4:h-[600px] bp4:px-40">
+export const HeroHeader = ({ header, page = 'editorial' }: HeroHeaderProps) => (
+  <div className={cn('HeroHeader relative mx-auto h-[430px] w-full max-bp2:[.isLoggedOut_&]:mt-20 max-w-view text-white bp2:px-20 bp4:h-[600px] bp4:px-40', page === 'editorial' ? 'px-0 bp4:mb-20' : 'px-10')}>
     <div className="relative flex h-[430px] items-center justify-center bp4:h-[600px]">
       <BackgroundImage src={responsiveUrl(header.image)} overlay={4} />
     </div>
@@ -22,6 +29,6 @@ export const HeroHeader = ({ header }: { header: PageHeader }) => (
         dangerouslySetInnerHTML={{ __html: cleanHtml(header.subheader ?? '') }}
       />
     </div>
-    {header.user && <HeroCredits user={header.user} label="Posted by" className={heroCreditsEditorial} />}
+    {header.user && <HeroCredits user={header.user} label="Posted by" className={page === 'invites' ? heroCreditsInvites : heroCreditsEditorial} />}
   </div>
 )

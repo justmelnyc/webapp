@@ -32,3 +32,9 @@ export const joinFormSchema = z.object({
 })
 
 export type JoinInput = z.infer<typeof joinFormSchema>
+
+export const passwordFormSchema = z.object({
+  password: z.string().regex(PASSWORD, MESSAGES.password),
+})
+
+export type PasswordInput = z.infer<typeof passwordFormSchema>

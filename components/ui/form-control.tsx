@@ -29,7 +29,8 @@ import { Suggestions } from './form-control-suggestions'
  * which also catches browser autofill and programmatic resets).
  */
 export type ControlStatus = 'indeterminate' | 'request' | 'failure' | 'success'
-type Appearance = 'line' | 'box' | 'box-grey'
+type Appearance = 'line' | 'box' | 'box-grey' | 'white'
+const isBoxAppearance = (appearance: Appearance): boolean => appearance === 'box' || appearance === 'box-grey'
 
 interface ControlState {
   appearance: Appearance
@@ -81,13 +82,14 @@ const Root = ({
       <div
         className={cn(
           'FormControl',
-          appearance !== 'line' && 'isBoxControl',
+          isBoxAppearance(appearance) && 'isBoxControl',
+          appearance === 'white' && ['isSimpleWhiteControl', styles.white],
           STATUS_CLASS[status],
           hasFocus && 'hasFocus',
           hasValue && 'hasValue',
           isInitial && 'isInitialValue',
           styles.control,
-          appearance !== 'line' && styles.box,
+          isBoxAppearance(appearance) && styles.box,
           appearance === 'box-grey' && styles.grey,
           status === 'failure' && styles.failing,
           hasFocus && styles.hasFocus,
@@ -108,7 +110,7 @@ const Label = ({ className, ...props }: ComponentProps<'label'>) => {
   const { appearance } = useControl()
   return (
     <label
-      className={cn('FormControlLabel', appearance !== 'line' && 'isBoxControl', styles.label, className)}
+      className={cn('FormControlLabel', isBoxAppearance(appearance) && 'isBoxControl', appearance === 'white' && ['isSimpleWhiteControl', styles.whiteLabel], styles.label, className)}
       {...props}
     />
   )
@@ -145,7 +147,7 @@ const Input = ({ className, ref, onChange, onFocus, onBlur, ...props }: InputPro
       ref={mergeRefs(ref, local)}
       autoCapitalize="off"
       autoCorrect="off"
-      className={cn('FormControlInput', control.appearance !== 'line' && 'isBoxControl', styles.input, className)}
+      className={cn('FormControlInput', isBoxAppearance(control.appearance) && 'isBoxControl', control.appearance === 'white' && ['isSimpleWhiteControl', styles.whiteInput], styles.input, className)}
       onChange={(e: ChangeEvent<HTMLInputElement>) => {
         syncValue(e.target.value)
         onChange?.(e)
@@ -181,7 +183,7 @@ const Textarea = ({ className, ref, onChange, onFocus, onBlur, ...props }: Texta
     return () => clearInterval(timer)
   }, [syncValue])
 
-  const isBox = control.appearance !== 'line'
+  const isBox = isBoxAppearance(control.appearance)
   return (
     <textarea
       ref={mergeRefs(ref, local)}
@@ -220,7 +222,7 @@ const STATUS_ICON: Record<ControlStatus, ReactNode> = {
 const Status = ({ className }: { className?: string }) => {
   const { appearance, status } = useControl()
   return (
-    <span className={cn('FormControlStatus', appearance !== 'line' && 'isBoxControl', styles.status, className)}>
+    <span className={cn('FormControlStatus', isBoxAppearance(appearance) && 'isBoxControl', appearance === 'white' && ['isSimpleWhiteControl', styles.whiteStatus], styles.status, className)}>
       {STATUS_ICON[status]}
     </span>
   )

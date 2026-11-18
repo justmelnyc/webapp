@@ -60,3 +60,6 @@ Ello Web Application is released under the [MIT License](/LICENSE.txt)
 - **NSFW "View" button on feeds:** the original's GraphQL reducer drops `contentWarning`, so it never shows the button on `/discover/trending` or similar feeds. The rewrite shows it (about 5-15% diff on those pages when seeded NSFW posts are in the feed).
 - **Profile hero diffs:** the hero is `100vh`; pass `--vh 900` to `tools/visual-diff/vdiff.js`.
 - **Shop/embeds/reposts:** see `mock/README.md` for what the mock simulates.
+- **Invites with no submissions:** the original treats the empty API answer as one blank submission and shows only a "Submissions" heading (a bug). The rewrite shows the zero state the original's code intended ("No Submissions Yet"), about 0.4% diff on `/invites/tiny-worlds`.
+- **After resetting a password:** the original's saga signs in with the username from its (logged out, so empty) store, so nothing visibly happens and the form stays. The rewrite does what the saga meant to: signs in with the new password and goes to `/`. The mock's reset link is in its log and at `GET /mock/last-reset-link`.
+- **Onboarding avatar "blank" check:** like the original, an avatar or header only counts as present when the profile says `hasAvatarPresent` / `hasCoverImagePresent` (the mock sets them once you upload one), so seeded users show the green upload buttons here.

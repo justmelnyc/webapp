@@ -6,8 +6,9 @@ import { cn } from '@/utils/cn'
 import uploaderStyles from './settings-uploader.module.css'
 
 interface UploaderProps {
-  /** `coverUploader` or `avatarUploader` layout from settings.module.css */
-  variant: 'cover' | 'avatar'
+  /** The settings layouts, or `plain` when the caller lays the button out itself (through `className`). */
+  variant: 'cover' | 'avatar' | 'plain'
+  className?: string
   title: string
   lines: string[]
   onPick: (file: File) => void
@@ -17,7 +18,7 @@ interface UploaderProps {
 }
 
 /** The original's `Uploader`: a button (with a drop target) over the image, with size hints under it. */
-export const Uploader = ({ variant, title, lines, onPick, disabled, isBlank }: UploaderProps) => {
+export const Uploader = ({ variant, className, title, lines, onPick, disabled, isBlank }: UploaderProps) => {
   const input = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
 
@@ -52,14 +53,15 @@ export const Uploader = ({ variant, title, lines, onPick, disabled, isBlank }: U
         onDrop={onDrop}
         className={cn(
           'Uploader',
-          variant === 'cover' ? 'isCoverUploader' : 'isAvatarUploader',
+          variant === 'cover' && ['isCoverUploader', uploaderStyles.coverUploader],
+          variant === 'avatar' && ['isAvatarUploader', uploaderStyles.avatarUploader],
           uploaderStyles.uploader,
-          variant === 'cover' ? uploaderStyles.coverUploader : uploaderStyles.avatarUploader,
+          className,
           dragOver && ['hasDragOver', uploaderStyles.dragOver],
         )}
       >
         <span className={cn(uploaderStyles.uploadButton, isBlank && uploaderStyles.blank)}>{title}</span>
-        <div className={uploaderStyles.message}>
+        <div className={cn('UploaderMessage', uploaderStyles.message)}>
           {lines.map((line, index) => (
             <p key={line} className={index === 2 ? uploaderStyles.dragLine : undefined}>
               {line}

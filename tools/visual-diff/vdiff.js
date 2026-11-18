@@ -58,9 +58,18 @@ const login = async (c, base, user) => {
   await wait(6000)
 }
 
+// --reset-email ada@example.com: every side gets its own fresh password reset token in place of `{token}` in --path
+// (a token works once, so the two apps cannot share one).
+const resetPath = async (email) => {
+  const mock = process.env.MOCK_URL || 'http://localhost:7770'
+  await fetch(`${mock}/api/v2/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
+  const { token } = await (await fetch(`${mock}/mock/last-reset-link`)).json()
+  return PATH.replace('{token}', token)
+}
+
 const capture = async (c, base, label) => {
   await c.send('Emulation.setDeviceMetricsOverride', { width: WIDTH, height: 900, deviceScaleFactor: 1, mobile: WIDTH < 600 })
-  await c.send('Page.navigate', { url: base + PATH })
+  await c.send('Page.navigate', { url: base + (args['reset-email'] ? await resetPath(args['reset-email']) : PATH) })
   await wait(WAIT)
   await c.ev(`(() => { const s = document.createElement('style'); s.textContent = ${JSON.stringify(FREEZE)}; document.head.appendChild(s) })()`)
   if (args.type) {

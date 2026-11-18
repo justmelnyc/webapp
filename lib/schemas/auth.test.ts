@@ -1,4 +1,4 @@
-import { loginSchema } from './auth'
+import { forgotPasswordSchema, loginSchema, resetPasswordSchema } from './auth'
 
 describe('loginSchema', () => {
   it('accepts valid credentials', () => {
@@ -31,5 +31,26 @@ describe('loginSchema', () => {
 
   it('rejects missing fields', () => {
     expect(loginSchema.safeParse({}).success).toBe(false)
+  })
+})
+
+describe('forgotPasswordSchema', () => {
+  it('accepts an email and trims it', () => {
+    expect(forgotPasswordSchema.parse({ email: '  ada@example.com ' }).email).toBe('ada@example.com')
+  })
+
+  it('rejects things that are not an email, with the original message', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'ada' })
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.message).toBe('That email is invalid. Please try again.')
+  })
+})
+
+describe('resetPasswordSchema', () => {
+  it('needs a password of 8 to 128 characters and a token', () => {
+    expect(resetPasswordSchema.safeParse({ password: 'longenough', token: 'abc' }).success).toBe(true)
+    expect(resetPasswordSchema.safeParse({ password: 'short', token: 'abc' }).success).toBe(false)
+    expect(resetPasswordSchema.safeParse({ password: 'x'.repeat(129), token: 'abc' }).success).toBe(false)
+    expect(resetPasswordSchema.safeParse({ password: 'longenough', token: '' }).success).toBe(false)
   })
 })

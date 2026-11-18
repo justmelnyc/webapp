@@ -1,0 +1,46 @@
+/* FormControl.css: the `isOnboardingControl` rules, scoped to the onboarding info form. */
+
+.form :global(.FormControl) {
+  margin-bottom: 25px;
+}
+
+.form :global(.FormControlLabel) {
+  display: none;
+}
+
+.form :global(.FormControlStatus) {
+  top: 10px;
+}
+
+.form :global(.SVGIcon) {
+  transform: scale(0.6);
+}
+
+.form :global(.FormControlInput) {
+  padding-right: 20px;
+  font-size: 18px;
+  border-bottom-color: #f0f0f0;
+}
+
+.form :global(.hasValue:not(.isInitialValue)) > :global(.FormControlInput) {
+  color: #000;
+  border-color: #f0f0f0;
+}
+
+.form textarea:global(.FormControlInput) {
+  height: 40px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 60em) {
+  .form :global(.FormControlInput) {
+    font-size: 24px;
+  }
+
+  .form :global(.hasValue) > textarea:global(.FormControlInput),
+  .form :global(.hasFocus) > textarea:global(.FormControlInput) {
+    height: 115px;
+  }
+}

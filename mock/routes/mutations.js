@@ -167,6 +167,7 @@ router.patch('/api/v2/profile', (req, res) => {
   if (typeof b.is_hireable === 'boolean') me.hireable = b.is_hireable
   if (typeof b.is_collaborateable === 'boolean') me.collaborateable = b.is_collaborateable
   if (Array.isArray(b.creator_type_category_ids)) me.creatorTypeCategoryIds = b.creator_type_category_ids.map(Number)
+  if (b.web_onboarding_version !== undefined) me.webOnboardingVersion = b.web_onboarding_version
   if (b.remote_avatar_url) me.avatarUrl = b.remote_avatar_url
   if (b.remote_cover_image_url) me.coverUrl = b.remote_cover_image_url
   save()

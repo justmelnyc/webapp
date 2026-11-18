@@ -196,37 +196,36 @@ textarea.input.boxInput {
   padding-left: 50px !important;
 }
 
-/* ---- username suggestions (UsernameControl's renderFeedback) ---- */
+/* ---- isSimpleWhiteControl (the join form's username and password) ---- */
 
-.suggestionList {
-  height: 0;
-  margin: 0;
-  overflow: hidden;
-  transition: height var(--speed) var(--ease-ello);
+.white {
+  margin-bottom: 30px;
 }
 
-.hasSuggestions {
-  height: max-content;
+.input.whiteInput {
+  font-size: 24px;
+  border-bottom-color: #fff;
 }
 
-.suggestionIntro {
-  margin: 5px 0 0;
+.input.whiteInput:focus {
+  color: #fff;
 }
 
-.suggestionButton {
-  margin-top: 5px;
-  margin-right: 10px;
-  font-size: 14px;
-  border-bottom: 1px solid currentcolor;
-  transition: color var(--speed);
+.input.whiteInput::placeholder {
+  color: #fff;
 }
 
-.suggestionButton:last-of-type {
-  margin-right: 0;
+.hasValue:not(.initial) > .input.whiteInput {
+  color: #fff;
+  border-color: #fff;
 }
 
-@media (hover: hover) {
-  .suggestionButton:hover {
-    color: #000;
-  }
+.label.whiteLabel {
+  top: 33px;
+  bottom: auto;
+  color: #fff;
+}
+
+.status.whiteStatus {
+  top: 5px;
 }

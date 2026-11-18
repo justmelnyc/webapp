@@ -1,0 +1,139 @@
+/* OnboardingCollaborate.js + Preference.js / ToggleControl.js in the onboarding view */
+
+.preferences {
+  margin-top: -25px;
+}
+
+@media (min-width: 40em) {
+  .preferences {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 80px);
+    margin-top: 0;
+  }
+}
+
+.preference {
+  position: relative;
+  padding: 25px 0;
+  margin-right: 15px;
+  margin-left: 15px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.preference:first-child {
+  border-top: 0;
+}
+
+.preference dl {
+  max-width: 290px;
+}
+
+.preference dt {
+  font-size: 18px;
+}
+
+.preference dd {
+  margin-top: 100px;
+  color: #666;
+}
+
+.toggle {
+  position: absolute;
+  top: 75px;
+  right: auto;
+  left: 0;
+  display: inline-block;
+  width: 100%;
+  max-width: 290px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  background-color: #aaa;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.toggle.checked {
+  background-color: #0c0;
+  border-color: #0c0;
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    color: #aaa;
+    background-color: #fff;
+    border-color: #aaa;
+  }
+}
+
+.icon {
+  display: inline-block;
+  margin-right: 5px;
+  margin-left: -25px;
+}
+
+@media (min-width: 40em) {
+  .preference {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: 0;
+    margin-left: 0;
+    border-top: 0;
+    border-left: 1px solid #e5e5e5;
+  }
+
+  .preference:first-child {
+    border-left: 0;
+  }
+
+  .preference dl {
+    max-width: 330px;
+  }
+
+  .preference dt {
+    font-size: 24px;
+  }
+
+  .toggle {
+    left: 10px;
+    width: calc(100% - 20px);
+    max-width: 330px;
+    height: 70px;
+    font-size: 18px;
+    line-height: 70px;
+  }
+}
+
+@media (min-width: 60em) {
+  .preference {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+
+  .toggle {
+    left: 40px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 85em) {
+  .preference {
+    padding-right: 90px;
+    padding-left: 90px;
+  }
+
+  .toggle {
+    left: 90px;
+  }
+}

@@ -1,0 +1,132 @@
+/*
+ * ArtistInviteSubmissionsContainer.js, the submission titles of StreamRenderables.js and
+ * ArtistInviteAdminRenderables.js (the curator's tabs).
+ */
+.root {
+  padding-bottom: 50px;
+}
+
+.titleWrapper {
+  display: block;
+  width: 100%;
+  max-width: 1360px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 40em) {
+  .titleWrapper {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+@media (min-width: 85em) {
+  .titleWrapper {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+/* "Submissions" / "Selections" over the columns (the stream renderer's own wrapper) */
+.streamTitleWrapper {
+  display: flex;
+  align-items: center;
+  max-width: 1360px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 40em) {
+  .streamTitleWrapper {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+}
+
+.streamTitle {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 60em) {
+  .streamTitle {
+    margin-bottom: 20px;
+  }
+
+  :global(.ArtistInvitesDetail) .streamTitle {
+    margin-bottom: 0;
+    font-size: 38px;
+  }
+}
+
+.listTitle {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.title {
+  display: block;
+  width: 100%;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  color: #aaa;
+}
+
+@media (min-width: 60em) {
+  .title {
+    margin-bottom: 20px;
+  }
+
+  :global(.ArtistInvitesDetail) .title {
+    margin-bottom: 0;
+    font-size: 38px;
+  }
+}
+
+.tabs ul {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  margin: 0;
+  list-style-type: none;
+}
+
+.tabs li {
+  width: calc(25% - 20px);
+}
+
+@media (max-width: 39.9375em) {
+  .tabs ul {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 0;
+  }
+
+  .tabs li {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+.zeroState h1 {
+  display: block;
+  width: 100%;
+}

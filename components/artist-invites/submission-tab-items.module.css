@@ -1,0 +1,123 @@
+/* The four submission tabs, their `?` toggle and explainers (legacy ArtistInviteSubmissions tabs). */
+
+.tab {
+  display: block;
+  border: 0;
+}
+
+.label {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+  color: #aaa;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-bottom: 1px solid;
+  transition: color 0.2s ease;
+}
+
+@media (min-width: 40em) {
+  .label {
+    border-width: 2px;
+  }
+}
+
+@media (min-width: 60em) {
+  .label {
+    font-size: 38px;
+    line-height: 48px;
+  }
+}
+
+.explainer {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .explainer {
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .explainer {
+    display: none;
+    color: #000;
+  }
+
+  .explainer.open {
+    display: block;
+    margin-bottom: 30px;
+  }
+}
+
+.active .explainer { color: #000; }
+
+@media (hover: hover) {
+  .approvedSubmissions:hover .label { color: #00d100; }
+  .selectedSubmissions:hover .label { color: #ffc600; }
+  .unapprovedSubmissions:hover .label { color: #000; }
+  .declinedSubmissions:hover .label { color: #c90000; }
+}
+
+.approvedSubmissions.active .label { color: #00d100; }
+.selectedSubmissions.active .label { color: #ffc600; }
+.unapprovedSubmissions.active .label { color: #000; }
+.declinedSubmissions.active .label { color: #c90000; }
+
+.toggle {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #fff;
+  background-color: #aaa;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.toggle :global(.SVGIcon) {
+  display: none;
+}
+
+.question {
+  display: block;
+  font-family: AtlasGroteskRegular, AtlasGrotesk-Regular, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 23px;
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    color: #fff;
+    background-color: #000;
+  }
+}
+
+.toggle.open {
+  color: #fff;
+  background-color: #000;
+}
+
+.toggle.open :global(.SVGIcon) {
+  display: block;
+}
+
+.toggle.open .question {
+  display: none;
+}

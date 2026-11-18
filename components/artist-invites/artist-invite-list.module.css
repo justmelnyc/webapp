@@ -1,0 +1,23 @@
+/* artistInvitesStyle (StreamRenderables.js) inside the page's StreamContainer (paddings zeroed there) */
+.stream {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1440px;
+  padding: 20px 20px 0;
+  margin: 0 auto;
+}
+
+@media (max-width: 84.9375em) {
+  .cards {
+    padding-top: 0;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}

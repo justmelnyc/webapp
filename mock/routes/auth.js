@@ -2,6 +2,7 @@
 const express = require('express')
 const { db, userById } = require('../db')
 const { hasPassword, verifyPassword } = require('../passwords')
+const { onboardingVersion } = require('../onboarding')
 
 const router = express.Router()
 const FAR_FUTURE = 4102444800
@@ -28,7 +29,7 @@ const tokenBody = (user) => ({
   access_token: user
     ? jwt({
       id: user.id, username: user.username, email: user.email, is_staff: false,
-      web_onboarding_version: 3, allows_analytics: false, analytics_id: `mock-${user.id}`,
+      web_onboarding_version: onboardingVersion(user), allows_analytics: false, analytics_id: `mock-${user.id}`,
       created_at: '2018-01-01T00:00:00Z',
     })
     : 'public-token',
@@ -56,4 +57,4 @@ router.post('/api/oauth/token', (req, res) => {
 
 router.delete('/api/oauth/logout', (req, res) => res.json({}))
 
-module.exports = { router, viewerId, viewer }
+module.exports = { router, viewerId, viewer, tokenBody }

@@ -1,3 +1,4 @@
+import { PageOffset } from '@/components/layout/page-offset'
 import { SearchControl, type SearchType } from '@/components/profile/search-control'
 import { searchUserCards } from '@/components/profile/user-card-data'
 import { UserGrid } from '@/components/profile/user-grid'
@@ -20,15 +21,18 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const [users, session] = await Promise.all([searching && type === 'users' ? searchUserCards(query) : [], getSession()])
 
   return (
-    <div className={`Search ${styles.view}`}>
-      <SearchControl query={query} type={type} />
-      {searching && users.length === 0 ? (
-        <section className="StreamContainer empty">
-          <div className={`ZeroState ${styles.empty}`}>Sorry, no results found.</div>
-        </section>
-      ) : null}
-      {users.length > 0 ? <UserGrid users={users} signedIn={!!session} /> : null}
-    </div>
+    <>
+      <PageOffset>{null}</PageOffset>
+      <div className={`Search ${styles.view}`}>
+        <SearchControl query={query} type={type} />
+        {searching && users.length === 0 ? (
+          <section className="StreamContainer empty">
+            <div className={`ZeroState ${styles.empty}`}>Sorry, no results found.</div>
+          </section>
+        ) : null}
+        {users.length > 0 ? <UserGrid users={users} signedIn={!!session} /> : null}
+      </div>
+    </>
   )
 }
 

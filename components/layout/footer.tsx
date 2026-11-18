@@ -6,7 +6,7 @@ import { ChevronIcon, GridIcon, ListIcon, RSSIcon } from '@/components/icons'
 import { cn } from '@/utils/cn'
 import { FooterForm } from './footer-form'
 import { FooterLink, FooterTool } from './footer-parts'
-import { isAuthenticationPath, isDiscoverAllPath, isLayoutToolHidden, isPostDetailPath } from './layout-routes'
+import { isAuthenticationPath, isOnboardingPath, isDiscoverAllPath, isLayoutToolHidden, isPostDetailPath } from './layout-routes'
 import { useLayoutModeStore } from './layout-mode-store'
 import { useMediaQuery } from './use-media-query'
 import styles from './footer.module.css'
@@ -30,7 +30,7 @@ export const Footer = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   const mode = useLayoutModeStore((state) => state.mode)
   const toggleMode = useLayoutModeStore((state) => state.toggle)
   const isMobile = useMediaQuery('(max-width: 39.9375em)')
-  if (isAuthenticationPath(pathname)) return null
+  if (isAuthenticationPath(pathname) || isOnboardingPath(pathname)) return null
 
   const isHidden = isPostDetailPath(pathname) || isDiscoverAllPath(pathname)
   const showTools = isLoggedIn || !isMobile

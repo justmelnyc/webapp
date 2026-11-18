@@ -1,0 +1,31 @@
+/* Ported from legacy/src/components/devtools/StyleGuide.js (wrapperPaddingX, pt20/pt40, fontSize24, py20, fontSize18, mr10). */
+.header {
+  padding: 20px 10px 0;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.nav {
+  display: flex;
+  padding: 20px 0;
+}
+
+.button {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+@media (min-width: 40em) {
+  .header {
+    padding: 40px 20px 0;
+  }
+}
+
+@media (min-width: 85em) {
+  .header {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}

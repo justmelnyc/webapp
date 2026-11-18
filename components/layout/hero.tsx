@@ -21,6 +21,7 @@ interface HeroProps {
 export const Hero = ({ header, view = 'default' }: HeroProps) => (
   <div className={cn('Hero', styles.frame, view === 'discover' && styles.discover)}>
     {header.kind === 'EDITORIAL' && <HeroHeader header={header} />}
+    {header.kind === 'ARTIST_INVITE' && <HeroHeader header={header} page="invites" />}
     {header.kind === 'GENERIC' && <HeroPromotionPage header={header} />}
     {header.kind === 'CATEGORY' && <HeroPromotionCategory header={header} />}
   </div>

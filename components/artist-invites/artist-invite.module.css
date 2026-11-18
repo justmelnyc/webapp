@@ -1,0 +1,236 @@
+/*
+ * Ported from legacy/src/components/artist_invites/ArtistInviteRenderables.js (grid card and the parts the
+ * detail page shares). `.ArtistInvites` / `.ArtistInvitesDetail` are the page wrappers the original keyed off.
+ */
+.grid {
+  display: block;
+  width: calc(50% - 40px);
+  margin-right: 20px;
+  margin-bottom: 40px;
+  margin-left: 20px;
+  font-family: AtlasGroteskRegular, AtlasGrotesk-Regular, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  background-color: #f2f2f2;
+  transition: background-color 0.2s ease;
+}
+
+@media (max-width: 84.9375em) {
+  .grid {
+    width: calc(50% - 20px);
+    margin-right: 10px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .grid {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+}
+
+@media (hover: hover) {
+  .grid:hover {
+    background-color: #e5e5e5;
+  }
+
+  .grid:hover > .image > :global(.BackgroundImage)::before {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1440px;
+  height: 235px;
+  margin: 0 auto;
+}
+
+:global(.ArtistInvitesDetail) .image {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 40em) {
+  .image {
+    height: 220px;
+  }
+
+  :global(.ArtistInvitesDetail) .image {
+    height: 555px;
+    margin-bottom: 40px;
+  }
+}
+
+@media (min-width: 60em) {
+  :global(.ArtistInvitesDetail) .image {
+    margin-bottom: 60px;
+  }
+}
+
+.logo {
+  z-index: 1;
+  max-height: 155px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+@media (min-width: 40em) {
+  .logo {
+    max-height: 140px;
+  }
+
+  :global(.ArtistInvitesDetail) .logo {
+    max-height: 190px;
+  }
+}
+
+.content {
+  position: relative;
+  padding: 10px;
+}
+
+@media (min-width: 60em) {
+  .content {
+    padding: 20px;
+  }
+}
+
+.details {
+  display: block;
+  width: 100%;
+}
+
+.details::after {
+  display: block;
+  clear: both;
+  content: '';
+}
+
+.title {
+  display: block;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@media (min-width: 60em) {
+  .title {
+    margin-bottom: 20px;
+  }
+}
+
+:global(.ArtistInvites) .title,
+:global(.ArtistInvites) .inviteType,
+:global(.ArtistInvites) .dateRange {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 40em) {
+  :global(.ArtistInvitesDetail) .title {
+    margin-top: -5px;
+  }
+}
+
+/* the original's -10px margin at 60em never applied (the 40em rule wins), so -5px stays */
+@media (min-width: 60em) {
+  :global(.ArtistInvitesDetail) .title {
+    margin-bottom: 0;
+    font-size: 38px;
+  }
+}
+
+.inviteType {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #aaa;
+}
+
+@media (min-width: 60em) {
+  .inviteType {
+    float: left;
+    width: calc(100% - 210px);
+  }
+}
+
+@media (max-width: 59.9375em) {
+  .inviteType {
+    margin-bottom: 10px;
+  }
+}
+
+:global(.ArtistInvitesDetail) .inviteType {
+  float: none;
+  clear: both;
+  width: 100%;
+  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@media (min-width: 60em) {
+  :global(.ArtistInvitesDetail) .inviteType {
+    max-width: 100%;
+    font-size: 38px;
+  }
+}
+
+.dateRange {
+  float: right;
+  width: 180px;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  color: #aaa;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 59.9375em) {
+  .dateRange {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+}
+
+:global(.ArtistInvitesDetail) .dateRange {
+  float: none;
+  clear: both;
+  width: 100%;
+  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@media (min-width: 60em) {
+  :global(.ArtistInvitesDetail) .dateRange {
+    font-size: 38px;
+  }
+}
+
+.shortDescription {
+  display: block;
+  margin-top: 20px;
+}
+
+.shortDescription br {
+  display: none;
+}
+
+.shortDescription p:last-child {
+  margin-bottom: 0;
+}

@@ -34,7 +34,7 @@ const loadStream = async (spec: StreamSpec, before?: string | null): Promise<Pos
       return data.globalPostStream
     }
     case 'following': {
-      const data = await graphql(FOLLOWING_STREAM, { kind: 'RECENT', before: cursor }, wrap('followingPostStream'))
+      const data = await graphql(FOLLOWING_STREAM, { kind: spec.kind ?? 'RECENT', before: cursor }, wrap('followingPostStream'))
       return data.followingPostStream
     }
     case 'category': {

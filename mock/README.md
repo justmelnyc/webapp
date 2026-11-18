@@ -29,7 +29,7 @@ Unknown users get a 401. Signup is not mocked.
 
 **Notifications** (`notifications.js`, `routes/notifications.js`): love, comment, comment/post mention, repost, watch and new-follower notifications. Loves, comments and follows are turned into notifications as they happen; the first start also seeds mentions, reposts and watches. Loading the feed marks it seen; a new notification lights the red dot on the next page change. `POST /mock/notifications/simulate` (with a bearer token) makes someone love the viewer's newest post. The original app reads REST (`GET /api/v2/notifications`), the rewrite reads GraphQL (`notificationStream`).
 
-Not mocked: signup, password reset, invitations, artist invites. Unmocked REST calls are logged with `!!` and return `{}`.
+Unmocked REST calls are logged with `!!` and return `{}`.
 
 ## Images
 
@@ -58,3 +58,41 @@ routes/          moderation (writes), auth, upload (S3), graphql, rest (reads), 
 | `PATCH /api/v2/profile` | Changing username, email or password needs `current_password` (422 `{errors: {attrs: {current_password}}}` otherwise); duplicates and short passwords are 422 too. New passwords are stored as salted scrypt hashes and then required at `/enter`. Seeded users keep accepting any 8+ character password until they set one. |
 | `POST /api/v2/profile/export` | Writes your profile, posts, comments, loves and follows to `mock/.data/exports/*.json` and returns `{exportUrl}` (`GET /exports/:name` downloads it). |
 | `DELETE /api/v2/profile` | Deletes the user and their posts, comments, loves, watches and follows. |
+
+## Invitations and signup
+
+`invitations.js` (pure logic, tested) and `routes/invitations.js`. Seeded for `ada`: two accepted invitations (grace, mara) and three pending ones; `/join/welcome1ad` is a pending code.
+
+| Endpoint | Behavior |
+|---|---|
+| `GET /api/v2/invitations` | The viewer's invitations, newest first, with the users who accepted in `linked.users`. |
+| `POST /api/v2/invitations` | `{email: [..]}` sends invitations; an address already invited (and not joined) is re-sent with the same code. |
+| `POST /api/v2/invitations/:id/resend`, `DELETE /api/v2/invitations/:id` | Re-send or revoke a pending invitation. |
+| `GET /api/v2/invitations/:code` | `{invitations: {email}}` (404 once used); how `/join/:code` prefills the form. |
+| `POST /api/v2/signup` | `{email, username, password, invitation_code}` creates the user (scrypt hash), accepts the invitation and returns a token. 422 `{errors: {attrs}}` for taken names or short passwords. |
+
+## Onboarding and password reset
+
+`onboarding.js`, `resets.js`, `routes/onboarding.js`:
+
+| Endpoint | Behavior |
+|---|---|
+| `PUT /api/v2/profile/followed_categories` | `{followed_category_ids, disable_follows}`: stores the ids on the user and (unless `disable_follows`) follows the five most active authors in those categories. |
+| `PATCH /api/v2/profile` | `web_onboarding_version` is stored as sent (the app sends the string `'3'` when the creator type step is done; users who never onboarded report the number `3`). |
+| `POST /api/v2/forgot-password` | `{email}`: always `200 {}`. For a known email it stores a one hour token, prints the link in the server log (`password reset link for ...`) and keeps it for the helper below. |
+| `GET /mock/last-reset-link` | `{email, token, link, createdAt}` of the last link requested (404 before any). The link points at `MOCK_APP_ORIGIN` (default `http://localhost:6660`). |
+| `PUT /api/v2/reset_password` | `{password, reset_password_token}`: sets the password (stored as a scrypt hash, so it is required at `/enter` afterwards) and burns the token; answers `{username}`. Unknown, used or expired tokens are 404, passwords outside 8-128 characters 422. |
+
+
+## Artist invites
+
+`artist-invites.js` (pure logic, tested: seed, visible streams, curator actions, pagination) and `routes/artist-invites.js`. Seven invites are seeded once (re-seeded when `SEED_VERSION` changes): three open (one hosted elsewhere through `redirectUrl`), one upcoming, one selecting and two closed, with guide text, header photos and generated logo SVGs (`/logos/:slug.svg`). Submissions reuse existing posts and have a status: `unapproved`, `approved`, `selected` (also listed as accepted) or `declined`. `ada` curates `neon-nights` and `type-for-the-people`.
+
+| Endpoint | Behavior |
+|---|---|
+| `GET /api/v2/artist_invites` | Open first, then selecting, upcoming and closed. |
+| `GET /api/v2/artist_invites/~slug` | Detail with `description`, `guide`, `submissionBodyBlock` and the `links` to the submission streams this viewer may read: curators get all four, visitors only accepted work (plus selections once closed), upcoming invites none. |
+| `GET /api/v2/artist_invites/:id/:key_submissions` | 25 per page, `Link rel=next`, `X-Total-Pages`; submissions with `linked.posts/users/assets`, and curator `actions` for curators. |
+| `PATCH /api/v2/artist_invite_submissions/:id/:action` | approve, decline, select, unapprove, unselect (curators only). |
+
+Posting to an invite from the composer does not create a submission.

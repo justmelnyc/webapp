@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 import { AppShell } from '@/components/layout/app-shell'
+import { HideOnOnboarding } from '@/components/layout/hide-on-onboarding'
 import { Footer } from '@/components/layout/footer'
 import { MainView } from '@/components/layout/main-view'
 import { Navbar } from '@/components/layout/navbar'
@@ -28,7 +29,9 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       <body>
         <Providers>
           <AppShell isLoggedIn={!!viewer}>
-            <Navbar viewer={viewer} />
+            <HideOnOnboarding>
+              <Navbar viewer={viewer} />
+            </HideOnOnboarding>
             <MainView>{children}</MainView>
             <Footer isLoggedIn={!!viewer} />
           </AppShell>
