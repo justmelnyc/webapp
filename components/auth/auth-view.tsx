@@ -30,15 +30,22 @@ const AuthHero = ({ header }: { header: PageHeader | null }) => (
 
 interface AuthViewProps {
   header: PageHeader | null
+  /** Extra classes for the `.Authentication` wrapper (the original's `isForgotPassword`). */
+  className?: string
   children: ReactNode
 }
 
+/** `MainView.Authentication > .AuthenticationFormDialog` without a hero (`/join/:invitationCode` has none). */
+export const AuthDialog = ({ className, children }: { className?: string; children: ReactNode }) => (
+  <div className={`Authentication ${className ?? ''} ${styles.authentication}`}>
+    <div className={`AuthenticationFormDialog ${styles.dialog}`}>{children}</div>
+  </div>
+)
+
 /** `MainView.Authentication > .AuthenticationFormDialog` over the hero photo (/enter and /join). */
-export const AuthView = ({ header, children }: AuthViewProps) => (
+export const AuthView = ({ header, className, children }: AuthViewProps) => (
   <>
     <AuthHero header={header} />
-    <div className={`Authentication ${styles.authentication}`}>
-      <div className={`AuthenticationFormDialog ${styles.dialog}`}>{children}</div>
-    </div>
+    <AuthDialog className={className}>{children}</AuthDialog>
   </>
 )

@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { getProfile } from '@/components/profile/profile-data'
 import { ProfileHero } from '@/components/profile/profile-hero'
@@ -14,11 +13,13 @@ const ProfileLayout = async ({ children, params }: LayoutProps) => {
   const { username } = await params
   const [user, session] = await Promise.all([
     getProfile(decodeURIComponent(username)).catch((error: unknown) => {
-      if (error instanceof NotFoundError) notFound()
+      if (error instanceof NotFoundError) return null
       throw error
     }),
     getSession(),
   ])
+  // The original's UserDetailContainer renders nothing at all for a user that does not exist.
+  if (!user) return null
   return (
     <>
       <ProfileHero user={user} signedIn={!!session} />

@@ -4,6 +4,7 @@ const express = require('express')
 const { db, userByName } = require('../db')
 const { flatUser, gqlUser } = require('../serialize')
 const { TOGGLES } = require('../settings')
+const { onboardingVersion } = require('../onboarding')
 const { viewer, viewerId } = require('./auth')
 
 const router = express.Router()
@@ -19,7 +20,7 @@ router.get('/api/v2/posts/:id/related', (req, res) => page(res, { posts: [] }))
 router.get('/api/v2/profile', (req, res) => {
   const me = viewer(req)
   if (!me) return res.status(401).json({ error: 'unauthorized' })
-  return res.json({ users: { ...flatUser(me, me.id), relationshipPriority: 'self', webOnboardingVersion: 3, creatorTypeCategoryIds: me.creatorTypeCategoryIds || [] }, linked: { categories: [] } })
+  return res.json({ users: { ...flatUser(me, me.id), relationshipPriority: 'self', webOnboardingVersion: onboardingVersion(me), creatorTypeCategoryIds: me.creatorTypeCategoryIds || [], hasAvatarPresent: !!me.avatarUrl, hasCoverImagePresent: !!me.coverUrl }, linked: { categories: [] } })
 })
 
 router.get('/api/v2/profile/settings', (req, res) => page(res, { settings: TOGGLES }))

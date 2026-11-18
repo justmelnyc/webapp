@@ -75,7 +75,7 @@ const resolvers = {
   },
   globalPostStream: (v, viewer) => feedStream('globalPostStream', shopOnly(v, v.kind === 'TRENDING' ? trending() : recent()), v, viewer),
   subscribedPostStream: (v, viewer) => feedStream('subscribedPostStream', shopOnly(v, recent().filter(p => followingIds(viewer).includes(p.authorId))), v, viewer),
-  followingPostStream: (v, viewer) => feedStream('followingPostStream', recent().filter(p => p.authorId === viewer || followingIds(viewer).includes(p.authorId)), v, viewer),
+  followingPostStream: (v, viewer) => feedStream('followingPostStream', (v.kind === 'TRENDING' ? trending() : recent()).filter(p => p.authorId === viewer || followingIds(viewer).includes(p.authorId)), v, viewer),
   categoryPostStream: (v, viewer) => {
     const cat = content.categories.find(c => c.slug === v.slug)
     return feedStream('categoryPostStream', shopOnly(v, recent().filter(p => cat && p.categoryIds.includes(cat.id))), v, viewer)

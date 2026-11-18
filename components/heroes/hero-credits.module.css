@@ -20,6 +20,11 @@
   color: #ccc;
 }
 
+/* `.ArtistInvites` context: 20px from the edge on phones (parent('.ArtistInvites', { right: 20 })) */
+.invites {
+  right: 20px;
+}
+
 .author {
   display: inline-block;
   margin-right: 15px;

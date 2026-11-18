@@ -74,3 +74,14 @@ export const restVoid = async (path: string, options: RequestOptions = {}): Prom
   const response = await request(path, options)
   if (!response.ok) throw await failure(response)
 }
+
+/** Like `rest`, but also returns the response headers (pagination lives in `X-Total-Pages` and `Link`). */
+export const restWithHeaders = async <S extends z.ZodType>(
+  path: string,
+  schema: S,
+  options: RequestOptions = {},
+): Promise<{ data: z.infer<S>; headers: Headers }> => {
+  const response = await request(path, options)
+  if (!response.ok) throw await failure(response)
+  return { data: schema.parse(await response.json()), headers: response.headers }
+}

@@ -1,0 +1,132 @@
+/* OnboardingSettings.js, Uploader/Avatar/BackgroundImage in the Onboarding view, and the onboarding info controls */
+
+.main {
+  position: relative;
+  max-width: 780px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.cover {
+  position: relative;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* BackgroundImage inOnboarding hasOverlay6 */
+.coverImage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  height: 220px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
+  background-size: cover;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.4s ease;
+}
+
+.coverImage::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: '';
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color 0.2s ease;
+}
+
+/* Uploader isCoverUploader (220px high in the Onboarding view) */
+.coverUploader {
+  display: block;
+  width: 100%;
+  height: 220px;
+}
+
+@media (min-width: 40em) {
+  .coverUploader > :global(.UploaderMessage) {
+    position: absolute;
+    right: 0;
+    bottom: -30px;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .coverUploader > :global(.UploaderMessage) p {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}
+
+/* Uploader isAvatarUploader isXLUploader */
+.avatarUploader {
+  width: 220px;
+  padding-top: 240px;
+  text-align: center;
+}
+
+.avatarUploader::before {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+}
+
+.avatarUploader.blank::before {
+  background-color: #f0f0f0;
+}
+
+.avatar {
+  position: relative;
+  margin: 20px auto;
+  text-align: center;
+}
+
+@media (min-width: 40em) {
+  .avatar {
+    position: absolute;
+    left: 0;
+  }
+}
+
+/* Avatar isXLarge inside .OnboardingAvatarPicker */
+.avatarImage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  display: inline-block;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  overflow: hidden;
+  vertical-align: middle;
+  color: transparent;
+  background: #f0f0f0 no-repeat 50% 50%;
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.avatar > :global(.ElloOutlineMark) {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  margin: 0 auto;
+  pointer-events: none;
+  transform: scale(1.5);
+  transform-origin: 50% 0;
+}
+
+.form {
+  padding: 20px 10px 80px;
+}
+
+@media (min-width: 40em) {
+  .form {
+    min-height: 410px;
+    padding-top: 40px;
+    margin-left: 285px;
+  }
+}

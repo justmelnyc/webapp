@@ -30,3 +30,4 @@ export const HeroCreditsCollapsed = ({ user }: { user: Author }) => (
 )
 
 export const heroCreditsEditorial = styles.editorial
+export const heroCreditsInvites = cn(styles.editorial, styles.invites)

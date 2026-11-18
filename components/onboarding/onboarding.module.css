@@ -1,0 +1,134 @@
+/* Port of legacy/src/components/onboarding/* styles (and the MainView.css rules for `.isOnboardingView`). */
+
+/* ---- navbar (OnboardingNavbar.js): at the top on phones, a bar at the bottom from 40em ---- */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1040;
+  height: 70px;
+  padding: 10px;
+  font-size: 14px;
+  color: #000;
+  text-align: right;
+  background-color: #f0f0f0;
+}
+
+.navbar > :global(.ElloMark) {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  transform-origin: 0 0;
+}
+
+.next {
+  height: 50px;
+  padding-right: 30px;
+  padding-left: 30px;
+  color: #fff;
+  text-align: center;
+  background-color: #00d100;
+  border: 1px solid #00d100;
+  border-radius: 5px;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+@media (hover: hover) {
+  .next:hover {
+    color: #fff;
+    background-color: #00b100;
+    border-color: #00b100;
+  }
+}
+
+.next:active {
+  color: #fff;
+  background-color: #00b100;
+  border-color: #00b100;
+}
+
+.next:disabled {
+  color: #aaa !important;
+  background-color: transparent !important;
+  border-color: #aaa !important;
+}
+
+.done {
+  margin-left: 10px;
+  color: #aaa;
+}
+
+@media (max-width: 39.9375em) {
+  .next {
+    width: calc(100% - 60px);
+  }
+
+  .next:has(+ .done) {
+    width: calc(100% - 140px);
+  }
+}
+
+@media (min-width: 40em) {
+  .navbar {
+    top: auto;
+    bottom: 0;
+    height: 100px;
+    padding: 25px 20px 20px;
+    text-align: center;
+  }
+
+  .navbar > :global(.ElloMark) {
+    top: 20px;
+    left: 20px;
+    transform: scale(1.5);
+  }
+
+  .done {
+    margin-left: 30px;
+  }
+}
+
+/* ---- the view (MainView.css: .isOnboardingView ~ .MainView) ---- */
+
+@media (max-width: 39.9375em) {
+  .view {
+    margin-top: 120px;
+  }
+}
+
+@media (min-width: 60em) {
+  .view {
+    padding-bottom: 80px;
+  }
+}
+
+/* ---- Title (OnboardingParts.js) ---- */
+
+.title {
+  max-width: 480px;
+  padding: 10px 10px 23px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: 16px;
+}
+
+.title > span:first-child {
+  color: #000;
+}
+
+.title > span:last-child {
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .title {
+    padding-top: 70px;
+    padding-bottom: 70px;
+    font-size: 24px;
+  }
+}

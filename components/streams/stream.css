@@ -180,6 +180,8 @@
   animation: paginatorLoading 10s ease infinite;
 }
 
+.ArtistInvites .Paginator,
+.ArtistInvitesDetail .Paginator,
 .Discover .Paginator,
 .Following .Paginator,
 .Editorial .Paginator,
@@ -200,12 +202,15 @@
   transform: none;
 }
 
+.ArtistInvites .Paginator,
 .Discover .Paginator,
 .Editorial .Paginator,
 .Following .Paginator {
   margin-top: 0;
 }
 
+.ArtistInvites .Paginator button,
+.ArtistInvitesDetail .Paginator button,
 .Discover .Paginator button,
 .Following .Paginator button,
 .UserDetails .Paginator button,
@@ -219,6 +224,8 @@
 }
 
 @media (hover: hover) {
+  .ArtistInvites .Paginator:hover,
+  .ArtistInvitesDetail .Paginator:hover,
   .Discover .Paginator:hover,
   .Following .Paginator:hover,
   .Editorial .Paginator:hover,

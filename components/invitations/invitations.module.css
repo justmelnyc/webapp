@@ -1,0 +1,209 @@
+/*
+ * Port of legacy/src/components/views/Invitations.js, forms/FormButton.js (.InvitationsForm) and the
+ * "User Invitee" block of users/UserRenderables.css. Breakpoints: 40em / 85em.
+ */
+.main {
+  max-width: 1440px;
+  padding-top: 85px;
+  margin: 0 auto;
+}
+
+.column {
+  margin: 20px 10px 10px;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.heading {
+  height: 30px;
+  font-family: var(--font-black);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+.streamHeading {
+  composes: heading;
+  margin: 40px 0;
+}
+
+.stream {
+  padding: 0 !important;
+  margin-top: 40px;
+}
+
+/* ---- form ---- */
+
+.suggestion {
+  max-width: calc(100% - 120px);
+  color: #aaa;
+}
+
+.button {
+  float: right;
+  width: auto;
+  height: 40px;
+  margin-top: -60px;
+  line-height: 40px;
+}
+
+.button:disabled {
+  color: #aaa;
+  background-color: transparent;
+  border-color: #aaa;
+}
+
+/* ---- invitee rows ---- */
+
+.invitee {
+  position: relative;
+  height: 40px;
+  padding-bottom: 50px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  font-size: 14px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.inviteeHeader {
+  display: inline-block;
+  width: calc(100% - 120px);
+  height: 40px;
+  overflow: hidden;
+  line-height: 40px;
+}
+
+.inviteeLink {
+  width: 100%;
+  transition: color var(--speed) ease;
+}
+
+.inviteeText {
+  padding-left: 10px;
+}
+
+.action {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  width: 110px;
+  height: 30px;
+  overflow: hidden;
+  font-size: 0.75rem;
+  line-height: 30px;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #666;
+  border: 1px solid #666;
+  border-radius: 15px;
+  transition:
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello);
+}
+
+.relationship {
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+@media (hover: hover) {
+  .inviteeLink:hover {
+    color: #999;
+  }
+
+  .action:hover {
+    color: #fff;
+    background-color: #aaa;
+    border-color: #aaa;
+  }
+}
+
+@media (min-width: 40em) {
+  .main {
+    padding-top: 80px;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: space-around;
+  }
+
+  .column {
+    width: 100%;
+    margin: 40px 20px 20px;
+  }
+
+  .heading {
+    height: 40px;
+    font-size: 24px;
+    line-height: 40px;
+  }
+
+  .streamHeading {
+    margin-top: 0;
+    margin-bottom: 75px;
+  }
+}
+
+@media (min-width: 85em) {
+  .column {
+    margin-right: 40px;
+    margin-left: 40px;
+  }
+}
+
+/* ---- grid mode (Users.asInviteeGrid / UserInviteeGrid) ---- */
+
+@media (min-width: 40em) {
+  .grid {
+    margin-left: -20px;
+  }
+
+  .gridItem {
+    display: inline-block;
+    width: calc(50% - 20px);
+    margin-left: 20px;
+    vertical-align: top;
+  }
+}
+
+@media (min-width: 60em) {
+  .gridItem {
+    width: calc(33.33333% - 20px);
+  }
+}
+
+@media (min-width: 85em) {
+  .grid {
+    margin-left: -40px;
+  }
+
+  .gridItem {
+    width: calc(25% - 40px);
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .gridItem {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 130em) {
+  .gridItem {
+    width: calc(16.66666% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .gridItem {
+    width: calc(14.28571% - 40px);
+  }
+}

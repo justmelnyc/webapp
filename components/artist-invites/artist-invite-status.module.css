@@ -1,0 +1,68 @@
+/* textStatusStyle (detail) and bulletStatusStyle (grid card) of ArtistInviteRenderables.js */
+.text,
+.bullet {
+  max-width: 100%;
+  margin-top: 20px;
+  margin-bottom: 0;
+  overflow: hidden;
+  font-size: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closed { color: #fe0404; }
+.open { color: #00d100; }
+.preview { color: #0409fe; }
+.selecting { color: #ffb100; }
+.upcoming { color: #c000ff; }
+
+:global(.ArtistInvitesDetail) .text {
+  float: none;
+  clear: both;
+  width: 100%;
+  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@media (min-width: 60em) {
+  :global(.ArtistInvitesDetail) .text {
+    font-size: 38px;
+  }
+}
+
+@media (max-width: 59.9375em) {
+  .text {
+    width: 100%;
+  }
+}
+
+.bullet {
+  float: left;
+  width: 210px;
+  margin-top: 0;
+  font-size: 14px;
+}
+
+@media (max-width: 59.9375em) {
+  .bullet {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+}
+
+.bullet::before {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 20px;
+  content: '';
+  border-radius: 5px;
+}
+
+.bullet.closed::before { background-color: #fe0404; }
+.bullet.open::before { background-color: #00d100; }
+.bullet.preview::before { background-color: #0409fe; }
+.bullet.selecting::before { background-color: #ffb100; }
+.bullet.upcoming::before { background-color: #c000ff; }

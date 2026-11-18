@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn'
-import styles from './form-control.module.css'
+import styles from './form-control-suggestions.module.css'
 
 interface SuggestionsProps {
   suggestions: string[]

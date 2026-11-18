@@ -13,6 +13,12 @@ if (require('./products').seedProducts(db, nextId)) save()
 // Posts with video / audio embeds (idempotent): see embeds.js
 if (require('./embeds').seedEmbedPosts(db, nextId)) save()
 
+// Artist invites (idempotent): see artist-invites.js
+if (require('./artist-invites').seedArtistInvites(db, nextId)) save()
+
+// Invitations (idempotent): see invitations.js
+if (require('./invitations').seedInvitations(db, nextId)) save()
+
 const app = express()
 
 app.use(express.json({ limit: '2mb' }))
@@ -27,7 +33,7 @@ app.use((req, res, next) => {
   return next()
 })
 
-;['auth', 'notifications', 'media', 'upload', 'graphql', 'rest', 'embeds', 'moderation', 'reposts', 'mutations', 'account'].forEach((name) => {
+;['auth', 'notifications', 'media', 'upload', 'graphql', 'rest', 'embeds', 'moderation', 'reposts', 'mutations', 'account', 'invitations', 'artist-invites', 'onboarding', 'search'].forEach((name) => {
   app.use(require(`./routes/${name}`).router)
 })
 

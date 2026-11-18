@@ -1,0 +1,104 @@
+/* adminActionsStyle / actionButtonStyle of components/posts/PostRenderables.js */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #aaa;
+  background-color: #f2f2f2;
+}
+
+.action {
+  margin-right: 5px;
+  margin-left: 5px;
+  transition: color 0.2s ease;
+}
+
+.action::after {
+  display: inline-block;
+  content: attr(data-label);
+}
+
+.action > :global(.SVGIcon) {
+  margin-right: 5px;
+}
+
+.action > :global(.SVGIcon.CheckCircleIcon) {
+  margin-top: -2px;
+  margin-right: 7px;
+}
+
+.action > :global(.StarIcon) {
+  padding-top: 2px;
+  padding-left: 2px;
+}
+
+.action > :global(.XBoxIcon) {
+  display: none;
+}
+
+.action:global(.decline) > :global(.XBoxIcon) {
+  display: inline;
+}
+
+@media (hover: hover) {
+  .action:hover {
+    color: #000;
+  }
+
+  .action:hover > :global(.XBoxIcon) {
+    display: inline-block;
+  }
+
+  .select:hover {
+    color: #ffc600;
+  }
+
+  .select:hover > :global(.StarIcon) > g {
+    fill: #ffc600;
+  }
+}
+
+.unapprove {
+  color: #00d100;
+}
+
+.unapprove > :global(.CheckCircleIcon) {
+  display: inline-block;
+}
+
+@media (hover: hover) {
+  .unapprove:hover > :global(.CheckCircleIcon) {
+    display: none;
+  }
+
+  .unapprove:hover::after {
+    content: 'Unaccept';
+  }
+}
+
+.unselect {
+  color: #ffc600;
+}
+
+.unselect > :global(.StarIcon) {
+  display: inline-block;
+}
+
+.unselect > :global(.StarIcon) > g {
+  fill: #ffc600;
+}
+
+@media (hover: hover) {
+  .unselect:hover > :global(.StarIcon) {
+    display: none;
+  }
+
+  .unselect:hover::after {
+    content: 'Unselect';
+  }
+}

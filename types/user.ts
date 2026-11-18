@@ -48,6 +48,12 @@ export const viewerSchema = z.object({
   shortBio: z.string().nullish(),
   location: z.string().nullish(),
   externalLinksList: z.array(z.object({ url: z.string(), text: z.string().nullish() })).nullish(),
+  isHireable: z.boolean().nullish(),
+  isCollaborateable: z.boolean().nullish(),
+  /** The API sends the onboarding version as a string once saved ('3'), the token carries it as a number. */
+  webOnboardingVersion: z.union([z.string(), z.number()]).nullish(),
+  hasAvatarPresent: z.boolean().nullish(),
+  hasCoverImagePresent: z.boolean().nullish(),
 })
 
 export type Author = z.infer<typeof authorSchema>
