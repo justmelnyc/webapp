@@ -1,0 +1,74 @@
+/*
+ * Port of `.AuthenticationFormDialog.inModal` (Authentication.css) and the credits context in HeroParts.js.
+ * The scrim is the shared Modal; this is the dialog on it.
+ */
+.dialog {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 40px);
+  max-width: 600px;
+  min-height: 430px;
+  padding: 50px 20px 20px;
+  margin: 0 auto;
+}
+
+.dialog h1 {
+  padding-top: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.dialog h1 + h2 {
+  margin-top: 30px;
+}
+
+.dialog h1 + :global(.AuthenticationForm),
+.dialog h2 + :global(.AuthenticationForm) {
+  margin-top: 40px;
+}
+
+.dialog :global(.AuthenticationForm) {
+  max-width: none;
+}
+
+.dialog a:focus,
+.dialog a:active {
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .dialog a:hover {
+    color: #fff;
+  }
+}
+
+/* RegistrationRequestForm's accountLinkStyle in a modal */
+.dialog .alt {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #aaa;
+}
+
+.dialog .credits {
+  right: 20px;
+}
+
+@media (min-width: 40em) {
+  .dialog {
+    width: 100%;
+    padding: 70px 30px 30px;
+    margin: auto;
+  }
+
+  .dialog :global(.AuthenticationForm) {
+    margin-bottom: 30px;
+  }
+
+  .dialog .alt {
+    margin-bottom: 0;
+  }
+
+  .dialog .credits {
+    right: 30px;
+  }
+}

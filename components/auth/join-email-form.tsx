@@ -6,6 +6,7 @@ import { checkSignupEmail } from '@/actions/signup-actions'
 import { authAltLinkClass, authFormClass } from '@/components/auth/auth-styles'
 import { FormButton } from '@/components/ui/button'
 import { FormControl } from '@/components/ui/form-control'
+import { cn } from '@/utils/cn'
 import { useAvailability } from '@/hooks/use-availability'
 import { CHECKING, emailClientError, emailFromServer, type CheckState } from '@/utils/availability'
 
@@ -14,10 +15,11 @@ const SUCCESS: CheckState = { status: 'success', message: '', suggestions: [] }
 interface JoinEmailFormProps {
   initialEmail: string | null
   onAccepted: (email: string) => void
+  altLinkClassName?: string
 }
 
 /** Step one of /join: the original's `renderEmailForm`. */
-export const JoinEmailForm = ({ initialEmail, onAccepted }: JoinEmailFormProps) => {
+export const JoinEmailForm = ({ initialEmail, onAccepted, altLinkClassName }: JoinEmailFormProps) => {
   const [value, setValue] = useState(initialEmail ?? '')
   // an invitation's address counts as checked, like the original's `checkForInviteCode`
   const [prefilled, setPrefilled] = useState(!!initialEmail)
@@ -70,7 +72,7 @@ export const JoinEmailForm = ({ initialEmail, onAccepted }: JoinEmailFormProps) 
           Create account
         </FormButton>
       </form>
-      <Link className={authAltLinkClass} href="/enter">
+      <Link className={cn(authAltLinkClass, altLinkClassName)} href="/enter">
         Already have an account?
       </Link>
     </div>

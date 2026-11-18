@@ -5,6 +5,7 @@
 //   node tools/visual-diff/vdiff.js --path /discover [--width 1280] [--vh 900] [--maxh 3000]
 //        [--login ada] [--wait 8000] [--port 9333] [--out DIR]
 //        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--clickwait ms] [--until ".sel"] [--type "#id=value"]
+//        [--eval "js"] [--click2 ".sel"] [--afterwait ms]
 //
 // Writes legacy.png, new.png, diff.png (differences in red) and side.png (original left, rewrite
 // right) into --out and prints the percentage of mismatching pixels.
@@ -104,6 +105,12 @@ const capture = async (c, base, label) => {
     if (args.until) await wait(500)
     // the original scrolls the opened editor into view after 0.5-1s; capture from the top like a fresh load
     await wait(1200); await c.ev('window.scrollTo(0, 0)'); await wait(1500) }
+  // --eval "js": run JS on both sides after the clicks (e.g. type into the editor); --click2 "a >> b": click again afterwards
+  if (args.eval) {
+    await c.ev(String(args.eval)); await wait(1500)
+    if (args.click2) { for (const sel of String(args.click2).split(' >> ')) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); await wait(+args.clickwait || 1500) }
+      await wait(+args.afterwait || 1500); await c.ev('window.scrollTo(0, 0)'); await wait(1000) }
+  }
   // Fetch natively lazy-loaded images without scrolling (scrolling would trigger infinite scroll).
   await c.ev(`document.querySelectorAll('img[loading=lazy]').forEach((i) => { i.loading = 'eager' })`)
   await c.ev(`Promise.all([...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 4000) })))`)

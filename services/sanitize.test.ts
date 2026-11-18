@@ -15,6 +15,14 @@ describe('sanitizePost', () => {
     }
   })
 
+  it('cleans the summary of the original a repost points at', () => {
+    const post = postSchema.parse(
+      gqlPost('p1', { repostedSource: { id: 'o', token: 'o', author: gqlPost('o').author, summary: [textRegion(dirty)], assets: [] } }),
+    )
+    const data = sanitizePost(post).repostedSource?.summary?.[0]
+    expect(data?.kind === 'text' ? data.data : '').not.toMatch(/script|onclick|javascript:/)
+  })
+
   it('leaves image regions untouched', () => {
     const post = postSchema.parse(gqlPost('p1', { summary: [imageRegion()], content: [imageRegion()] }))
     expect(sanitizePost(post).summary).toEqual(post.summary)

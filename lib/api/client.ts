@@ -85,3 +85,15 @@ export const restWithHeaders = async <S extends z.ZodType>(
   if (!response.ok) throw await failure(response)
   return { data: schema.parse(await response.json()), headers: response.headers }
 }
+
+/** Like `rest`, but a 204 (nothing there) is `null`. */
+export const restOrNull = async <S extends z.ZodType>(
+  path: string,
+  schema: S,
+  options: RequestOptions = {},
+): Promise<z.infer<S> | null> => {
+  const response = await request(path, options)
+  if (response.status === 204) return null
+  if (!response.ok) throw await failure(response)
+  return schema.parse(await response.json())
+}

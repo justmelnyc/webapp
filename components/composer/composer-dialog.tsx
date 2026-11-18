@@ -8,12 +8,14 @@ import { TextTools } from '@/components/composer/text-tools'
 import { useFullscreenShortcut } from '@/components/composer/use-fullscreen-shortcut'
 import { useComposerUploads } from '@/components/composer/use-composer-uploads'
 import { ChevronIcon } from '@/components/icons'
+import { InviteSuccess } from '@/components/composer/invite-success'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { isDraftDirty, useComposerStore } from '@/stores/composer-store'
 import type { Category } from '@/types/content'
 import { cn } from '@/utils/cn'
 import './fullscreen.css'
 import styles from './omnibar.module.css'
+import inviteStyles from './omnibar-invite.module.css'
 
 const PLACEHOLDER = 'Drag & drop images, paste embeds, enter text and links.'
 
@@ -57,6 +59,8 @@ const useOmnibarHost = (isOpen: boolean): HTMLElement | null => {
 export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
   const isOpen = useComposerStore((s) => s.isOpen)
   const blocks = useComposerStore((s) => s.blocks)
+  const artistInvite = useComposerStore((s) => s.artistInvite)
+  const inviteSuccess = useComposerStore((s) => s.inviteSuccess)
   const close = useComposerStore((s) => s.close)
   const reset = useComposerStore((s) => s.reset)
   const { addFiles, retry } = useComposerUploads()
@@ -101,20 +105,38 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
       onKeyDown={onKeyDown}
     >
       <div className={styles.wrapper}>
-        <div
-          className={cn('editor', styles.editor, hasContent && cn('hasContent', styles.hasContent), dragging && styles.hasDragOver)}
-          data-placeholder={PLACEHOLDER}
-          onPaste={onPaste}
-          onDragOver={(e) => {
-            e.preventDefault()
-            setDragging(true)
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={onDrop}
-        >
-          <ComposerBlocks blocks={blocks} onRetry={retry} />
-          <ActionBar categories={categories} onFiles={addFiles} onCancel={() => setConfirmingCancel(true)} />
-        </div>
+        {inviteSuccess && <InviteSuccess />}
+        {artistInvite && !inviteSuccess && (
+          <h2 className={inviteStyles.inviteTitle}>
+            <span>Submit to:</span>
+            {` ${artistInvite.title}`}
+          </h2>
+        )}
+        {!inviteSuccess && (
+          <div
+            className={cn(
+              'editor',
+              styles.editor,
+              hasContent && cn('hasContent', styles.hasContent),
+              dragging && styles.hasDragOver,
+            )}
+            data-placeholder={PLACEHOLDER}
+            onPaste={onPaste}
+            onDragOver={(e) => {
+              e.preventDefault()
+              setDragging(true)
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={onDrop}
+          >
+            <ComposerBlocks blocks={blocks} onRetry={retry} />
+            <ActionBar
+              categories={categories}
+              onFiles={addFiles}
+              onCancel={() => setConfirmingCancel(true)}
+            />
+          </div>
+        )}
       </div>
       <TextTools />
       <button type="button" aria-label="Navigation" className={styles.reveal} onClick={close}>
@@ -122,7 +144,11 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
         Navigation
       </button>
       {confirmingCancel && (
-        <ConfirmDialog title="Cancel post?" onConfirm={cancelConfirmed} onDismiss={() => setConfirmingCancel(false)} />
+        <ConfirmDialog
+          title="Cancel post?"
+          onConfirm={cancelConfirmed}
+          onDismiss={() => setConfirmingCancel(false)}
+        />
       )}
     </div>,
     host,

@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useMediaQuery } from '@/components/layout/use-media-query'
 import { useNotificationsStore } from '@/stores/notifications-store'
 import type { NotificationTab } from '@/types/notification'
+import { AnnouncementBanner } from './announcement-banner'
 import { DESKTOP_QUERY } from './notifications-bolt-link'
 import { NotificationList } from './notification-list'
 import { NotificationTabButtons } from './notification-tabs'
@@ -15,7 +16,7 @@ const setScrolling = (on: boolean): void => {
 }
 
 /** The original's `<NotificationsContainer isModal />`: tabs and a scrollable feed under the navbar. */
-const Dropdown = () => {
+const Dropdown = ({ assetOrigin }: { assetOrigin: string }) => {
   const { activeTab, setActive, setActiveTab } = useNotificationsStore()
   const queryClient = useQueryClient()
 
@@ -48,15 +49,16 @@ const Dropdown = () => {
     <div className="NotificationsContainer" onMouseEnter={() => setScrolling(true)} onMouseLeave={() => setScrolling(false)}>
       <NotificationTabButtons active={activeTab} onSelect={onSelect} />
       <div className="Scrollable">
-        <NotificationList key={activeTab} tab={activeTab} />
+        <AnnouncementBanner />
+        <NotificationList key={activeTab} tab={activeTab} assetOrigin={assetOrigin} />
       </div>
     </div>
   )
 }
 
 /** Renders the dropdown while it is open (desktop only; smaller screens use the page). */
-export const NotificationsDropdown = () => {
+export const NotificationsDropdown = ({ assetOrigin }: { assetOrigin: string }) => {
   const isActive = useNotificationsStore((state) => state.isActive)
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
-  return isActive && isDesktop ? <Dropdown /> : null
+  return isActive && isDesktop ? <Dropdown assetOrigin={assetOrigin} /> : null
 }

@@ -1,6 +1,12 @@
 import { cleanHtml, htmlToText } from './sanitize'
 
 describe('cleanHtml', () => {
+  it('keeps hashtag link spans but no other span classes or attributes', () => {
+    const out = cleanHtml('<span class="hashtag-link" data-href="/search?terms=%23a" onclick="x()">#a</span><span class="evil" style="x">b</span>')
+    expect(out).toContain('<span class="hashtag-link" data-href="/search?terms=%23a">#a</span>')
+    expect(out).not.toMatch(/onclick|evil|style/)
+  })
+
   it('keeps allowed formatting tags', () => {
     const html = '<p>Hi <strong>you</strong> <em>there</em><br></p><ul><li>one</li></ul><blockquote>q</blockquote><h2>t</h2>'
     const out = cleanHtml(html)

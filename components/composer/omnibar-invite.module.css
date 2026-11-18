@@ -1,0 +1,68 @@
+/* BlockCollection's inviteTitleStyle: "Submit to: <invite>" above the editor */
+.inviteTitle {
+  max-width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inviteTitle span {
+  color: #aaa;
+}
+
+@media (min-width: 60em) {
+  .inviteTitle {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 38px;
+  }
+}
+
+/* BlockCollection's successWrapperStyle, successTitleStyle, successBodyStyle and dismissStyle */
+.success {
+  position: relative;
+  max-width: 450px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.successTitle {
+  max-width: 100%;
+  margin-bottom: 10px;
+  overflow: hidden;
+  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  color: #00d100;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.successBody {
+  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  color: #aaa;
+}
+
+.successDismiss {
+  position: absolute;
+  top: -3px;
+  right: -20px;
+  color: #aaa;
+}
+
+@media (hover: hover) {
+  .successDismiss:hover {
+    color: #000;
+  }
+}

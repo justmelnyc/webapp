@@ -1,7 +1,9 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type MouseEvent, type ReactNode } from 'react'
 import { cn } from '@/utils/cn'
+import { hashtagPath } from '@/utils/hashtag-link'
 import styles from './app-shell.module.css'
 
 interface AppShellState {
@@ -29,6 +31,7 @@ interface AppShellProps {
  */
 export const AppShell = ({ isLoggedIn, children }: AppShellProps) => {
   const [isProfileMenuActive, setActive] = useState(false)
+  const router = useRouter()
   const closeProfileMenu = useCallback(() => setActive(false), [])
   const toggleProfileMenu = useCallback(() => setActive((active) => !active), [])
 
@@ -38,6 +41,14 @@ export const AppShell = ({ isLoggedIn, children }: AppShellProps) => {
     return () => document.removeEventListener('click', closeProfileMenu)
   }, [isProfileMenuActive, closeProfileMenu])
 
+  // Like the original's `onClickRenderedContent`: hashtags in rendered text are spans, so push their path
+  const onClick = useCallback((event: MouseEvent<HTMLElement>) => {
+    const path = hashtagPath(event.target)
+    if (!path) return
+    event.preventDefault()
+    router.push(path)
+  }, [router])
+
   const value = useMemo(
     () => ({ isProfileMenuActive, toggleProfileMenu, closeProfileMenu }),
     [isProfileMenuActive, toggleProfileMenu, closeProfileMenu],
@@ -46,6 +57,7 @@ export const AppShell = ({ isLoggedIn, children }: AppShellProps) => {
   return (
     <AppShellContext value={value}>
       <section
+        onClick={onClick}
         className={cn('AppContainer', styles.shell, isLoggedIn ? 'isLoggedIn' : 'isLoggedOut', isProfileMenuActive && 'isProfileMenuActive')}
       >
         {children}

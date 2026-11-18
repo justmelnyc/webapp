@@ -33,7 +33,7 @@ export const ArtistInviteDetail = async ({ invite, submissionType }: Props) => {
             <div dangerouslySetInnerHTML={{ __html: cleanHtml(invite.description ?? '') }} />
           </div>
           <div className={styles.column}>
-            {invite.status === 'open' && <SubmitButton isLoggedIn={!!session} bodyBlock={invite.submissionBodyBlock ?? ''} />}
+            {invite.status === 'open' && <SubmitButton isLoggedIn={!!session} invite={invite} />}
             {(invite.guide ?? []).map((guide) => (
               <div className={styles.guide} key={guide.title}>
                 <h3 className={styles.guideHeader}>{guide.title}</h3>

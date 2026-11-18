@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import type { Post } from '@/types/post'
 import type { Author } from '@/types/user'
-import { activityPath } from './notification-parts'
+import { activityPath, type PostRef } from './notification-parts'
 
 /** `@username`, linking to the profile. */
 export const UserTextLink = ({ user }: { user: Author | null | undefined }) => {
@@ -10,7 +9,7 @@ export const UserTextLink = ({ user }: { user: Author | null | undefined }) => {
 }
 
 /** A word that links to the post (`post`, `comment`, `repost`), or plain text without one. */
-export const PostTextLink = ({ author, post, text = 'post' }: { author?: Author | null; post?: Post | null; text?: string }) => {
+export const PostTextLink = ({ author, post, text = 'post' }: { author?: Author | null; post?: PostRef | null; text?: string }) => {
   if (!post?.id || !author) return <span>{text}</span>
   return <Link href={activityPath(author, post)}>{text}</Link>
 }

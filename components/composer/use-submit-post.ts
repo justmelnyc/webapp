@@ -40,10 +40,16 @@ export const useSubmitPost = (): { submit: () => void; isPending: boolean } => {
           ? await createRepost({ postId: state.editingPostId, blocks, buyLink })
           : state.mode === 'edit' && state.editingPostId
           ? await updatePost({ postId: state.editingPostId, blocks, categoryIds: state.categoryIds, buyLink })
-          : await createPost({ blocks, categoryIds: state.categoryIds, buyLink })
+          : await createPost({ blocks, categoryIds: state.categoryIds, buyLink, artistInviteId: state.artistInvite?.id })
       if (!result.ok) {
         api.getState().setSubmitting(false)
         toast.error(result.error)
+        return
+      }
+      if (state.mode === 'post' && state.artistInvite) {
+        // the original swaps the omnibar for "Submission received!" instead of announcing a post
+        api.getState().finishInviteSubmission()
+        router.refresh()
         return
       }
       api.getState().reset()

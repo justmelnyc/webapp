@@ -7,6 +7,7 @@ const reposts = require('./reposts')
 const media = require('./media')
 const { prefsFor } = require('./settings')
 const moderation = require('./moderation')
+const { linkHashtags, unlinkHashtags } = require('./post-search')
 
 const relationship = (user, viewerId) => {
   if (viewerId && viewerId === user.id) return 'self'
@@ -102,7 +103,7 @@ const postRegions = (post) => {
       return { kind: 'embed', data: region.data, linkUrl: region.linkUrl || null, links: null }
     }
     if (region.kind !== 'image') {
-      return { kind: 'text', data: region.data, linkUrl: null, links: null }
+      return { kind: 'text', data: linkHashtags(region.data), linkUrl: null, links: null }
     }
     const { url, w, h } = imageOf(region)
     const id = `${post.id}-a${i}`
@@ -116,7 +117,7 @@ const postRegions = (post) => {
 
 // `body` is what the editor loads: text without its <p> wrappers, blank lines kept as \n\n (like the real API)
 const editorBody = region => (region.kind === 'text'
-  ? { ...region, data: String(region.data).replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>\s*<p>/gi, '\n\n').replace(/<\/?p>/gi, '').trim() }
+  ? { ...region, data: unlinkHashtags(region.data).replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>\s*<p>/gi, '\n\n').replace(/<\/?p>/gi, '').trim() }
   : region)
 
 const postStats = post => ({

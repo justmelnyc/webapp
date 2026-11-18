@@ -46,13 +46,16 @@ interface BodyProps {
   children: ReactNode
   /** Text regions of the summary (shown under the sentence). */
   texts?: SummaryRegion[]
+  /** Free-form text under the sentence, for kinds that have no post to quote. */
+  extra?: ReactNode
 }
 
-const Body = ({ children, texts = [] }: BodyProps) => (
+const Body = ({ children, texts = [], extra }: BodyProps) => (
   <div className="NotificationBody">
     {children}
-    {texts.length > 0 && (
+    {(texts.length > 0 || extra) && (
       <div className="NotificationTexts">
+        {extra}
         {texts.map((region, index) =>
           region.kind === 'text' ? (
             <div key={index} className="TextRegion">

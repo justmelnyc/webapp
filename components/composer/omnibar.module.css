@@ -199,8 +199,9 @@ textarea.editable {
     padding: 20px;
   }
 
+  /* -20px in the original, whose omnibar sits 40px down (margin) where ours pads its top instead */
   .reveal {
-    top: -20px;
+    top: 20px;
     right: 20px;
   }
 

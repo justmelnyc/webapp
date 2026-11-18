@@ -1,12 +1,18 @@
-import { render, screen } from '@testing-library/react'
+import { render as baseRender, screen } from '@testing-library/react'
+import type { ReactElement } from 'react'
+import { RegistrationDialogProvider } from '@/components/auth/registration-dialog'
 import { gqlAuthor, gqlPost, textRegion } from '@/test/fixtures/posts'
 import { postSchema } from '@/types/post'
 import { PostCard } from './post-card'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
 jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
-jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser: jest.fn(), setRelationship: jest.fn() }))
-jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }) }))
+jest.mock('@/actions/moderation-actions', () => ({
+  flagPost: jest.fn(),
+  flagUser: jest.fn(),
+  setRelationship: jest.fn(),
+}))
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }), usePathname: () => '/' }))
 jest.mock('@/actions/post-edit-actions', () => ({ loadEditablePost: jest.fn() }))
 
 const post = postSchema.parse(
@@ -16,6 +22,10 @@ const post = postSchema.parse(
     currentUserState: { watching: false, loved: true, reposted: false },
   }),
 )
+
+// Follow buttons ask the sign-up dialog provider (mounted in the root layout) to open.
+const render = (ui: ReactElement) =>
+  baseRender(<RegistrationDialogProvider header={null}>{ui}</RegistrationDialogProvider>)
 
 describe('PostCard', () => {
   it('Header links to the author profile and the post with a relative time', () => {

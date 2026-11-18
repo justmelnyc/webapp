@@ -12,6 +12,7 @@ export const streamSpecSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('category'), slug: z.string(), kind: streamKindSchema }),
   z.object({ type: z.literal('user'), username: z.string() }),
   z.object({ type: z.literal('loves'), username: z.string() }),
+  z.object({ type: z.literal('search'), terms: z.string() }),
 ])
 export type StreamSpec = z.infer<typeof streamSpecSchema>
 

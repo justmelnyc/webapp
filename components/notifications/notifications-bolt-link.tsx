@@ -2,10 +2,11 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, type MouseEvent } from 'react'
-import { checkForNewNotifications, markNotificationsRead } from '@/actions/notification-actions'
+import { checkForNewNotifications, loadAnnouncement, markNotificationsRead } from '@/actions/notification-actions'
 import { BoltIcon } from '@/components/icons'
 import { NavbarIconLink } from '@/components/layout/navbar-link'
 import { useMediaQuery } from '@/components/layout/use-media-query'
+import { hasUnseenAnnouncement, useAnnouncementStore } from '@/stores/announcement-store'
 import { useNotificationsStore } from '@/stores/notifications-store'
 import { cn } from '@/utils/cn'
 
@@ -21,6 +22,15 @@ export const NotificationsBoltLink = () => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY)
   const { isActive, isUnread, activeTab, setActive, setUnread } = useNotificationsStore()
   const hasMounted = useRef(false)
+  const hasNewAnnouncement = useAnnouncementStore(hasUnseenAnnouncement)
+  const setAnnouncement = useAnnouncementStore((state) => state.setAnnouncement)
+
+  // The announcement is asked for on start and again on every navigation.
+  useEffect(() => {
+    void loadAnnouncement().then((result) => {
+      if (result.ok) setAnnouncement(result.data)
+    })
+  }, [pathname, setAnnouncement])
 
   useEffect(() => {
     if (!hasMounted.current) {
@@ -46,7 +56,7 @@ export const NotificationsBoltLink = () => {
       href={href}
       label="Notifications"
       icon={<BoltIcon />}
-      className={cn(isUnread && 'isNotificationsUnread')}
+      className={cn((isUnread || hasNewAnnouncement) && 'isNotificationsUnread')}
       onClick={onClick}
     />
   )

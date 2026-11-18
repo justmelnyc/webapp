@@ -13,6 +13,7 @@ import { NavbarLayoutTool } from './navbar-layout-tool'
 import { NotificationsBoltLink } from '@/components/notifications/notifications-bolt-link'
 import { NotificationsDropdown } from '@/components/notifications/notifications-dropdown'
 import { NavbarMark } from './navbar-mark'
+import { NavbarNewPosts } from './navbar-new-posts'
 import { NavbarProfile } from './navbar-profile'
 import styles from './navbar.module.css'
 
@@ -80,6 +81,7 @@ export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
   return (
     <NavbarShell tabBar={tabBar}>
       <NavbarMark />
+      <NavbarNewPosts />
       {viewer ? (
         <>
           <LoggedInLinks />
@@ -90,7 +92,7 @@ export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
           />
           <NavbarLayoutTool />
           <NavbarOmniButton categories={categories} />
-          <NotificationsDropdown />
+          <NotificationsDropdown assetOrigin={API_ORIGIN} />
         </>
       ) : (
         <LoggedOutLinks />

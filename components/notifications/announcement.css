@@ -1,0 +1,54 @@
+/*
+ * The announcement banner, ported from legacy components/notifications/NotificationRenderables.js
+ * (announcementNotification* glamor styles).
+ */
+
+.AnnouncementNotification {
+  position: relative;
+  padding: 10px;
+  margin-top: 1px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #000;
+}
+
+.AnnouncementNotification.hasAsset {
+  min-height: 100px;
+  padding-left: 90px;
+}
+
+.AnnouncementNotification.isStaffPreview {
+  background-color: #f00;
+}
+
+.AnnouncementNotification .AnnouncementAsset {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 70px;
+  overflow: hidden;
+}
+
+.AnnouncementNotification .AnnouncementTitle {
+  max-width: calc(100% - 15px);
+  margin-bottom: 15px;
+  font-family: var(--font-bold);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.AnnouncementNotification .AnnouncementBody {
+  margin-bottom: 15px;
+}
+
+.AnnouncementNotification .AnnouncementCTA {
+  display: inline;
+  border-bottom: 1px solid;
+}
+
+.AnnouncementNotification .js-closeAnnouncement {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

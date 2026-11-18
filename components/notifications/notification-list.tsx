@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { ElloMark } from '@/components/icons'
+import { AssetOriginProvider } from '@/components/ui/emoji'
 import { PostPaginator } from '@/components/streams/post-paginator'
 import { useInView } from '@/hooks/use-in-view'
 import { fetchNotificationPage } from '@/lib/client/notifications'
@@ -17,10 +18,12 @@ interface NotificationListProps {
   tab: NotificationTab
   /** First page rendered on the server (the page route); the dropdown loads it in the browser. */
   initialPage?: NotificationPage
+  /** Where the API's static images (emoji) live. */
+  assetOrigin: string
 }
 
 /** The original's `StreamContainer` for notifications: a list that loads further pages on scroll. */
-export const NotificationList = ({ tab, initialPage }: NotificationListProps) => {
+export const NotificationList = ({ tab, initialPage, assetOrigin }: NotificationListProps) => {
   const setUnread = useNotificationsStore((state) => state.setUnread)
   const query = useInfiniteQuery({
     queryKey: ['notifications', tab],
@@ -60,11 +63,13 @@ export const NotificationList = ({ tab, initialPage }: NotificationListProps) =>
   }
   return (
     <section className="StreamContainer isFullWidth">
-      <div className="Notifications">
-        {notifications.map((notification, index) => (
-          <NotificationItem key={notificationKey(notification, index)} data={notification} />
-        ))}
-      </div>
+      <AssetOriginProvider value={assetOrigin}>
+        <div className="Notifications">
+          {notifications.map((notification, index) => (
+            <NotificationItem key={notificationKey(notification, index)} data={notification} />
+          ))}
+        </div>
+      </AssetOriginProvider>
       {hasNextPage && <PostPaginator isBusy={isFetchingNextPage} onLoadMore={loadMore} />}
       <div ref={sentinel} aria-hidden />
       {query.isError && <p role="alert">Couldn’t load more.</p>}

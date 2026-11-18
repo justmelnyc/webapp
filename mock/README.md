@@ -29,6 +29,14 @@ Unknown users get a 401. Signup is not mocked.
 
 **Notifications** (`notifications.js`, `routes/notifications.js`): love, comment, comment/post mention, repost, watch and new-follower notifications. Loves, comments and follows are turned into notifications as they happen; the first start also seeds mentions, reposts and watches. Loading the feed marks it seen; a new notification lights the red dot on the next page change. `POST /mock/notifications/simulate` (with a bearer token) makes someone love the viewer's newest post. The original app reads REST (`GET /api/v2/notifications`), the rewrite reads GraphQL (`notificationStream`).
 
+**Post search** (`post-search.js`, `routes/post-search.js`): the Posts tab of `/search`. Every term must match: a plain word is the start of a word in a post's text (or image alt text) or of the author's username; `#tag` matches one of the post's hashtags exactly. Newest first, offset-cursor paging. The original reads REST (`GET /api/v2/posts?terms=&per_page=25`, `Link` + `X-Total-*` headers), the rewrite reads GraphQL (`searchPosts(query, perPage, before)`). `#tags` in post text are served as `<span class="hashtag-link" data-href="/search?terms=%23tag">` (what the original's click handler expects). 30 posts with varied text and hashtags are seeded once, dated before the other seed posts so feeds keep their top.
+
+More notification kinds: invitation accepted, artist invite submission accepted (yours and from people you follow), love/comment on your repost and on a repost of your post, category post featured and added as featured/curator/moderator, welcome (`notification-extras.js`; the first ones are derived from the data, the rest seeded once). The v2 feed pages like the real API (`page`, `per_page`, `Link`).
+
+**Announcements** (`announcements.js`): one banner above the notifications, `GET /api/v2/most_recent_announcements` (204 when none), closed with `PATCH .../mark_last_read_announcement`. One is seeded; `POST /mock/announcements/simulate` (JSON: `header`, `body`, `ctaCaption`, `ctaHref`, `imageUrl`) publishes a new one for everyone.
+
+**New Posts** (`new-posts.js`): `POST /mock/simulate-new-posts?count=2` (bearer token) makes people the viewer follows post right now. Like the original, a stream asks for its first page again whenever it opens: leave /following and come back and the navbar shows "New Posts".
+
 Unmocked REST calls are logged with `!!` and return `{}`.
 
 ## Images

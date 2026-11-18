@@ -51,4 +51,33 @@ describe('artist invites mock', () => {
     expect(page.items).toHaveLength(5)
     expect(page.totalPages).toBe(2)
   })
+
+  it('creates unapproved submissions for open invites and refuses the rest', () => {
+    const { invites, submissions } = built()
+    const db = { artistInviteSubmissions: [...submissions] }
+    const bySlug = slug => invites.find(i => i.slug === slug)
+    const next = counter()
+    const open = bySlug('tiny-worlds')
+    const { submission } = ai.createSubmission(db, next, open, { id: 'new-post' })
+    expect(submission).toMatchObject({ inviteId: open.id, postId: 'new-post', status: 'unapproved' })
+    expect(ai.createSubmission(db, next, open, { id: 'new-post' }).error).toMatch(/already/)
+    expect(ai.createSubmission(db, next, bySlug('summer-zine'), { id: 'p' }).error).toMatch(/not open/)
+    expect(ai.createSubmission(db, next, bySlug('partner-open-call'), { id: 'p' }).error).toMatch(/not open/)
+    expect(ai.submitError(null)).toMatch(/not found/)
+  })
+
+  it('moves a new submission through the curator streams and counts, and drops it with its post', () => {
+    const { invites, submissions } = built()
+    const db = { artistInviteSubmissions: [...submissions] }
+    const invite = invites.find(i => i.slug === 'neon-nights')
+    const before = ai.countsFor(db, invite)
+    const { submission } = ai.createSubmission(db, counter(), invite, { id: 'new-post' })
+    expect(ai.countsFor(db, invite)).toEqual({ ...before, unapproved: before.unapproved + 1 })
+    expect(ai.streamOf(db, invite, 'approved').some(s => s.id === submission.id)).toBe(false)
+    ai.applyAction(submission, 'approve')
+    ai.applyAction(submission, 'select')
+    expect(ai.countsFor(db, invite)).toEqual({ unapproved: before.unapproved, approved: before.approved + 1, selected: before.selected + 1, declined: before.declined })
+    ai.dropPostSubmissions(db, 'new-post')
+    expect(ai.countsFor(db, invite)).toEqual(before)
+  })
 })

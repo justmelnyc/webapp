@@ -97,6 +97,11 @@ const resolvers = {
     return { commentStream: { next, isLastPage, comments: items.map(c => gqlComment(c, viewer)) } }
   },
   ...require('../notifications').resolvers,
+  searchPosts: (v, viewer) => {
+    const results = require('./post-search').visibleResults(v.query, viewer)
+    const { items, next, isLastPage } = paginate(results, v.before, parseInt(v.perPage, 10) || PER_PAGE)
+    return { searchPosts: { next, isLastPage, posts: items.map(p => gqlPost(p, viewer)) } }
+  },
   searchUsers: (v, viewer) => {
     const q = String(v.query || '').toLowerCase()
     const users = db.users.filter(u => u.username.includes(q) || u.name.toLowerCase().includes(q)).slice(0, 10)

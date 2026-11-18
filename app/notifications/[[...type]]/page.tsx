@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import heroStyles from '@/components/layout/hero.module.css'
+import { AnnouncementBanner } from '@/components/notifications/announcement-banner'
 import { NotificationList } from '@/components/notifications/notification-list'
 import { NotificationTabLinks } from '@/components/notifications/notification-tabs'
+import { API_ORIGIN } from '@/lib/env'
 import { requireSession } from '@/lib/require-session'
 import { fetchNotifications } from '@/services/notifications'
 import { isNotificationTab } from '@/types/notification'
@@ -23,7 +25,8 @@ const NotificationsPage = async ({ params }: { params: Promise<{ type?: string[]
       <div className={cn('Hero', heroStyles.frame)} />
       <div className="Notifications">
         <NotificationTabLinks active={tab} />
-        <NotificationList key={tab} tab={tab} initialPage={initialPage} />
+        <AnnouncementBanner />
+        <NotificationList key={tab} tab={tab} initialPage={initialPage} assetOrigin={API_ORIGIN} />
       </div>
     </>
   )

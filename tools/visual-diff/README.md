@@ -42,6 +42,7 @@ script prints the mismatch percentage; matching pages are 0.0%.
 | `--probe ".a\|.b"` | print computed styles and boxes of each selector on both sides, only where they differ |
 | `--dump ".sel"` | print each side's outerHTML (to learn the original's DOM) |
 | `--click ".sel"` | click an element on both sides before capturing (open menus, the omnibar) |
+| `--eval "js"` / `--click2 ".sel"` / `--afterwait ms` | run JS on both sides after the clicks (e.g. type into the editor), then click again (e.g. Post) |
 | `--reset-email e@x` | give each side a fresh password reset token, put it where `{token}` is in `--path` (tokens work once) |
 | `--type "#id=value"` | set an input's value on both sides (fires input/change) and wait 2.5s, e.g. for the availability check |
 

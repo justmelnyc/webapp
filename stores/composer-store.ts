@@ -32,8 +32,22 @@ export type ComposerBlock = TextBlock | ImageBlock | EmbedBlock
 
 export type ComposerMode = 'post' | 'edit' | 'repost'
 
+/** The invite a post is being submitted to (the original's editor `artistInvite`). */
+export interface ComposerInvite {
+  id: string
+  title: string
+}
+
 export interface ComposerState {
   isOpen: boolean
+  /** Set by an invite's SUBMIT button: the omnibar shows "Submit to: <title>" and the post becomes a submission. */
+  artistInvite: ComposerInvite | null
+  /** After a submission the omnibar shows "Submission received!" until it is dismissed (the original's `showArtistInviteSuccess`). */
+  inviteSuccess: boolean
+  openForInvite: (invite: ComposerInvite) => void
+  /** Clears the draft but keeps the omnibar open on the success message. */
+  finishInviteSubmission: () => void
+  dismissInviteSuccess: () => void
   /** `edit` is the inline editor on an existing post (the original's `isPostEditing`). */
   mode: ComposerMode
   editingPostId: string | null
@@ -75,6 +89,8 @@ const revoke = (block: ComposerBlock): void => {
 
 const composerCreator: StateCreator<ComposerState> = (set, get) => ({
   isOpen: false,
+  artistInvite: null,
+  inviteSuccess: false,
   mode: 'post',
   editingPostId: null,
   blocks: [],
@@ -82,10 +98,16 @@ const composerCreator: StateCreator<ComposerState> = (set, get) => ({
   buyLink: '',
   isSubmitting: false,
   open: () => set((s) => ({ isOpen: true, blocks: s.blocks.length ? s.blocks : [firstText()] })),
-  close: () => set({ isOpen: false }),
+  openForInvite: (artistInvite) => set((s) => ({ isOpen: true, artistInvite, blocks: s.blocks.length ? s.blocks : [firstText()] })),
+  finishInviteSubmission: () => {
+    get().blocks.forEach(revoke)
+    set({ isOpen: true, artistInvite: null, inviteSuccess: true, mode: 'post', editingPostId: null, blocks: [], categoryIds: [], buyLink: '', isSubmitting: false })
+  },
+  dismissInviteSuccess: () => set({ isOpen: false, inviteSuccess: false }),
+  close: () => set({ isOpen: false, inviteSuccess: false }),
   reset: () => {
     get().blocks.forEach(revoke)
-    set({ isOpen: false, mode: 'post', editingPostId: null, blocks: [], categoryIds: [], buyLink: '', isSubmitting: false })
+    set({ isOpen: false, artistInvite: null, inviteSuccess: false, mode: 'post', editingPostId: null, blocks: [], categoryIds: [], buyLink: '', isSubmitting: false })
   },
   addText: () => {
     const block = firstText()
