@@ -16,7 +16,11 @@ export const createPost = async (input: unknown): Promise<ActionResult<CreatedPo
   try {
     const data = await rest('/api/v2/posts', createPostResponseSchema, {
       method: 'POST',
-      body: { body, category_ids: parsed.data.categoryIds },
+      body: {
+        body,
+        category_ids: parsed.data.categoryIds,
+        ...(parsed.data.artistInviteId ? { artist_invite_id: parsed.data.artistInviteId } : {}),
+      },
     })
     revalidatePath('/', 'layout')
     return success(data.posts)

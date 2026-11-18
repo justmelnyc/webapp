@@ -20,9 +20,10 @@ jest.mock('./db', () => {
     userByName: name => db.users.find(u => u.username === name),
   }
 })
+jest.mock('./content', () => ({ categories: [{ id: '1', name: 'Art', slug: 'art' }, { id: '2', name: 'Design', slug: 'design' }] }))
 jest.mock('./serialize', () => ({
   gqlPost: p => ({ id: p.id }), gqlComment: c => ({ id: c.id }), gqlAuthor: u => ({ id: u.id, username: u.username }),
-  flatPost: p => ({ id: p.id }), flatUser: u => ({ id: u.id }), flatComment: c => ({ id: c.id }),
+  flatPost: p => ({ id: p.id, links: { author: { id: p.authorId, type: 'users' } } }), flatUser: u => ({ id: u.id }), flatComment: c => ({ id: c.id }),
 }))
 
 const { db } = require('./db')
@@ -200,7 +201,7 @@ describe('simulate', () => {
 
 describe('v2 activities (the original app)', () => {
   it('links each activity to a linked subject', () => {
-    const { activities, linked } = n.activities('1')
+    const { activities, linked } = n.activities('1').body
     expect(activities.length).toBeGreaterThan(0)
     activities.forEach((a) => {
       expect(linked[a.links.subject.type].some(x => x.id === a.links.subject.id)).toBe(true)

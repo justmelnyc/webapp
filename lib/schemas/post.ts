@@ -27,6 +27,8 @@ export const createPostInputSchema = z.object({
   categoryIds: z.array(z.string()),
   /** Post-level buy link, sent as `link_url` on every block. */
   buyLink: z.string().optional(),
+  /** Submits the new post to this artist invite (`artist_invite_id`). */
+  artistInviteId: z.string().optional(),
 })
 
 export const updatePostInputSchema = createPostInputSchema.extend({ postId: z.string().min(1) })

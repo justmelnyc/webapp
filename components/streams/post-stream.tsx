@@ -6,6 +6,7 @@ import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
 import { PostPaginator } from '@/components/streams/post-paginator'
 import { PostsAsGrid, PostsAsList } from '@/components/streams/post-columns'
 import { useColumnCount } from '@/components/streams/use-column-count'
+import { useNewPosts } from '@/components/streams/use-new-posts'
 import { useInView } from '@/hooks/use-in-view'
 import { fetchStreamPage } from '@/lib/client/streams'
 import type { PostPage, StreamSpec } from '@/types/stream'
@@ -33,6 +34,7 @@ export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage
     initialData: { pages: [initialPage], pageParams: [null] },
   })
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = query
+  useNewPosts(spec)
   // Like the original, further pages load once the reader scrolls (the 'Load More' pill is the fallback).
   const [hasScrolled, setHasScrolled] = useState(false)
   useEffect(() => {

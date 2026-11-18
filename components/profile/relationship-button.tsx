@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useOptimistic, useTransition } from 'react'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { setFollowing } from '@/actions/relationship-actions'
 import { CheckIconSM, PlusIconSM } from '@/components/icons'
 import { useBlockMute } from '@/components/moderation/use-block-mute'
@@ -25,6 +26,7 @@ export const RelationshipButton = ({ userId, username, priority, signedIn, class
   const blockMute = useBlockMute({ userId, username, priority })
   const [optimistic, setOptimistic] = useOptimistic<string | null | undefined, string>(blockMute.priority, (_, next) => next)
   const [, startTransition] = useTransition()
+  const registration = useRegistrationDialog()
   const shown = optimistic ?? 'inactive'
   const classes = cn('FollowButton', styles.button, className)
 
@@ -51,7 +53,7 @@ export const RelationshipButton = ({ userId, username, priority, signedIn, class
 
   const following = isFollowing(shown)
   const toggle = (): void => {
-    if (!signedIn) return toast.info('Log in to follow people')
+    if (!signedIn) return registration.open('follow-button')
     startTransition(async () => {
       setOptimistic(following ? 'inactive' : 'friend')
       const result = await setFollowing(userId, !following)

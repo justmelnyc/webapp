@@ -5,6 +5,7 @@
 //   node tools/visual-diff/vdiff.js --path /discover [--width 1280] [--vh 900] [--maxh 3000]
 //        [--login ada] [--wait 8000] [--port 9333] [--out DIR]
 //        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--clickwait ms] [--until ".sel"] [--type "#id=value"]
+//        [--eval "js"] [--click2 ".sel"] [--afterwait ms]
 //
 // Writes legacy.png, new.png, diff.png (differences in red) and side.png (original left, rewrite
 // right) into --out and prints the percentage of mismatching pixels.
@@ -31,10 +32,30 @@ const getJson = (url) => new Promise((res, rej) => http.get(url, (r) => { let d 
 
 const STYLE_KEYS = ['display', 'position', 'fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'textTransform', 'color', 'backgroundColor', 'width', 'height', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderTop', 'borderBottom', 'borderRadius', 'opacity', 'textAlign', 'gap']
 
+// Each run gets a throwaway Chrome profile. Remove it on every exit path (and sweep any left behind by
+// runs that were killed), otherwise they pile up in the temp dir at tens of MB each.
+const sweepStaleProfiles = () => {
+  try {
+    for (const name of fs.readdirSync(os.tmpdir())) {
+      const dir = path.join(os.tmpdir(), name)
+      if (name.startsWith('vd-') && Date.now() - fs.statSync(dir).mtimeMs > 60 * 60 * 1000) fs.rmSync(dir, { recursive: true, force: true })
+    }
+  } catch { /* best effort */ }
+}
+sweepStaleProfiles()
+const PROFILE = fs.mkdtempSync(path.join(os.tmpdir(), 'vd-'))
+let chromeProc = null
+process.on('exit', () => {
+  try { if (chromeProc) chromeProc.kill() } catch { /* already gone */ }
+  try { fs.rmSync(PROFILE, { recursive: true, force: true }) } catch { /* best effort */ }
+})
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => process.exit(130))
+
 const connect = async () => {
-  const proc = spawn(CHROME, ['--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${PORT}`, `--user-data-dir=${fs.mkdtempSync(path.join(os.tmpdir(), 'vd-'))}`, 'about:blank'], { stdio: 'ignore' })
+  const proc = spawn(CHROME, ['--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, 'about:blank'], { stdio: 'ignore' })
   for (let i = 0; i < 40; i += 1) { try { await getJson(`http://127.0.0.1:${PORT}/json/version`); break } catch { await wait(250) } }
   const target = (await getJson(`http://127.0.0.1:${PORT}/json/list`)).find((t) => t.type === 'page')
+  chromeProc = proc
   const ws = new WebSocket(target.webSocketDebuggerUrl)
   await new Promise((r) => ws.on('open', r))
   let id = 0
@@ -84,6 +105,12 @@ const capture = async (c, base, label) => {
     if (args.until) await wait(500)
     // the original scrolls the opened editor into view after 0.5-1s; capture from the top like a fresh load
     await wait(1200); await c.ev('window.scrollTo(0, 0)'); await wait(1500) }
+  // --eval "js": run JS on both sides after the clicks (e.g. type into the editor); --click2 "a >> b": click again afterwards
+  if (args.eval) {
+    await c.ev(String(args.eval)); await wait(1500)
+    if (args.click2) { for (const sel of String(args.click2).split(' >> ')) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); await wait(+args.clickwait || 1500) }
+      await wait(+args.afterwait || 1500); await c.ev('window.scrollTo(0, 0)'); await wait(1000) }
+  }
   // Fetch natively lazy-loaded images without scrolling (scrolling would trigger infinite scroll).
   await c.ev(`document.querySelectorAll('img[loading=lazy]').forEach((i) => { i.loading = 'eager' })`)
   await c.ev(`Promise.all([...document.images].map(i => i.complete ? 1 : new Promise(r => { i.onload = i.onerror = r; setTimeout(r, 4000) })))`)

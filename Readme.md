@@ -35,12 +35,12 @@ Zustand (composer draft, toasts) · React Hook Form + Zod (forms, and validation
 - Server Components read the API with the session token from an httpOnly cookie (`lib/api`, `services/`).
 - Mutations are Server Actions (`actions/`); optimistic UI uses `useOptimistic`.
 - Uploads go browser → storage directly with credentials from the API (`lib/client/upload.ts`).
-- `legacy/` holds the previous React 15 / Redux / Webpack app, kept only for reference while features are ported.
+- The previous React 15 / Redux / Webpack app is no longer in this repo. It lives on branch `feat/mock-api` (a separate checkout is needed to run it for pixel diffs). Code comments that cite `legacy/src/<path>` mean `src/<path>` on that branch.
 
 ## Design fidelity
 
 The point of the rewrite is to keep the original design. Its tokens and base styles live in
-`app/styles/` (ported from `legacy/src/styles/jso.js` and `legacy/src/lib/styles/`), the icon set in
+`app/styles/` (ported from `src/styles/jso.js` and `src/lib/styles/` of the original), the icon set in
 `components/icons/`, and every page was checked against the running original with a pixel diff.
 Before calling UI work done, run `tools/visual-diff` (see its README): matching pages are 0.0%.
 
@@ -61,5 +61,6 @@ Ello Web Application is released under the [MIT License](/LICENSE.txt)
 - **Profile hero diffs:** the hero is `100vh`; pass `--vh 900` to `tools/visual-diff/vdiff.js`.
 - **Shop/embeds/reposts:** see `mock/README.md` for what the mock simulates.
 - **Invites with no submissions:** the original treats the empty API answer as one blank submission and shows only a "Submissions" heading (a bug). The rewrite shows the zero state the original's code intended ("No Submissions Yet"), about 0.4% diff on `/invites/tiny-worlds`.
+- **Search with no results:** the original's reducer turns an empty `posts` / `users` array into one blank item (an empty array is an `object`), so it shows an empty grid and no text. The rewrite shows the zero state the original's code intended ("Sorry, no results found."), about 0.1% diff on `/search?terms=zzzz` (Posts and People).
 - **After resetting a password:** the original's saga signs in with the username from its (logged out, so empty) store, so nothing visibly happens and the form stays. The rewrite does what the saga meant to: signs in with the new password and goes to `/`. The mock's reset link is in its log and at `GET /mock/last-reset-link`.
 - **Onboarding avatar "blank" check:** like the original, an avatar or header only counts as present when the profile says `hasAvatarPresent` / `hasCoverImagePresent` (the mock sets them once you upload one), so seeded users show the green upload buttons here.

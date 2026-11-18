@@ -9,6 +9,7 @@ describe('streamSpecSchema', () => {
     [{ type: 'category', slug: 'art', kind: 'RECENT' }],
     [{ type: 'user', username: 'ada' }],
     [{ type: 'loves', username: 'ada' }],
+    [{ type: 'search', terms: '#film' }],
   ])('accepts %j', (spec) => {
     expect(streamSpecSchema.parse(spec)).toEqual(spec)
   })

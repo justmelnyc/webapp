@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, render, screen, waitFor } from '@testing-library/react'
+import { RegistrationDialogProvider } from '@/components/auth/registration-dialog'
 import { fetchStreamPage } from '@/lib/client/streams'
 import { gqlPost, textRegion } from '@/test/fixtures/posts'
 import { postPageSchema, type PostPage, type StreamSpec } from '@/types/stream'
@@ -7,12 +8,21 @@ import { PostStream } from './post-stream'
 
 jest.mock('@/actions/post-actions', () => ({ setLoved: jest.fn() }))
 jest.mock('@/actions/relationship-actions', () => ({ setFollowing: jest.fn() }))
-jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser: jest.fn(), setRelationship: jest.fn() }))
-jest.mock('@/actions/repost-actions', () => ({ createRepost: jest.fn(), loadRepostCategories: jest.fn() }))
+jest.mock('@/actions/moderation-actions', () => ({
+  flagPost: jest.fn(),
+  flagUser: jest.fn(),
+  setRelationship: jest.fn(),
+}))
+jest.mock('@/actions/repost-actions', () => ({
+  createRepost: jest.fn(),
+  loadRepostCategories: jest.fn(),
+}))
 jest.mock('@/actions/post-edit-actions', () => ({ updatePost: jest.fn() }))
 jest.mock('@/actions/composer-actions', () => ({ createPost: jest.fn() }))
-jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }) }))
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }), usePathname: () => '/' }))
 jest.mock('@/lib/client/streams', () => ({ fetchStreamPage: jest.fn() }))
+// the "New Posts" check has its own tests; here it would use up the mocked pages
+jest.mock('./use-new-posts', () => ({ useNewPosts: jest.fn() }))
 
 const fetchMock = jest.mocked(fetchStreamPage)
 const spec: StreamSpec = { type: 'global', kind: 'RECENT' }
@@ -28,10 +38,14 @@ let triggerIntersect: () => void = () => undefined
 
 // Mirrors components/providers.tsx (staleTime keeps initialData from refetching on mount)
 const renderStream = (initialPage: PostPage, emptyMessage?: string) => {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: 60_000 } } })
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false, staleTime: 60_000 } },
+  })
   return render(
     <QueryClientProvider client={client}>
-      <PostStream spec={spec} initialPage={initialPage} signedIn emptyMessage={emptyMessage} />
+      <RegistrationDialogProvider header={null}>
+        <PostStream spec={spec} initialPage={initialPage} signedIn emptyMessage={emptyMessage} />
+      </RegistrationDialogProvider>
     </QueryClientProvider>,
   )
 }
@@ -47,7 +61,10 @@ describe('PostStream', () => {
     }))
     global.IntersectionObserver = jest.fn((callback: IntersectionObserverCallback) => {
       triggerIntersect = () =>
-        callback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
+        callback(
+          [{ isIntersecting: true } as IntersectionObserverEntry],
+          {} as IntersectionObserver,
+        )
       return { observe: jest.fn(), disconnect: jest.fn() }
     }) as unknown as typeof IntersectionObserver
   })
@@ -62,7 +79,10 @@ describe('PostStream', () => {
 
   it('deals posts into columns in turn', () => {
     const { container } = renderStream(page(['a', 'b', 'c'], null))
-    const columns = Array.from(container.querySelectorAll('.Column'), (column) => column.textContent)
+    const columns = Array.from(
+      container.querySelectorAll('.Column'),
+      (column) => column.textContent,
+    )
     expect(columns).toHaveLength(2)
     expect(columns[0]).toContain('body a')
     expect(columns[0]).toContain('body c')

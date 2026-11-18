@@ -9,6 +9,8 @@ const { viewer, viewerId } = require('./auth')
 const { credentialErrors } = require('../credentials')
 const { hashPassword } = require('../passwords')
 
+const ai = require('../artist-invites')
+
 const router = express.Router()
 
 const requireViewer = (req, res, next) => {
@@ -39,11 +41,15 @@ router.post('/api/v2/posts', (req, res) => {
   const regions = toRegions(req.body.body)
   console.log(`  post body: ${JSON.stringify((req.body.body || []).map(b => ({ kind: b.kind, data: b.kind === 'image' ? (b.data || {}).url : String(b.data).slice(0, 50) })))}`)
   if (!regions.length) return res.status(422).json({ error: { message: 'Post can not be empty' } })
+  const invite = req.body.artist_invite_id ? db.artistInvites.find(i => i.id === String(req.body.artist_invite_id)) : null
+  const inviteError = req.body.artist_invite_id ? ai.submitError(invite) : null
+  if (inviteError) return res.status(422).json({ error: { message: inviteError } })
   const post = {
     id: nextId(), token: `m${Date.now().toString(36)}`, authorId: req.me.id,
     createdAt: new Date().toISOString(), regions, categoryIds: (req.body.category_ids || []).map(String), views: 0,
   }
   db.posts.unshift(post)
+  if (invite) ai.createSubmission(db, nextId, invite, post)
   save()
   console.log(`  post ${post.id} created by @${req.me.username} (${regions.length} blocks)`)
   return res.status(201).json(postEnvelope(post, req.me.id))
@@ -67,6 +73,7 @@ router.delete('/api/v2/posts/:id', (req, res) => {
   if (!post || post.authorId !== req.me.id) return res.status(404).json({ error: 'not found' })
   db.posts = db.posts.filter(p => p.id !== post.id)
   db.comments = db.comments.filter(c => c.postId !== post.id)
+  ai.dropPostSubmissions(db, post.id)
   require('../reposts').dropOrphans()
   save()
   return res.status(204).end()

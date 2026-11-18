@@ -11,17 +11,22 @@ const authorFields = `
 
 const regionFields = `kind data linkUrl links { assets }`
 
-export const postFields = `
+/** `sourceExtra` adds fields to the reposted original (notifications summarize it). */
+const buildPostFields = (sourceExtra = '') => `
   id token createdAt contentWarning
   author { ${authorFields} }
   summary { ${regionFields} }
   content { ${regionFields} }
   repostContent { ${regionFields} }
-  repostedSource { id token author { ${authorFields} } }
+  repostedSource { id token author { ${authorFields} } ${sourceExtra} }
   assets { id attachment ${responsive} }
   postStats { lovesCount commentsCount viewsCount repostsCount }
   currentUserState { watching loved reposted }
 `
+
+export const postFields = buildPostFields()
+/** For notifications: the original of a repost also carries its summary and images. */
+export const postFieldsWithSource = buildPostFields(`summary { ${regionFields} } assets { id attachment ${responsive} }`)
 
 const stream = (field: string, args: string, vars: string) => `
   query(${vars}) {
@@ -32,6 +37,7 @@ const stream = (field: string, args: string, vars: string) => `
 export const GLOBAL_STREAM = stream('globalPostStream', 'kind: $kind, before: $before', '$kind: StreamKind!, $before: String')
 export const FOLLOWING_STREAM = stream('followingPostStream', 'kind: $kind, before: $before', '$kind: StreamKind!, $before: String')
 export const CATEGORY_STREAM = stream('categoryPostStream', 'slug: $slug, kind: $kind, before: $before', '$slug: String!, $kind: StreamKind!, $before: String')
+export const SEARCH_POSTS = stream('searchPosts', 'query: $query, perPage: $perPage, before: $before', '$query: String!, $perPage: Int!, $before: String')
 export const USER_STREAM = stream('userPostStream', 'username: $username, before: $before', '$username: String!, $before: String')
 
 export const USER_LOVES = `

@@ -12,7 +12,12 @@ export const sanitizeNotification = (notification: Notification): Notification =
     case 'Love':
     case 'Watch':
       return { ...notification, subject: { ...subject, post: sanitizePost(subject.post) } }
+    case 'ArtistInviteSubmission':
+      return { ...notification, subject: { ...subject, post: subject.post ? sanitizePost(subject.post) : subject.post } }
+    case 'CategoryPost':
+      return { ...notification, subject: { ...subject, post: sanitizePost(subject.post) } }
     case 'User':
+    case 'CategoryUser':
       return notification
   }
 }

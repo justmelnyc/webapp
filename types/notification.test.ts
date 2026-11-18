@@ -45,7 +45,7 @@ describe('notificationPageSchema', () => {
   })
 
   it('drops kinds the app cannot render and malformed subjects instead of failing the page', () => {
-    const unknown = { ...love('n5'), kind: 'welcome_notification' }
+    const unknown = { ...love('n5'), kind: 'user_banned_notification' }
     const broken = { ...love('n6'), subject: { __typename: 'Love', id: 'l2' } }
     const parsed = notificationPageSchema.parse(page([unknown, broken, love('n7')]))
     expect(parsed.notifications.map((n) => n.id)).toEqual(['n7'])

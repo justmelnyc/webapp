@@ -34,6 +34,9 @@ export const repostedSourceSchema = z.object({
   id: z.string(),
   token: z.string(),
   author: authorSchema,
+  /** Only notifications ask for these (they summarize the original). */
+  summary: z.array(regionSchema).nullish(),
+  assets: z.array(assetSchema).nullish(),
 })
 
 export const postSchema = z.object({

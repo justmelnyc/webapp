@@ -1,0 +1,70 @@
+/*
+ * The "New Posts" pill in the navbar, ported from legacy NavbarParts.js (moreButtonStyle, moreSpanStyle).
+ * `.isLoggedIn` / `.isLoggedOut` live on the AppShell root.
+ */
+
+.button {
+  position: absolute;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #fff;
+  white-space: nowrap;
+  background-color: #aaa;
+  border: 1px solid #aaa;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.4s ease;
+}
+
+:global(.isLoggedIn) .button {
+  right: 90px;
+}
+
+:global(.isLoggedOut) .button {
+  display: none;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    color: #666;
+  }
+}
+
+.label {
+  display: none;
+  padding-left: 8px;
+  vertical-align: middle;
+}
+
+@media (min-width: 60em) {
+  .button {
+    width: auto;
+    height: 40px;
+    padding-right: 20px;
+    padding-left: 15px;
+    line-height: 40px;
+    border-radius: 20px;
+  }
+
+  :global(.isLoggedIn) .button {
+    right: auto;
+    left: 80px;
+  }
+
+  :global(.isLoggedOut) .button {
+    display: inline-block;
+    left: 80px;
+  }
+
+  .label {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 85em) {
+  :global(.isLoggedOut) .button {
+    left: 140px;
+  }
+}

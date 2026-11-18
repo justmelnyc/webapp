@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ArtistInviteDetail } from '@/components/artist-invites/artist-invite-detail'
+import { InviteRedirect } from '@/components/artist-invites/invite-redirect'
 import { PageOffset } from '@/components/layout/page-offset'
 import { isApiError } from '@/lib/errors'
 import { getArtistInvite } from '@/services/artist-invites'
@@ -26,11 +27,11 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   return { title: invite.title }
 }
 
-/** Port of pages/ArtistInvitesDetailPage.js. Invites hosted elsewhere send visitors to the partner's site. */
+/** Port of pages/ArtistInvitesDetailPage.js. Invites hosted elsewhere open the partner's site in a new tab and return to /invites. */
 const ArtistInviteDetailPage = async ({ params, searchParams }: Props) => {
   const [{ slug }, { submissionType }] = await Promise.all([params, searchParams])
   const invite = await load(slug)
-  if (invite.redirectUrl) redirect(invite.redirectUrl)
+  if (invite.redirectUrl) return <InviteRedirect url={invite.redirectUrl} />
   return (
     <PageOffset className="ArtistInvitesDetail">
       <ArtistInviteDetail invite={invite} submissionType={submissionType} />

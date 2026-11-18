@@ -1,8 +1,10 @@
 import sanitizeHtml from 'sanitize-html'
 
 const ALLOWED = {
-  allowedTags: ['p', 'br', 'strong', 'b', 'em', 'i', 'a', 'ul', 'ol', 'li', 'blockquote', 'h1', 'h2', 'h3'],
-  allowedAttributes: { a: ['href', 'target', 'rel'] },
+  allowedTags: ['span', 'p', 'br', 'strong', 'b', 'em', 'i', 'a', 'ul', 'ol', 'li', 'blockquote', 'h1', 'h2', 'h3'],
+  // `span.hashtag-link[data-href]` is the API's hashtag "link" (the original has no <a> for it)
+  allowedAttributes: { a: ['href', 'target', 'rel'], span: ['class', 'data-href'] },
+  allowedClasses: { span: ['hashtag-link'] },
   allowedSchemes: ['http', 'https', 'mailto'],
   transformTags: { a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer nofollow', target: '_blank' }) },
 } satisfies sanitizeHtml.IOptions

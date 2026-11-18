@@ -5,6 +5,7 @@ import {
   CATEGORY_STREAM,
   FOLLOWING_STREAM,
   GLOBAL_STREAM,
+  SEARCH_POSTS,
   USER_LOVES,
   USER_STREAM,
 } from '@/constants/queries'
@@ -17,6 +18,9 @@ const wrap = <K extends string>(key: K) => z.object({ [key]: postPageSchema } as
 const lovesSchema = z.object({
   userLoveStream: pageInfoSchema.extend({ loves: z.array(z.object({ post: postSchema })) }),
 })
+
+/** The original asks the search API for 25 posts per page. */
+const SEARCH_PER_PAGE = 25
 
 const userArg = (username: string): string => `~${username.replace(/^~/, '')}`
 
@@ -45,6 +49,11 @@ const loadStream = async (spec: StreamSpec, before?: string | null): Promise<Pos
     case 'user': {
       const data = await graphql(USER_STREAM, { username: userArg(spec.username), before: cursor }, wrap('userPostStream'))
       return data.userPostStream
+    }
+    case 'search': {
+      const vars = { query: spec.terms, perPage: SEARCH_PER_PAGE, before: cursor }
+      const data = await graphql(SEARCH_POSTS, vars, wrap('searchPosts'))
+      return data.searchPosts
     }
     case 'loves': {
       const data = await graphql(USER_LOVES, { username: userArg(spec.username), before: cursor }, lovesSchema)

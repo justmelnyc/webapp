@@ -1,6 +1,7 @@
 'use client'
 
 import { useOptimistic, useTransition } from 'react'
+import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { setFollowing } from '@/actions/relationship-actions'
 import { CheckCircleIcon, PlusCircleIcon } from '@/components/icons'
 import { toast } from '@/stores/toast-store'
@@ -19,10 +20,11 @@ export const PostFollowButton = ({ userId, priority, signedIn }: PostFollowButto
   const following = FOLLOWING.includes(priority ?? '')
   const [state, setOptimistic] = useOptimistic<boolean, boolean>(following, (_, next) => next)
   const [pending, startTransition] = useTransition()
+  const registration = useRegistrationDialog()
   const current = priority === 'self' ? 'self' : state ? 'friend' : (priority ?? 'inactive')
 
   const toggle = (): void => {
-    if (!signedIn) return void toast.info('Log in to follow people')
+    if (!signedIn) return registration.open('follow-button')
     startTransition(async () => {
       const next = !state
       setOptimistic(next)

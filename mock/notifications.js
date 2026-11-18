@@ -7,6 +7,8 @@
 // Read state is `db.notificationReads[userId]`: a notification is unread when it is newer than that.
 const { db, save, nextId, userById, postById } = require('./db')
 const { gqlPost, gqlComment, gqlAuthor, flatPost, flatUser, flatComment } = require('./serialize')
+const extras = require('./notification-extras')
+const rest = require('./notification-rest')
 
 const DAY = 86400000
 const PER_PAGE = 25
@@ -20,6 +22,7 @@ const CATEGORY_OF = {
   repost_notification: 'reposts',
   new_follower_post: 'relationships',
   new_followed_user_post: 'relationships',
+  ...extras.CATEGORY_OF,
 }
 const CATEGORIES = ['comments', 'mentions', 'loves', 'reposts', 'relationships']
 const SUBJECT_TYPE = {
@@ -31,6 +34,7 @@ const SUBJECT_TYPE = {
   new_follower_post: 'User',
   new_followed_user_post: 'User',
   watch_notification: 'Watch',
+  ...extras.SUBJECT_TYPE,
 }
 
 const MENTION_TEXTS = [
@@ -86,28 +90,36 @@ const sync = () => {
   init()
   const now = Date.now()
   const first = !db.notificationsSeeded
+  // the kinds added later are back-filled once on an existing db, dated in the past like the first seed
+  const migrating = !first && db.notificationsExtra !== extras.EXTRA_SEED
+  if (first || migrating) extras.seedRepostActivity(now)
+  const backfill = first || migrating
   const rand = rng(11)
-  const keys = new Set(db.notifications.map(n => n.key))
+  const byKey = new Map(db.notifications.map(n => [n.key, n]))
   const live = new Set()
-  let changed = first
-  const stamp = (floor) => (first
+  let changed = backfill
+  const stamp = (floor) => (backfill
     ? new Date(Math.min(now, Math.max(floor + 3600000, now - rand() * 6 * DAY))).toISOString()
     : new Date(now).toISOString())
 
   const derive = (key, record, floor) => {
     live.add(key)
-    if (!keys.has(key)) { add({ key, createdAt: stamp(floor), ...record }); keys.add(key); changed = true }
+    const existing = byKey.get(key)
+    if (!existing) { byKey.set(key, add({ key, createdAt: stamp(floor), ...record })); changed = true }
+    else if (existing.kind !== record.kind) { Object.assign(existing, record); changed = true }
   }
   db.loves.forEach((l) => {
     const post = postById(l.postId)
     if (post && post.authorId !== l.userId) {
-      derive(`love:${l.userId}:${l.postId}`, { userId: post.authorId, kind: 'love_notification', actorId: l.userId, postId: post.id }, Date.parse(post.createdAt))
+      const kinds = extras.loveKind(post)
+      derive(`love:${l.userId}:${l.postId}`, { userId: post.authorId, kind: kinds ? kinds.repostKind : 'love_notification', actorId: l.userId, postId: post.id }, Date.parse(post.createdAt))
     }
   })
   db.comments.forEach((c) => {
     const post = postById(c.postId)
     if (!post || post.authorId === c.authorId || /@\w+/.test(c.text)) return
-    derive(`comment:${c.id}`, { userId: post.authorId, kind: 'comment_notification', actorId: c.authorId, postId: post.id, commentId: c.id }, Date.parse(c.createdAt))
+    const kinds = extras.commentKind(post)
+    derive(`comment:${c.id}`, { userId: post.authorId, kind: kinds ? kinds.repostKind : 'comment_notification', actorId: c.authorId, postId: post.id, commentId: c.id }, Date.parse(c.createdAt))
   })
   db.follows.forEach((f) => {
     derive(`follow:${f.followerId}:${f.followeeId}`, { userId: f.followeeId, kind: 'new_follower_post', actorId: f.followerId, subjectUserId: f.followerId }, now - 6 * DAY)
@@ -118,13 +130,17 @@ const sync = () => {
     if (!original || original.authorId === p.authorId) return
     derive(`repost:${p.id}`, { userId: original.authorId, kind: 'repost_notification', actorId: p.authorId, postId: p.id, createdAt: p.createdAt }, Date.parse(p.createdAt))
   })
-  const derivedPrefix = /^(love|comment|follow|repost):/
+  extras.deriveExtras(derive)
+  extras.deriveRepostVariants(derive)
+  const derivedPrefix = new RegExp(`^(love|comment|follow|repost|${extras.DERIVED.join('|')}):`)
   const kept = db.notifications.filter(n => !derivedPrefix.test(n.key) || live.has(n.key))
   if (kept.length !== db.notifications.length) changed = true
   db.notifications = kept
 
-  if (first) {
-    seed(now)
+  if (first) seed(now)
+  if (backfill) {
+    extras.seedNotifications(add, now, rng(13))
+    db.notificationsExtra = extras.EXTRA_SEED
     db.users.forEach((u) => { db.notificationReads[u.id] = new Date(now).toISOString() })
   }
   if (changed) save()
@@ -174,6 +190,7 @@ const serialize = (n, viewer) => {
       subject = userById(n.subjectUserId) && { __typename: 'User', ...gqlAuthor(userById(n.subjectUserId), viewer) }
       break
     default:
+      subject = extras.serializeSubject(n, viewer) || null
   }
   return subject && { id: n.id, kind: n.kind, subjectType: SUBJECT_TYPE[n.kind], createdAt: n.createdAt, subject }
 }
@@ -191,40 +208,14 @@ const stream = (v, viewer) => {
   return { notificationStream: { next: end < all.length ? String(end) : null, isLastPage: end >= all.length, notifications } }
 }
 
-// The v2 REST shape the original app reads (GET /api/v2/notifications): `activities` whose
-// `links.subject` points into `linked` (posts, comments, users, loves, watches).
-const LINK_TYPE = { Comment: 'comments', Post: 'posts', User: 'users', Love: 'loves', Watch: 'watches' }
 
-const activities = (userId, category) => {
-  const linked = { posts: new Map(), users: new Map(), comments: new Map(), loves: new Map(), watches: new Map() }
-  const addUser = id => linked.users.set(id, flatUser(userById(id), userId))
-  const addPost = (post) => { linked.posts.set(post.id, flatPost(post, userId)); addUser(post.authorId) }
-  const list = forUser(userId, category).map((n) => {
-    const type = SUBJECT_TYPE[n.kind]
-    const post = n.postId ? postById(n.postId) : null
-    let id = n.id
-    if (type === 'Comment') {
-      const c = db.comments.find(x => x.id === n.commentId)
-      if (!c) return null
-      id = c.id
-      addPost(postById(c.postId)); addUser(c.authorId)
-      linked.comments.set(id, { ...flatComment(c), links: { author: { id: c.authorId, type: 'users' }, parentPost: { id: c.postId, type: 'posts' } } })
-    } else if (type === 'Love' || type === 'Watch') {
-      if (!post) return null
-      id = `${n.actorId}-${n.postId}`
-      addPost(post); addUser(n.actorId)
-      linked[LINK_TYPE[type]].set(id, { id, links: { user: { id: n.actorId, type: 'users' }, post: { id: post.id, type: 'posts' } } })
-    } else if (type === 'Post') {
-      if (!post) return null
-      id = post.id; addPost(post)
-    } else {
-      id = n.subjectUserId; addUser(id)
-    }
-    return { id: n.id, kind: n.kind, subjectType: type, createdAt: n.createdAt, links: { subject: { id, type: LINK_TYPE[type] } } }
-  }).filter(Boolean)
-  const out = {}
-  Object.keys(linked).forEach((k) => { out[k] = [...linked[k].values()] })
-  return { activities: list, linked: out }
+// One page of the REST feed (`page` is 1-based) plus the paging numbers for the X-Total-* headers.
+const activities = (userId, category, page = 1, perPage = PER_PAGE) => {
+  const all = forUser(userId, category)
+  const totalPages = Math.max(1, Math.ceil(all.length / perPage))
+  const current = Math.min(Math.max(page, 1), totalPages)
+  const body = rest.activities(userId, all.slice((current - 1) * perPage, current * perPage), SUBJECT_TYPE)
+  return { body, page: current, totalPages, totalCount: all.length }
 }
 
 const resolvers = {

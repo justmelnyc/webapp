@@ -176,6 +176,32 @@ const applyAction = (submission, type) => {
   return submission
 }
 
+// Submitting a post to an invite (POST /api/v2/posts with artist_invite_id). Returns { submission } or
+// { error } when the invite is not taking submissions. New work always starts unapproved: only curators see it.
+const submitError = (invite) => {
+  if (!invite) return 'Artist invite not found'
+  if (invite.status !== 'open' || invite.redirectUrl) return 'This invite is not open for submissions'
+  return null
+}
+
+const createSubmission = (db, nextId, invite, post, now = Date.now()) => {
+  const error = submitError(invite)
+  if (error) return { error }
+  const duplicate = db.artistInviteSubmissions.some(s => s.inviteId === invite.id && s.postId === post.id)
+  if (duplicate) return { error: 'This post was already submitted to the invite' }
+  const submission = { id: nextId(), inviteId: invite.id, postId: post.id, status: 'unapproved', createdAt: new Date(now).toISOString() }
+  db.artistInviteSubmissions.push(submission)
+  return { submission }
+}
+
+// Drops the submissions of a deleted post
+const dropPostSubmissions = (db, postId) => {
+  db.artistInviteSubmissions = db.artistInviteSubmissions.filter(s => s.postId !== postId)
+}
+
+// Submission counts per stream, as the tabs would total them for a curator
+const countsFor = (db, invite) => KEYS.reduce((counts, key) => ({ ...counts, [key]: streamOf(db, invite, key).length }), {})
+
 const paginate = (list, page = 1, perPage = PER_PAGE) => {
   const p = Math.max(1, parseInt(page, 10) || 1)
   const totalPages = Math.max(1, Math.ceil(list.length / perPage))
@@ -184,5 +210,5 @@ const paginate = (list, page = 1, perPage = PER_PAGE) => {
 
 module.exports = {
   KEYS, PER_PAGE, buildArtistInvites, seedArtistInvites, isAdmin, visibleKeys, linksFor, streamOf, inStream,
-  actionsFor, applyAction, paginate,
+  actionsFor, applyAction, paginate, createSubmission, submitError, dropPostSubmissions, countsFor,
 }

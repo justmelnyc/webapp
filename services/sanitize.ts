@@ -11,6 +11,9 @@ export const sanitizePost = (post: Post): Post => ({
   summary: post.summary.map(cleanRegion),
   content: post.content.map(cleanRegion),
   repostContent: post.repostContent?.map(cleanRegion),
+  ...(post.repostedSource?.summary
+    ? { repostedSource: { ...post.repostedSource, summary: post.repostedSource.summary.map(cleanRegion) } }
+    : {}),
 })
 
 export const sanitizeComment = (comment: Comment): Comment => ({
