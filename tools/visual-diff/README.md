@@ -20,6 +20,7 @@ NODE_OPTIONS=--openssl-legacy-provider npx babel-node src/server/dev.js   # :666
 ```
 
 Both apps read the same mock, so the data is identical: any visual difference is a design difference.
+Each run uses a throwaway Chrome profile that is removed when it exits (stale ones older than an hour are swept at startup).
 Needs Google Chrome (macOS path in the script; edit `CHROME` for other systems).
 
 ## Use

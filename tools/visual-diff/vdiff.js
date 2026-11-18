@@ -31,10 +31,30 @@ const getJson = (url) => new Promise((res, rej) => http.get(url, (r) => { let d 
 
 const STYLE_KEYS = ['display', 'position', 'fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'textTransform', 'color', 'backgroundColor', 'width', 'height', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'borderTop', 'borderBottom', 'borderRadius', 'opacity', 'textAlign', 'gap']
 
+// Each run gets a throwaway Chrome profile. Remove it on every exit path (and sweep any left behind by
+// runs that were killed), otherwise they pile up in the temp dir at tens of MB each.
+const sweepStaleProfiles = () => {
+  try {
+    for (const name of fs.readdirSync(os.tmpdir())) {
+      const dir = path.join(os.tmpdir(), name)
+      if (name.startsWith('vd-') && Date.now() - fs.statSync(dir).mtimeMs > 60 * 60 * 1000) fs.rmSync(dir, { recursive: true, force: true })
+    }
+  } catch { /* best effort */ }
+}
+sweepStaleProfiles()
+const PROFILE = fs.mkdtempSync(path.join(os.tmpdir(), 'vd-'))
+let chromeProc = null
+process.on('exit', () => {
+  try { if (chromeProc) chromeProc.kill() } catch { /* already gone */ }
+  try { fs.rmSync(PROFILE, { recursive: true, force: true }) } catch { /* best effort */ }
+})
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => process.exit(130))
+
 const connect = async () => {
-  const proc = spawn(CHROME, ['--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${PORT}`, `--user-data-dir=${fs.mkdtempSync(path.join(os.tmpdir(), 'vd-'))}`, 'about:blank'], { stdio: 'ignore' })
+  const proc = spawn(CHROME, ['--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, 'about:blank'], { stdio: 'ignore' })
   for (let i = 0; i < 40; i += 1) { try { await getJson(`http://127.0.0.1:${PORT}/json/version`); break } catch { await wait(250) } }
   const target = (await getJson(`http://127.0.0.1:${PORT}/json/list`)).find((t) => t.type === 'page')
+  chromeProc = proc
   const ws = new WebSocket(target.webSocketDebuggerUrl)
   await new Promise((r) => ws.on('open', r))
   let id = 0

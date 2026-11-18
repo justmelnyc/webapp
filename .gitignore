@@ -7,8 +7,3 @@ coverage
 next-env.d.ts
 *.tsbuildinfo
 mock/.data
-legacy/public/static/*.js
-legacy/public/static/*.css
-legacy/public/static/*.html
-legacy/public/static/*.map
-legacy/public/static/*.txt

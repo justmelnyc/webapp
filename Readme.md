@@ -35,12 +35,12 @@ Zustand (composer draft, toasts) · React Hook Form + Zod (forms, and validation
 - Server Components read the API with the session token from an httpOnly cookie (`lib/api`, `services/`).
 - Mutations are Server Actions (`actions/`); optimistic UI uses `useOptimistic`.
 - Uploads go browser → storage directly with credentials from the API (`lib/client/upload.ts`).
-- `legacy/` holds the previous React 15 / Redux / Webpack app, kept only for reference while features are ported.
+- The previous React 15 / Redux / Webpack app is no longer in this repo. It lives on branch `feat/mock-api` (a separate checkout is needed to run it for pixel diffs). Code comments that cite `legacy/src/<path>` mean `src/<path>` on that branch.
 
 ## Design fidelity
 
 The point of the rewrite is to keep the original design. Its tokens and base styles live in
-`app/styles/` (ported from `legacy/src/styles/jso.js` and `legacy/src/lib/styles/`), the icon set in
+`app/styles/` (ported from `src/styles/jso.js` and `src/lib/styles/` of the original), the icon set in
 `components/icons/`, and every page was checked against the running original with a pixel diff.
 Before calling UI work done, run `tools/visual-diff` (see its README): matching pages are 0.0%.
 

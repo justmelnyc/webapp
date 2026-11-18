@@ -14,8 +14,7 @@ const config = {
     // server-only throws outside the react-server condition; use its no-op entry in tests
     '^server-only$': '<rootDir>/node_modules/server-only/empty.js',
   },
-  testPathIgnorePatterns: ['<rootDir>/legacy/', '<rootDir>/.next/'],
-  modulePathIgnorePatterns: ['<rootDir>/legacy/'],
+  testPathIgnorePatterns: ['<rootDir>/.next/'],
 } satisfies Config
 
 // next/jest overwrites transformIgnorePatterns, so patch the resolved config.
