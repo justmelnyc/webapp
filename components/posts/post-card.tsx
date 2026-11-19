@@ -13,7 +13,7 @@ import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
-import { isRepost } from '@/utils/repost'
+import { isRepost, originalAuthorOf } from '@/utils/repost'
 import { timeAgoInWords } from '@/components/posts/time-ago-in-words'
 import './post-body.css'
 import './post-header.css'
@@ -79,6 +79,8 @@ const Footer = ({ post, signedIn, viewerId, showWatch }: FooterProps) => {
   const path = detailPath(post)
   const { viewsCount, commentsCount, lovesCount, repostsCount } = post.postStats
   const isOwn = !!viewerId && viewerId === post.author.id
+  // The original's `isOwnOriginalPost`: the viewer wrote the post this one reposts.
+  const isOwnOriginal = !!viewerId && viewerId === originalAuthorOf(post).id
   return (
     <footer className="PostTools">
       <span className={cn('PostTool ViewsTool', signedIn && 'isPill')} title="Views">
@@ -109,7 +111,7 @@ const Footer = ({ post, signedIn, viewerId, showWatch }: FooterProps) => {
           <Hint>Lightbox</Hint>
         </Link>
       </span>
-      {showWatch && !isOwn && (
+      {showWatch && !isOwn && !isOwnOriginal && (
         <WatchTool postId={post.id} watching={post.currentUserState.watching} signedIn={signedIn} />
       )}
       <ShareTool post={post} isPill={!signedIn} />

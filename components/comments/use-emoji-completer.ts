@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type { Emoji } from '@/lib/schemas/emoji'
 import { toast } from '@/stores/toast-store'
 import { EMOJI_REGEX, suggestEmoji, wordBeforeCaret } from '@/utils/suggest-emoji'
@@ -37,6 +37,26 @@ export const useEmojiCompleter = (replace: Replace) => {
     target.current = null
     setState(null)
   }, [])
+
+  // The original's Completer re-renders (and so re-measures the caret) on every scroll: follow the word.
+  const isOpen = state !== null
+  useEffect(() => {
+    if (!isOpen) return
+    const follow = (): void => {
+      const current = target.current
+      if (!current) return
+      const rect = textRangeRect(current.field, current.start, current.end)
+      setState((previous) =>
+        previous ? { ...previous, top: rect.top + 20, left: rect.left } : previous,
+      )
+    }
+    window.addEventListener('scroll', follow, true)
+    window.addEventListener('resize', follow)
+    return () => {
+      window.removeEventListener('scroll', follow, true)
+      window.removeEventListener('resize', follow)
+    }
+  }, [isOpen])
 
   const complete = useCallback(
     (name: string): void => {

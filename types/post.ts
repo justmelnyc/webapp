@@ -49,11 +49,15 @@ export const postSubmissionSchema = z.object({
 })
 
 /** A post's place in a category (the original's `categoryPostSummary`); the first one names its category header. */
+export const categoryPostActionSchema = z.object({ method: z.string(), href: z.string() })
+
 export const categoryPostSchema = z.object({
   id: z.string(),
   status: z.string().nullish(),
   featuredBy: z.object({ username: z.string() }).nullish(),
   submittedBy: z.object({ username: z.string() }).nullish(),
+  /** Only for curators and moderators of the category: feature a submitted post, unfeature a featured one. */
+  actions: z.object({ feature: categoryPostActionSchema.nullish(), unfeature: categoryPostActionSchema.nullish() }).nullish(),
   category: z.object({ id: z.string(), slug: z.string(), name: z.string() }).nullish(),
 })
 

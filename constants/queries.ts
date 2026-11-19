@@ -25,7 +25,7 @@ const buildPostFields = (sourceExtra = '', submission = `artistInviteSubmission 
   content { ${regionFields} }
   repostContent { ${regionFields} }
   repostedSource { id token author { ${authorFields} } ${sourceExtra} }
-  categoryPosts { id status featuredBy { username } submittedBy { username } category { id slug name } }
+  categoryPosts { id status featuredBy { username } submittedBy { username } actions { feature { method href } unfeature { method href } } category { id slug name } }
   assets { id attachment ${responsive} }
   postStats { lovesCount commentsCount viewsCount repostsCount }
   currentUserState { watching loved reposted }

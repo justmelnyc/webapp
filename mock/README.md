@@ -23,7 +23,7 @@ Unknown users get a 401. Signup is not mocked.
 | Social | Love, watch, comment (edit/delete own), follow/unfollow. Counts are computed live. |
 | Reposts | A repost is a post with `repostOfId` (`reposts.js`); `POST /api/v2/posts?repost_id=` creates one, `DELETE /api/v2/posts/:id/repost` removes it. Counts and `reposted` are derived; 5 are seeded. |
 | Profile | Name, bio, location, links, avatar, cover and the preference toggles on `/settings`. |
-| Streams | Cursor pagination (12 per page), trending vs recent, per-user and per-category filtering, user search. Posts carry `categoryPosts` (one per `categoryIds` entry, status `featured`), which the original turns into the "@author in Category" header on the global feeds. |
+| Streams | Cursor pagination (12 per page), trending vs recent, per-user and per-category filtering, user search. Posts carry `categoryPosts` (one per `categoryIds` entry, status `featured` unless `db.categoryPostStates` says otherwise; curators of the category also get `actions` to feature / unfeature via `PUT /api/v2/category_posts/:id/(feature|unfeature)`, see `category-posts.js`: ada curates Art and Design, grace moderates Photography), which the original turns into the "@author in Category" header on the global feeds. |
 | Moderation | Block/mute (`add/block`, `add/mute`, hidden from feeds), flags on posts/users/comments, Collab/Hire messages, per-user `isHireable`/`isCollaborateable`, community roles, NSFW posts (`contentWarning`). Seeded by a one-time migration of `db.json`. |
 | Data | 12 users, 48 seeded posts with comments and loves. Everything persists to `mock/.data/db.json`. |
 

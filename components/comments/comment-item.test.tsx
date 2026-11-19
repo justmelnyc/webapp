@@ -87,7 +87,7 @@ describe('CommentItem tools', () => {
     await userEvent.clear(textarea)
     await userEvent.type(textarea, 'Fixed')
     await userEvent.click(screen.getByRole('button', { name: 'Update' }))
-    await waitFor(() => expect(updateComment).toHaveBeenCalledWith('p1', 'c1', 'Fixed', []))
+    await waitFor(() => expect(updateComment).toHaveBeenCalledWith('p1', 'c1', [{ kind: 'text', text: 'Fixed' }]))
     await waitFor(() => expect(onUpdated).toHaveBeenCalled())
     expect(screen.queryByRole('textbox')).toBeNull()
   })

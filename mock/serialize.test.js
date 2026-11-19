@@ -19,8 +19,16 @@ describe('gqlPost categoryPosts', () => {
   it('lists the post in its categories like the real API (the original shows the first as a CategoryHeader)', () => {
     const post = db.posts.find(p => !p.repostOfId && p.categoryIds && p.categoryIds.length)
     const [first] = gqlPost(post, db.users[0].id).categoryPosts
-    expect(first).toMatchObject({ id: `${post.categoryIds[0]}-${post.id}`, status: 'featured' })
+    expect(first).toMatchObject({ id: `${post.categoryIds[0]}-${post.id}`, status: expect.stringMatching(/^(featured|submitted)$/) })
     expect(first.category).toEqual({ id: post.categoryIds[0], slug: expect.any(String), name: expect.any(String) })
+  })
+
+  it('names the curators and hands actions only to a curator of the category', () => {
+    const post = db.posts.find(p => !p.repostOfId && db.categoryPostStates[`1-${p.id}`] && db.categoryPostStates[`1-${p.id}`].status === 'submitted')
+    const ada = db.users.find(u => u.username === 'ada').id
+    expect(gqlPost(post, ada).categoryPosts[0].actions.feature).toBeTruthy()
+    expect(gqlPost(post, db.users.find(u => u.username === 'theo').id).categoryPosts[0].actions).toBeNull()
+    expect(gqlPost(post, null).categoryPosts[0].submittedBy.username).toBeTruthy()
   })
 
   it('is empty for a post without categories', () => {
