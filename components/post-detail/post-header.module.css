@@ -193,3 +193,33 @@
     color: #000;
   }
 }
+
+/* ---- repost header (PostHeader.css `.RepostDetailHeader` rules) ---- */
+
+.header:global(.RepostDetailHeader) :global(.UserNameLink.RepostAuthor) :global(.PostHeaderAuthorUsername) {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: -8px;
+}
+
+@media (max-width: 39.9375em) {
+  .header:global(.RepostDetailHeader) :global(.UserNameLink.RepostAuthor) :global(.PostHeaderAuthorUsername) {
+    margin-bottom: 0;
+  }
+}
+
+.header:global(.RepostDetailHeader) :global(.UserNameLink.RepostAuthor) :global(.username-container) {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.header:global(.RepostDetailHeader) .relationship:global(.RelationshipContainer) {
+  position: absolute;
+  margin: -1px 0 0 4px;
+}
+
+@media (max-width: 39.9375em) {
+  .header:global(.RepostDetailHeader) .relationship:global(.RelationshipContainer) {
+    margin-top: -5px;
+  }
+}

@@ -5,6 +5,7 @@ import { CommentSection } from '@/components/comments/comment-section'
 import type { Post } from '@/types/post'
 import type { CommentPage } from '@/types/stream'
 import { cn } from '@/utils/cn'
+import { isRepost } from '@/utils/repost'
 import { CategoryHistory } from './category-history'
 import { DetailBody } from './detail-body'
 import { DetailHeader } from './detail-header'
@@ -53,7 +54,17 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
               </div>
               <EditablePostBody postId={post.id}>
                 <RepostEditorGate post={post} layout="detail">
-                  <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+                  {isRepost(post) ? (
+                    <DetailBody
+                      postId={post.id}
+                      regions={post.repostContent ?? []}
+                      assets={post.assets}
+                      repostAuthor={post.author}
+                      repostRegions={post.content}
+                    />
+                  ) : (
+                    <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+                  )}
                 </RepostEditorGate>
               </EditablePostBody>
               <div className={styles.narrowOnly}>
