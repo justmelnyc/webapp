@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import { RepostIcon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
+import { isRepost, originalAuthorOf } from '@/utils/repost'
 import { timeAgoInWords } from './time-ago-in-words'
 import { OwnerTools } from './owner-tools'
 import styles from './post-header.module.css'
@@ -19,32 +21,69 @@ interface DetailHeaderProps {
 
 /** The original's `PostDetailHeader`: avatar, names, time ago and the follow toggle. */
 export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) => {
-  const { author, artistInviteSubmission: submission } = post
+  const { artistInviteSubmission: submission } = post
+  const repost = isRepost(post)
+  // On a repost the header names the original author and "by @reposter" (`post.author`).
+  const author = repost ? originalAuthorOf(post) : post.author
   const profile = `/${author.username}`
-  const isOwnPost = viewerId === author.id
+  const isOwnPost = viewerId === post.author.id
+  const relationship = (
+    <RelationshipButton
+      userId={author.id}
+      priority={viewerId === author.id ? 'self' : author.currentUserState?.relationshipPriority}
+      signedIn={viewerId !== null}
+    />
+  )
   return (
     <div className="header-holder">
       {placement === 'sidebar' && submission ? <SubmissionActions submission={submission} /> : null}
-      <header className={cn('PostHeader PostDetailHeader', styles.header, isOwnPost && 'isOwnPost')}>
+      <header
+        className={cn(
+          'PostHeader PostDetailHeader',
+          repost && 'RepostHeader RepostDetailHeader',
+          styles.header,
+          isOwnPost && 'isOwnPost',
+        )}
+      >
         <div className="PostHeaderLeft">
           <Link className="PostHeaderLinkAvatar" href={profile}>
             <Avatar src={avatarUrl(author.avatar, 'regular')} name={author.username} />
           </Link>
           <div className="PostHeaderLinks">
-            <Link className="FullNameLink" href={profile}>
-              <span className="DraggableUsername PostHeaderAuthorName">
-                <span className="username-container">{author.name || `@${author.username}`}</span>
-              </span>
-            </Link>
-            {author.name ? (
-              <Link className="UserNameLink" href={profile}>
-                <span className="DraggableUsername PostHeaderAuthorUsername">{`@${author.username}`}</span>
-              </Link>
-            ) : null}
+            {repost ? (
+              <>
+                <Link className="UserNameLink RepostAuthor" href={profile}>
+                  <span className="DraggableUsername PostHeaderAuthorUsername">
+                    <span className="username-container">{`@${author.username}`}</span>
+                  </span>
+                  {relationship}
+                </Link>
+                <Link className="UserNameLink" href={`/${post.author.username}`}>
+                  <RepostIcon />
+                  <span className="DraggableUsername">{` by @${post.author.username}`}</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className="FullNameLink" href={profile}>
+                  <span className="DraggableUsername PostHeaderAuthorName">
+                    <span className="username-container">{author.name || `@${author.username}`}</span>
+                  </span>
+                </Link>
+                {author.name ? (
+                  <Link className="UserNameLink" href={profile}>
+                    <span className="DraggableUsername PostHeaderAuthorUsername">{`@${author.username}`}</span>
+                  </Link>
+                ) : null}
+              </>
+            )}
           </div>
         </div>
         <div className={cn('PostHeaderTools', styles.headerTools)}>
-          <Link className={cn('PostHeaderTimeAgoLink', styles.timeAgo)} href={`${profile}/post/${post.token}`}>
+          <Link
+            className={cn('PostHeaderTimeAgoLink', styles.timeAgo)}
+            href={`/${post.author.username}/post/${post.token}`}
+          >
             <span>{timeAgoInWords(post.createdAt)}</span>
           </Link>
           {isOwnPost ? <OwnerTools postId={post.id} /> : null}
@@ -53,11 +92,7 @@ export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) =
               <SubmissionStatusTool submission={submission} />
             </span>
           ) : null}
-          <RelationshipButton
-            userId={author.id}
-            priority={isOwnPost ? 'self' : author.currentUserState?.relationshipPriority}
-            signedIn={viewerId !== null}
-          />
+          {repost ? null : relationship}
         </div>
       </header>
       {placement === 'list' && submission ? <SubmissionActions submission={submission} /> : null}
