@@ -37,11 +37,12 @@ interface AdminActionsProps {
   actions: SubmissionActions
   status: SubmissionStatus
   onAction: (action: SubmissionAction) => void
+  className?: string
 }
 
 /** The curator's bar above a submission: accept, decline, select... (`PostAdminActions`). */
-export const AdminActions = ({ actions, status, onAction }: AdminActionsProps) => (
-  <div className={cn('post-admin-actions', styles.bar, status)}>
+export const AdminActions = ({ actions, status, onAction, className }: AdminActionsProps) => (
+  <div className={cn('post-admin-actions', styles.bar, status, className)}>
     {Object.entries(actions).map(([type, action]) =>
       action ? (
         <button

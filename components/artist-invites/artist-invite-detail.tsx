@@ -4,6 +4,7 @@ import { cn } from '@/utils/cn'
 import { cleanHtml } from '@/utils/sanitize'
 import { ArtistInviteSubmissions } from './artist-invite-submissions'
 import { InviteDateRange, InviteStatus } from './artist-invite-status'
+import { OnboardToInvite } from './onboard-to-invite'
 import { InviteImage } from './invite-image'
 import { SeeSubmissionsButton } from './scroll-button'
 import { SubmitButton } from './submit-button'
@@ -21,6 +22,7 @@ export const ArtistInviteDetail = async ({ invite, submissionType }: Props) => {
   const isUpcoming = invite.status === 'upcoming'
   return (
     <div>
+      <OnboardToInvite invite={invite} />
       <article className={cn(styles.detail, isUpcoming && styles.upcoming)}>
         <InviteImage invite={invite} />
         <div className={styles.content}>

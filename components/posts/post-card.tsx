@@ -84,7 +84,7 @@ const Footer = ({ post, signedIn, viewerId, showWatch }: FooterProps) => {
       <span className={cn('PostTool ViewsTool', signedIn && 'isPill')} title="Views">
         <Link href={path}>
           <EyeIcon />
-          <span className="PostToolValue">{numberToHuman(viewsCount)}</span>
+          <span className="PostToolValue">{numberToHuman(viewsCount, false)}</span>
           <Hint>Views</Hint>
         </Link>
       </span>

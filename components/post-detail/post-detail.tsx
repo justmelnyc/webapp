@@ -5,6 +5,7 @@ import { CommentSection } from '@/components/comments/comment-section'
 import type { Post } from '@/types/post'
 import type { CommentPage } from '@/types/stream'
 import { cn } from '@/utils/cn'
+import { CategoryHistory } from './category-history'
 import { DetailBody } from './detail-body'
 import { DetailHeader } from './detail-header'
 import { DetailTools } from './detail-tools'
@@ -48,7 +49,7 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
           <article className={cn('PostList', styles.list)} id={`Post_${post.id}`}>
             <div className={cn('Post', styles.post, toolStyles.post)}>
               <div className={styles.narrowOnly}>
-                <DetailHeader post={post} viewerId={viewerId} />
+                <DetailHeader post={post} viewerId={viewerId} placement="list" />
               </div>
               <EditablePostBody postId={post.id}>
                 <RepostEditorGate post={post} layout="detail">
@@ -57,24 +58,24 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
               </EditablePostBody>
               <div className={styles.narrowOnly}>
                 <DetailTools post={post} viewerId={viewerId} />
+                <CategoryHistory post={post} />
               </div>
             </div>
             {comments('inline')}
             <RelatedPosts />
             <div className={cn('PostDetailAsideBottom', styles.narrowOnly, toolStyles.bottom)}>
               <DetailTools post={post} viewerId={viewerId} />
-              <aside className={cn('CategoryHistory', toolStyles.categoryHistory)} />
             </div>
           </article>
           <aside className={cn('PostSideBar', styles.aside)}>
             <div className={cn('PostDetailAsideTop', toolStyles.top)}>
-              <DetailHeader post={post} viewerId={viewerId} />
+              <DetailHeader post={post} viewerId={viewerId} placement="sidebar" />
               <DetailTools post={post} viewerId={viewerId} />
             </div>
             {comments('aside')}
             <div className={cn('PostDetailAsideBottom', toolStyles.bottom)}>
               <DetailTools post={post} viewerId={viewerId} />
-              <aside className={cn('CategoryHistory', toolStyles.categoryHistory)} />
+              <CategoryHistory post={post} className={toolStyles.categoryHistory} />
             </div>
           </aside>
         </div>

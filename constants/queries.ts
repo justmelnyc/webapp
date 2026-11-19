@@ -9,22 +9,30 @@ const authorFields = `
   currentUserState { relationshipPriority }
 `
 
+const submissionFields = `id status artistInvite { id slug title }`
+const submissionActionFields = `href label method body { status }`
+/** Post detail also asks for the curator's actions (the original's `fullPost` fragment). */
+const detailSubmission = `artistInviteSubmission { ${submissionFields} actions { approve { ${submissionActionFields} } decline { ${submissionActionFields} } select { ${submissionActionFields} } unapprove { ${submissionActionFields} } unselect { ${submissionActionFields} } } }`
+
 const regionFields = `kind data linkUrl links { assets }`
 
 /** `sourceExtra` adds fields to the reposted original (notifications summarize it). */
-const buildPostFields = (sourceExtra = '') => `
+const buildPostFields = (sourceExtra = '', submission = `artistInviteSubmission { ${submissionFields} }`) => `
   id token createdAt contentWarning
+  ${submission}
   author { ${authorFields} }
   summary { ${regionFields} }
   content { ${regionFields} }
   repostContent { ${regionFields} }
   repostedSource { id token author { ${authorFields} } ${sourceExtra} }
+  categoryPosts { id status featuredBy { username } submittedBy { username } category { id slug name } }
   assets { id attachment ${responsive} }
   postStats { lovesCount commentsCount viewsCount repostsCount }
   currentUserState { watching loved reposted }
 `
 
 export const postFields = buildPostFields()
+const detailPostFields = buildPostFields('', detailSubmission)
 /** For notifications: the original of a repost also carries its summary and images. */
 export const postFieldsWithSource = buildPostFields(`summary { ${regionFields} } assets { id attachment ${responsive} }`)
 
@@ -47,7 +55,7 @@ export const USER_LOVES = `
 `
 
 export const FIND_POST = `
-  query($username: String!, $token: String!) { post(username: $username, token: $token) { ${postFields} } }
+  query($username: String!, $token: String!) { post(username: $username, token: $token) { ${detailPostFields} } }
 `
 
 export const COMMENTS = `

@@ -1,0 +1,167 @@
+/*
+ * Category header ("@author  in Category"), ported from the `.CategoryHeader` rules of
+ * legacy/src/components/posts/PostHeader.css (rule order kept). Load after post-header.css.
+ * 40em = break-2, `max-width: 39.9375em` = break-2-max. The shared `.PostHeaderTools`,
+ * `.PostHeaderLink` and `.PostHeaderTimeAgoLink` rules live in post-header.css.
+ */
+
+.CategoryHeader {
+  position: relative;
+  height: 60px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.CategoryHeaderAuthor,
+.CategoryHeaderCategory {
+  position: relative;
+}
+
+.CategoryHeaderAuthor,
+.CategoryHeader .RelationshipContainer {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.CategoryHeaderAuthor {
+  max-width: calc(100% - 90px);
+}
+
+.CategoryHeader .RelationshipContainer {
+  margin-top: -2px;
+  margin-left: 10px;
+}
+
+.CategoryHeader .DraggableUsername {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.CategoryHeader {
+  display: flex;
+  align-items: center;
+}
+
+.CategoryHeader .author-with-relationship {
+  display: block;
+  width: 100%;
+  max-width: calc(100% - 90px);
+}
+
+.CategoryHeader .author-with-relationship .container {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderAuthor {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1;
+}
+
+.CategoryHeader .author-with-relationship .RelationshipContainer {
+  margin-top: -4px;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory {
+  display: block;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory .PostHeaderLink {
+  display: flex;
+  align-items: center;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory .PostHeaderLink .CategoryHeaderCategoryName {
+  margin-left: 4px;
+}
+
+.CategoryHeader .author-with-relationship .CategoryHeaderCategory {
+  padding-top: 2px;
+}
+
+.CategoryHeader .author-with-relationship .DraggableUsername {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.CategoryHeaderAuthor .PostHeaderLink {
+  max-width: 100%;
+}
+
+.CategoryHeader .author-with-relationship .PostHeaderLink {
+  max-width: 100%;
+  line-height: 1;
+}
+
+.CategoryHeader .author-with-relationship .PostHeaderLink .Avatar {
+  top: -5px;
+}
+
+@media (max-width: 39.9375em) {
+  .CategoryHeader .author-with-relationship .PostHeaderLink .Avatar {
+    top: 1px;
+  }
+}
+
+.CategoryHeaderAuthor {
+  padding-left: 40px;
+  line-height: 45px;
+}
+
+.CategoryHeaderCategory {
+  max-width: calc(100% - 120px);
+  margin-top: -12px;
+  margin-left: 40px;
+  line-height: 15px;
+}
+
+.CategoryHeaderCategoryName {
+  text-decoration: underline;
+}
+
+@media (min-width: 40em) {
+  .CategoryHeader {
+    height: 80px;
+  }
+
+  .CategoryHeaderAuthor {
+    padding-left: 60px;
+    line-height: 60px;
+  }
+
+  .CategoryHeaderCategory {
+    margin-top: -20px;
+    margin-left: 60px;
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .Posts.asGrid .CategoryHeader .RelationshipContainer {
+    display: none;
+  }
+
+  .Posts.asGrid .CategoryHeaderAuthor,
+  .Posts.asGrid .CategoryHeaderCategory {
+    max-width: 100%;
+  }
+}
+
+/* Avatar placement inside a header (glamor `parent('.CategoryHeader ', ...)` in assets/Avatar.js) */
+.CategoryHeader .Avatar {
+  position: absolute;
+  top: 15px;
+  left: 0;
+}
+
+@media (min-width: 40em) {
+  .CategoryHeader .Avatar {
+    top: 20px;
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { usePathname } from 'next/navigation'
 import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
 import { PostPaginator } from '@/components/streams/post-paginator'
 import { PostsAsGrid, PostsAsList } from '@/components/streams/post-columns'
@@ -10,6 +11,7 @@ import { useNewPosts } from '@/components/streams/use-new-posts'
 import { useInView } from '@/hooks/use-in-view'
 import { fetchStreamPage } from '@/lib/client/streams'
 import type { PostPage, StreamSpec } from '@/types/stream'
+import { showsCategoryHeader } from '@/utils/category-header-route'
 import './stream.css'
 
 interface PostStreamProps {
@@ -24,6 +26,7 @@ interface PostStreamProps {
 
 /** The original's StreamContainer: posts as columns (or a list) that load further pages on scroll. */
 export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage = 'Nothing here yet.' }: PostStreamProps) => {
+  const showCategoryHeader = showsCategoryHeader(usePathname())
   const mode = useLayoutModeStore((state) => state.mode)
   const columnCount = useColumnCount()
   const query = useInfiniteQuery({
@@ -68,9 +71,9 @@ export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage
   return (
     <section className="StreamContainer">
       {mode === 'grid' ? (
-        <PostsAsGrid posts={posts} columnCount={columnCount} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} />
+        <PostsAsGrid posts={posts} columnCount={columnCount} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} showCategoryHeader={showCategoryHeader} />
       ) : (
-        <PostsAsList posts={posts} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} />
+        <PostsAsList posts={posts} signedIn={signedIn} viewerId={viewerId} showHeader={showHeader} showCategoryHeader={showCategoryHeader} />
       )}
       {hasNextPage && <PostPaginator isBusy={isFetchingNextPage} onLoadMore={loadMore} />}
       <div ref={sentinel} aria-hidden />

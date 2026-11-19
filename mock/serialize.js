@@ -143,6 +143,12 @@ const repostParts = (post) => {
   return { source, own, orig, assets: [...own.assets, ...orig.assets] }
 }
 
+// Where a post sits in categories, like the real API's `categoryPosts` (the original shows the first one as a CategoryHeader)
+const categoryPostsOf = (post) => (post.categoryIds || []).flatMap((id) => {
+  const category = require('./content').categories.find(c => c.id === String(id))
+  return category ? [{ id: `${category.id}-${post.id}`, status: 'featured', category: { id: category.id, slug: category.slug, name: category.name } }] : []
+})
+
 const gqlPost = (post, viewerId) => {
   const repost = repostParts(post)
   const { content, summary, assets } = repost
@@ -154,13 +160,13 @@ const gqlPost = (post, viewerId) => {
     createdAt: post.createdAt,
     contentWarning: post.contentWarning || '',
     isAdultContent: !!post.contentWarning,
-    artistInviteSubmission: null,
+    artistInviteSubmission: require('./artist-invites').submissionForPost(db, post.id, viewerId),
     summary,
     content,
     repostContent: repost ? repost.orig.content : [],
     repostedSource: repost ? gqlPost(repost.source, viewerId) : null,
     author: gqlAuthor(userById(post.authorId), viewerId),
-    categoryPosts: [],
+    categoryPosts: categoryPostsOf(post),
     assets,
     postStats: postStats(post),
     currentUserState: viewerState(post, viewerId),

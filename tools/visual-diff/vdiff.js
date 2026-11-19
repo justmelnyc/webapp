@@ -22,7 +22,7 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) =>
 const PATH = args.path || '/'
 const WIDTH = +args.width || 1280
 const MAXH = +args.maxh || 2400
-const PORT = +args.port || 9333
+const PORT = +args.port || 9300 + Math.floor(Math.random() * 600) // random: a run must never attach to the previous run's dying Chrome
 const WAIT = +args.wait || 5000
 const OUT = args.out || path.join(os.tmpdir(), 'vdiff-out')
 const SIDES = { legacy: 'http://localhost:6660', new: 'http://localhost:6661' }

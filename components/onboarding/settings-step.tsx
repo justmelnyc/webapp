@@ -6,6 +6,7 @@ import { Uploader } from '@/components/settings/uploader'
 import { useImageUpload } from '@/hooks/use-image-upload'
 import { ONBOARDING_ROUTES } from '@/constants/onboarding'
 import type { InfoInput } from '@/lib/schemas/profile'
+import { finishOnboarding } from '@/stores/onboard-invite-store'
 import { cn } from '@/utils/cn'
 import { OnboardingInfoForm } from './onboarding-info-form'
 import { OnboardingDone, OnboardingNavbar, OnboardingNext } from './onboarding-navbar'
@@ -71,7 +72,7 @@ export const SettingsStep = ({ avatarUrl, coverUrl, hasAvatar, hasCover, info }:
         <OnboardingNext disabled={nextDisabled} onClick={() => router.push(ONBOARDING_ROUTES.collaborate)}>
           Get Hired &amp; Collaborate
         </OnboardingNext>
-        {nextDisabled ? null : <OnboardingDone onClick={() => router.push(ONBOARDING_ROUTES.done)} />}
+        {nextDisabled ? null : <OnboardingDone onClick={() => router.push(finishOnboarding(ONBOARDING_ROUTES.done))} />}
       </OnboardingNavbar>
     </OnboardingView>
   )

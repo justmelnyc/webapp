@@ -147,7 +147,7 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
       <span className={cn('PostTool ViewsTool isPostDetail', signedIn && 'isPill')}>
         <Link href={detailPath}>
           <EyeIcon />
-          <span className="PostToolValue">{numberToHuman(viewsCount)}</span>
+          <span className="PostToolValue">{numberToHuman(viewsCount, false)}</span>
           <Hint>Views</Hint>
         </Link>
       </span>

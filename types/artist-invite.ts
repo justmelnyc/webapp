@@ -1,6 +1,12 @@
 import { z } from 'zod'
 import { postSchema } from './post'
 import { responsiveImageSchema } from './image'
+import {
+  submissionActionsSchema,
+  submissionStatusSchema,
+} from './submission-status'
+
+export * from './submission-status'
 
 export const artistInviteStatuses = ['preview', 'upcoming', 'open', 'selecting', 'closed'] as const
 export const artistInviteStatusSchema = z.enum(artistInviteStatuses)
@@ -32,22 +38,6 @@ export const artistInviteSchema = z.object({
   links: z.record(z.string(), streamLinkSchema).nullish(),
 })
 export type ArtistInvite = z.infer<typeof artistInviteSchema>
-
-export const submissionStatuses = ['unapproved', 'approved', 'selected', 'declined'] as const
-export const submissionStatusSchema = z.enum(submissionStatuses)
-export type SubmissionStatus = z.infer<typeof submissionStatusSchema>
-
-export const submissionActionTypes = ['approve', 'decline', 'select', 'unapprove', 'unselect'] as const
-export const submissionActionSchema = z.object({
-  href: z.string(),
-  label: z.string(),
-  method: z.string(),
-  body: z.object({ status: z.string() }).nullish(),
-})
-export type SubmissionAction = z.infer<typeof submissionActionSchema>
-/** Keyed by action type (approve, decline, select, unapprove, unselect); only the allowed ones are present. */
-export const submissionActionsSchema = z.record(z.string(), submissionActionSchema.nullable())
-export type SubmissionActions = z.infer<typeof submissionActionsSchema>
 
 /** A submission as the REST API sends it, before its post is attached. */
 export const submissionRecordSchema = z.object({

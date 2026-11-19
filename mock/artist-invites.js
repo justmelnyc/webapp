@@ -169,6 +169,20 @@ const actionsFor = (submission) => ACTIONS_BY_STATUS[submission.status].reduce((
   [type]: { href: `/api/v2/artist_invite_submissions/${submission.id}/${type}`, label: ACTIONS[type].label, method: 'PATCH', body: { status: ACTIONS[type].status } },
 }), {})
 
+// A post's submission as the GraphQL `artistInviteSubmission` field: status and invite for everyone,
+// the curator's actions only for the invite's admins (as the REST payload does).
+const submissionForPost = (db, postId, viewerId) => {
+  const submission = (db.artistInviteSubmissions || []).find(s => s.postId === postId)
+  const invite = submission && db.artistInvites.find(i => i.id === submission.inviteId)
+  if (!invite) return null
+  return {
+    id: submission.id,
+    status: submission.status,
+    artistInvite: { id: invite.id, slug: invite.slug, title: invite.title },
+    actions: isAdmin(invite, viewerId) ? actionsFor(submission) : null,
+  }
+}
+
 // Returns the changed submission, or null when the action is not allowed for its current status
 const applyAction = (submission, type) => {
   if (!ACTIONS_BY_STATUS[submission.status].includes(type)) return null
@@ -210,5 +224,5 @@ const paginate = (list, page = 1, perPage = PER_PAGE) => {
 
 module.exports = {
   KEYS, PER_PAGE, buildArtistInvites, seedArtistInvites, isAdmin, visibleKeys, linksFor, streamOf, inStream,
-  actionsFor, applyAction, paginate, createSubmission, submitError, dropPostSubmissions, countsFor,
+  actionsFor, applyAction, submissionForPost, paginate, createSubmission, submitError, dropPostSubmissions, countsFor,
 }

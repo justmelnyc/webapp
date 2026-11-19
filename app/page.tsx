@@ -13,7 +13,7 @@ const HomePage = async () => {
   return (
     <>
       {header && <Hero header={header} />}
-      <section className="StreamContainer px-0 py-10 bp2:p-20 bp4:px-40">
+      <section className="StreamContainer px-0! py-10! bp2:p-20! bp4:px-40!">
         <EditorialGrid editorials={editorials} signedIn={!!session} />
       </section>
     </>

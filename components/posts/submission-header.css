@@ -1,0 +1,86 @@
+/*
+ * Header of a post submitted to an artist invite ("@author / Invite Submission") on the global and
+ * subscribed feeds, ported from the `.ArtistInviteSubmissionHeader` rules of
+ * legacy/src/components/posts/PostHeader.css (rule order kept). Load after post-header.css.
+ * 40em = break-2, `max-width: 39.9375em` = break-2-max. The shared `.PostHeaderTools`,
+ * `.PostHeaderLink` and `.PostHeaderTimeAgoLink` rules live in post-header.css.
+ */
+
+.ArtistInviteSubmissionHeader {
+  position: relative;
+  height: 60px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.ArtistInviteSubmissionHeaderAuthor,
+.ArtistInviteSubmissionHeaderInvite {
+  position: relative;
+}
+
+.ArtistInviteSubmissionHeaderAuthor,
+.ArtistInviteSubmissionHeader .RelationshipContainer {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ArtistInviteSubmissionHeaderAuthor {
+  max-width: calc(100% - 90px);
+}
+
+.ArtistInviteSubmissionHeaderAuthor {
+  padding-left: 40px;
+  line-height: 45px;
+}
+
+.ArtistInviteSubmissionHeaderInvite {
+  max-width: calc(100% - 120px);
+  margin-top: -12px;
+  margin-left: 40px;
+  line-height: 15px;
+}
+
+.ArtistInviteSubmissionHeaderInviteName {
+  text-decoration: underline;
+}
+
+@media (min-width: 40em) {
+  .ArtistInviteSubmissionHeader {
+    height: 80px;
+  }
+
+  .ArtistInviteSubmissionHeaderAuthor {
+    padding-left: 60px;
+    line-height: 60px;
+  }
+
+  .ArtistInviteSubmissionHeaderInvite {
+    margin-top: -20px;
+    margin-left: 60px;
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .Posts.asGrid .ArtistInviteSubmissionHeader .RelationshipContainer {
+    display: none;
+  }
+
+  .Posts.asGrid .ArtistInviteSubmissionHeaderAuthor,
+  .Posts.asGrid .ArtistInviteSubmissionHeaderInvite {
+    max-width: 100%;
+  }
+}
+
+/* Avatar placement inside a header (glamor `parent('.ArtistInviteSubmissionHeader ', ...)` in assets/Avatar.js) */
+.ArtistInviteSubmissionHeader .Avatar {
+  position: absolute;
+  top: 15px;
+  left: 0;
+}
+
+@media (min-width: 40em) {
+  .ArtistInviteSubmissionHeader .Avatar {
+    top: 20px;
+  }
+}

@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { savePreference } from '@/actions/profile-actions'
 import { CheckIcon, XIcon } from '@/components/icons'
 import { ONBOARDING_ROUTES } from '@/constants/onboarding'
+import { finishOnboarding } from '@/stores/onboard-invite-store'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './collaborate.module.css'
@@ -85,7 +86,7 @@ export const CollaborateStep = ({ initial }: { initial: Values }) => {
         ))}
       </div>
       <OnboardingNavbar>
-        <OnboardingNext onClick={() => router.push(ONBOARDING_ROUTES.done)}>Get To The Goods</OnboardingNext>
+        <OnboardingNext onClick={() => router.push(finishOnboarding(ONBOARDING_ROUTES.done))}>Get To The Goods</OnboardingNext>
       </OnboardingNavbar>
     </OnboardingView>
   )
