@@ -39,7 +39,7 @@ script prints the mismatch percentage; matching pages are 0.0%.
 | `--vh` | fixed viewport height; set it (900) for pages with `100vh` heroes |
 | `--maxh` | cap on the captured page height |
 | `--login ada` | log both apps in first (any seeded user; password is filled in) |
-| `--probe ".a\|.b"` | print computed styles and boxes of each selector on both sides, only where they differ |
+| `--probe ".a\|.b"` | print computed styles and boxes of each selector (first visible match) on both sides, only where they differ |
 | `--dump ".sel"` | print each side's outerHTML (to learn the original's DOM) |
 | `--click ".sel"` | click an element on both sides before capturing (open menus, the omnibar) |
 | `--eval "js"` / `--click2 ".sel"` / `--afterwait ms` | run JS on both sides after the clicks (e.g. type into the editor), then click again (e.g. Post) |

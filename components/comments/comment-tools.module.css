@@ -1,6 +1,7 @@
 /* ---- CommentTools (a PostTools footer) ---- */
 
-.tools {
+/* `.CommentTools.PostTools`: two classes, so it beats the global `.PostTools` (position: relative; padding-top: 20px). */
+.tools:global(.PostTools) {
   position: absolute;
   top: 20px;
   right: 0;

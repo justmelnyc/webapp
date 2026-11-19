@@ -3,8 +3,8 @@
 import { useEffect, useRef, useTransition } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createComment } from '@/actions/comment-actions'
-import { ArrowIcon, BrowseIcon, ElloQuickEmoji, XIconLG } from '@/components/icons'
+import { createComment, fetchCommenterUsernames } from '@/actions/comment-actions'
+import { ArrowIcon, BrowseIcon, ElloQuickEmoji, ReplyAllIcon, XIconLG } from '@/components/icons'
 import { commentSchema, type CommentInput } from '@/lib/schemas/comment'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
@@ -22,10 +22,12 @@ interface CommentFormProps {
   /** Called when the viewer cancels; the narrow layout closes the editor. */
   onCancel?: () => void
   reply?: ReplyRequest | null
+  /** The original's `showReplyAll`: the post's owner, once it has comments, on wide viewports. */
+  showReplyAll?: boolean
 }
 
 /** The original's comment editor: grey block, quick-emoji toggle and the PostActionBar. */
-export const CommentForm = ({ postId, onCreated, onCancel, reply }: CommentFormProps) => {
+export const CommentForm = ({ postId, onCreated, onCancel, reply, showReplyAll = false }: CommentFormProps) => {
   const [pending, startTransition] = useTransition()
   const {
     register,
@@ -52,6 +54,17 @@ export const CommentForm = ({ postId, onCreated, onCancel, reply }: CommentFormP
       if (!result.ok) return toast.error(result.error)
       reset()
       onCreated()
+    })
+  }
+
+  // The original's `appendUsernames`: add every commenter's @username to the end, once.
+  const replyAll = (): void => {
+    startTransition(async () => {
+      const result = await fetchCommenterUsernames(postId)
+      if (!result.ok) return toast.error(result.error)
+      const text = result.data.map((name) => `@${name} `).join('')
+      const current = textarea.current?.value ?? ''
+      if (!current.includes(text)) setValue('body', current + text, { shouldValidate: true })
     })
   }
 
@@ -96,6 +109,17 @@ export const CommentForm = ({ postId, onCreated, onCancel, reply }: CommentFormP
             <span className={styles.label}>Upload</span>
             <BrowseIcon />
           </button>
+          {showReplyAll ? (
+            <button
+              type="button"
+              className={cn('PostActionButton isComment forReplyAll', styles.button)}
+              aria-label="Reply All"
+              onClick={replyAll}
+            >
+              <span className={styles.label}>Reply All</span>
+              <ReplyAllIcon />
+            </button>
+          ) : null}
           <button
             type="button"
             className={cn('PostActionButton isComment forCancel icon-text', styles.button, styles.cancelIcon)}
