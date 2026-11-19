@@ -173,7 +173,8 @@
   line-height: 20px;
 }
 
-.headerTools :global(.PostTool) > button {
+/* Four classes: out-specifies the stream's `.Posts.asList .PostTool > button` (12px / 4px) that `PostDetails Posts asList` matches. */
+.header .headerTools.headerTools :global(.PostTool) > button {
   padding-right: 5px;
   padding-left: 5px;
   color: #aaa;

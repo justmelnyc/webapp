@@ -35,3 +35,15 @@ export const deleteComment = async (postId: string, commentId: string): Promise<
     return failure(errorMessage(error))
   }
 }
+
+const usernamesSchema = z.object({ usernames: z.array(z.object({ username: z.string() })) })
+
+/** Everyone who commented on the post, for the editor's "Reply All" button. */
+export const fetchCommenterUsernames = async (postId: string): Promise<ActionResult<string[]>> => {
+  try {
+    const data = await rest(`/api/v2/posts/${postId}/commenters_usernames`, usernamesSchema)
+    return success(data.usernames.map((u) => u.username))
+  } catch (error) {
+    return failure(errorMessage(error))
+  }
+}

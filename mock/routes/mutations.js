@@ -107,6 +107,15 @@ router.post('/api/v2/posts/:id/comments', (req, res) => {
   return res.status(201).json(commentEnvelope(comment, req.me.id))
 })
 
+// Usernames of everyone who commented on the post (the viewer excluded): the editor's "Reply All" button.
+router.get('/api/v2/posts/:id/commenters_usernames', (req, res) => {
+  const post = postByRef(req.params.id)
+  if (!post) return res.status(404).json({ error: 'not found' })
+  const me = viewerId(req)
+  const ids = [...new Set(db.comments.filter(c => c.postId === post.id && c.authorId !== me).map(c => c.authorId))]
+  return res.json({ usernames: ids.map(id => userById(id)).filter(Boolean).map(u => ({ username: u.username })) })
+})
+
 const ownComment = (req) => {
   const c = db.comments.find(x => x.id === req.params.cid && x.postId === (postByRef(req.params.id) || {}).id)
   return c && c.authorId === req.me.id ? c : null

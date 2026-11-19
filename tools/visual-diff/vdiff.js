@@ -128,13 +128,13 @@ const capture = async (c, base, label) => {
   let probes = null
   if (args.probe) {
     probes = await c.ev(`(() => { const keys = ${JSON.stringify(STYLE_KEYS)}; const out = {}
-      for (const sel of ${JSON.stringify(String(args.probe).split('|'))}) { const el = document.querySelector(sel); if (!el) { out[sel] = null; continue }
+      for (const sel of ${JSON.stringify(String(args.probe).split('|'))}) { const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length) || document.querySelector(sel); if (!el) { out[sel] = null; continue }
         const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); const o = { rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] }
         for (const k of keys) o[k] = cs[k]; out[sel] = o } return out })()`)
   }
   let dumps = null
   if (args.dump) {
-    dumps = await c.ev(`(() => { const out = {}; for (const sel of ${JSON.stringify(String(args.dump).split('|'))}) { const el = document.querySelector(sel); out[sel] = el ? el.outerHTML.replace(/ (data-[a-z-]+|style)="[^"]*"/g, '').replace(/<svg[\\s\\S]*?<\\/svg>/g, '<svg…/>').slice(0, ${+args.dumplen || 3500}) : null } return out })()`)
+    dumps = await c.ev(`(() => { const out = {}; for (const sel of ${JSON.stringify(String(args.dump).split('|'))}) { const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length) || document.querySelector(sel); out[sel] = el ? el.outerHTML.replace(/ (data-[a-z-]+|style)="[^"]*"/g, '').replace(/<svg[\\s\\S]*?<\\/svg>/g, '<svg…/>').slice(0, ${+args.dumplen || 3500}) : null } return out })()`)
   }
   return { height: full, probes, dumps }
 }

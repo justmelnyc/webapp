@@ -66,7 +66,13 @@ export const CommentSection = ({ postId, postAuthorId, viewer, initialPage, plac
   return (
     <div className={cn('CommentContent', placement === 'aside' ? styles.aside : styles.content)}>
       {isPostEditing ? null : showEditor ? (
-        <CommentForm postId={postId} onCreated={changed} onCancel={() => setEditing(false)} reply={reply} />
+        <CommentForm
+          postId={postId}
+          onCreated={changed}
+          onCancel={() => setEditing(false)}
+          reply={reply}
+          showReplyAll={viewer.id === postAuthorId && comments.length > 0}
+        />
       ) : (
         <CommentLauncher avatar={viewer.avatar} username={viewer.username} onLaunch={() => setEditing(true)} />
       )}
