@@ -49,7 +49,7 @@
   field-sizing: content;
   width: calc(100% - 60px);
   min-height: 91px;
-  padding: 37px 30px 33px 0;
+  padding: 37px 0 33px;
   margin: 0 30px;
   font: inherit;
   line-height: 21px;
@@ -62,12 +62,68 @@
   outline: 0;
 }
 
+/* Editor.css `.editor.withQuickEmoji .editor-block:first-child .editable`: room for the quick-emoji toggle */
+.editor:global(.withQuickEmoji) .block:first-child .editable {
+  padding-right: 30px;
+}
+
+/* a file dragged over the editor turns the region green */
+.editor:global(.hasDragOver) > .region {
+  background-color: #cfc;
+}
+
 .regionTools {
   position: absolute;
   top: 10px;
   right: 30px;
   z-index: 2;
   color: #aaa;
+}
+
+/* An uploaded picture (ImageBlock.js): `.editable` padding and margin, the picture, and the busy cover */
+.imageBlock {
+  position: relative;
+  padding: 37px 0 33px;
+  margin: 0 30px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  outline: 0;
+}
+
+.imageBlock img {
+  display: block;
+  max-width: 100%;
+}
+
+.busy {
+  position: absolute;
+  top: 0;
+  right: -40px;
+  bottom: 0;
+  left: -40px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.busyArrow {
+  position: relative;
+  padding: 4px;
+  color: #aaa;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: rotate(-90deg);
+}
+
+.retry {
+  color: #fff;
+}
+
+/* Editor.css `.editor-block:not(:last-child)` */
+.block:not(:last-child) {
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .emoji {
@@ -93,131 +149,5 @@
 @media (hover: hover) {
   .emoji button:hover {
     color: #535353;
-  }
-}
-
-/* ---- PostActionBar (comment version) ---- */
-
-.bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  height: 40px;
-  margin-top: 10px;
-  line-height: 40px;
-}
-
-@media (max-width: 39.9375em) {
-  .bar {
-    height: auto;
-  }
-}
-
-.left > button {
-  margin-right: 10px;
-}
-
-.left > button:last-child {
-  margin-right: 0;
-}
-
-.right > button + button {
-  margin-left: 10px;
-}
-
-.right > button:first-child {
-  margin-left: 0;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 40px;
-  height: 40px;
-  padding-right: 10px;
-  padding-left: 10px;
-  line-height: 40px;
-  color: #fff;
-  white-space: nowrap;
-  background-color: #000;
-  border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease, width 0.2s var(--ease);
-}
-
-.button:disabled {
-  pointer-events: none;
-  background-color: #aaa;
-}
-
-@media (hover: hover) {
-  .button:hover {
-    background-color: #6a6a6a;
-  }
-}
-
-.submit {
-  background-color: #00d100;
-  min-width: 0;
-}
-
-.submit:disabled {
-  background-color: #aaa;
-}
-
-@media (hover: hover) {
-  .submit:hover {
-    background-color: #02b302;
-  }
-}
-
-.submit :global(.SVGIcon),
-.submit > span {
-  flex: none;
-}
-
-.label {
-  display: none;
-  margin: 0;
-}
-
-/* Below 40em the submit button shows its label instead of the arrow. */
-@media (max-width: 39.9375em) {
-  .submit {
-    width: auto;
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-
-  .submit .label {
-    display: inline-block;
-  }
-
-  .submit :global(.SVGIcon) {
-    display: none;
-  }
-}
-
-.cancelText {
-  display: none;
-  padding-right: 10px;
-  padding-left: 10px;
-  color: #aaa;
-}
-
-@media (min-width: 40em) {
-  .cancelText {
-    display: inline-block;
-    padding-left: 0;
-  }
-
-  .cancelIcon {
-    display: none;
-  }
-}
-
-@media (hover: hover) {
-  .cancelText:hover {
-    color: #6a6a6a;
   }
 }

@@ -8,6 +8,7 @@ const media = require('./media')
 const { prefsFor } = require('./settings')
 const moderation = require('./moderation')
 const { linkHashtags, unlinkHashtags } = require('./post-search')
+const { commentContent, flatComment } = require('./comment-content')
 
 const relationship = (user, viewerId) => {
   if (viewerId && viewerId === user.id) return 'self'
@@ -213,24 +214,15 @@ const postEnvelope = (post, viewerId) => ({
 })
 
 const gqlComment = (c, viewerId) => {
-  const text = { kind: 'text', data: `<p>${c.text}</p>`, linkUrl: null, links: null }
+  const { content, assets } = commentContent(c)
   return {
     id: c.id,
     createdAt: c.createdAt,
     author: gqlAuthor(userById(c.authorId), viewerId),
-    summary: [text],
-    content: [text],
-    assets: [],
+    summary: content,
+    content,
+    assets,
     parentPost: { id: c.postId },
-  }
-}
-
-// v2 comment as the comments reducer stores it
-const flatComment = (c) => {
-  const text = { kind: 'text', data: `<p>${c.text}</p>` }
-  return {
-    id: c.id, postId: c.postId, authorId: c.authorId, createdAt: c.createdAt,
-    body: [{ kind: 'text', data: c.text }], content: [text], summary: [text],
   }
 }
 

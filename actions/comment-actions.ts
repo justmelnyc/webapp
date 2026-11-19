@@ -25,6 +25,39 @@ export const createComment = async (postId: string, text: string): Promise<Actio
   }
 }
 
+const imageSchema = z.object({ url: z.string().min(1), alt: z.string() })
+
+/**
+ * Save an edited comment. `text` is plain text (escaped and wrapped like `createComment`); `images`
+ * are the comment's picture regions, sent again so the update does not drop them.
+ */
+export const updateComment = async (
+  postId: string,
+  commentId: string,
+  text: string,
+  images: { url: string; alt: string }[] = [],
+): Promise<ActionResult> => {
+  const parsed = commentSchema.safeParse({ body: text })
+  const parsedImages = z.array(imageSchema).safeParse(images)
+  if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Invalid comment')
+  if (!parsedImages.success) return failure('Invalid image')
+  try {
+    await rest(`/api/v2/posts/${encodeURIComponent(postId)}/comments/${encodeURIComponent(commentId)}`, createdSchema, {
+      method: 'PATCH',
+      body: {
+        body: [
+          { kind: 'text', data: commentToHtml(parsed.data.body) },
+          ...parsedImages.data.map((image) => ({ kind: 'image', data: image })),
+        ],
+      },
+    })
+    revalidatePath('/', 'layout')
+    return success(undefined)
+  } catch (error) {
+    return failure(errorMessage(error))
+  }
+}
+
 /** Delete one of the viewer's own comments. */
 export const deleteComment = async (postId: string, commentId: string): Promise<ActionResult> => {
   try {

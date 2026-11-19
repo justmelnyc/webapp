@@ -1,0 +1,125 @@
+/* ---- PostActionBar (comment version) ---- */
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 40px;
+  margin-top: 10px;
+  line-height: 40px;
+}
+
+@media (max-width: 39.9375em) {
+  .bar {
+    height: auto;
+  }
+}
+
+.left > button {
+  margin-right: 10px;
+}
+
+.left > button:last-child {
+  margin-right: 0;
+}
+
+.right > button + button {
+  margin-left: 10px;
+}
+
+.right > button:first-child {
+  margin-left: 0;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 40px;
+  height: 40px;
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 40px;
+  color: #fff;
+  white-space: nowrap;
+  background-color: #000;
+  border-radius: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease, width 0.2s var(--ease);
+}
+
+.button:disabled {
+  pointer-events: none;
+  background-color: #aaa;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    background-color: #6a6a6a;
+  }
+}
+
+.submit {
+  background-color: #00d100;
+  min-width: 0;
+}
+
+.submit:disabled {
+  background-color: #aaa;
+}
+
+@media (hover: hover) {
+  .submit:hover {
+    background-color: #02b302;
+  }
+}
+
+.submit :global(.SVGIcon),
+.submit > span {
+  flex: none;
+}
+
+.label {
+  display: none;
+  margin: 0;
+}
+
+/* Below 40em the submit button shows its label instead of the arrow. */
+@media (max-width: 39.9375em) {
+  .submit {
+    width: auto;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .submit .label {
+    display: inline-block;
+  }
+
+  .submit :global(.SVGIcon) {
+    display: none;
+  }
+}
+
+.cancelText {
+  display: none;
+  padding-right: 10px;
+  padding-left: 10px;
+  color: #aaa;
+}
+
+@media (min-width: 40em) {
+  .cancelText {
+    display: inline-block;
+    padding-left: 0;
+  }
+
+  .cancelIcon {
+    display: none;
+  }
+}
+
+@media (hover: hover) {
+  .cancelText:hover {
+    color: #6a6a6a;
+  }
+}

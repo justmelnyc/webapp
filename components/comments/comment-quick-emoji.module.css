@@ -1,0 +1,60 @@
+/* Port of QuickEmoji.js styles, inside `.editor.isComment` (top 38 / right 20, right 30 from 40em). */
+
+.wrapper {
+  position: absolute;
+  top: 38px;
+  right: 20px;
+  z-index: 2;
+  color: #999;
+  white-space: nowrap;
+}
+
+@media (min-width: 40em) {
+  .wrapper {
+    right: 30px;
+  }
+}
+
+.wrapper.isActive {
+  color: #535353;
+}
+
+.list {
+  position: absolute;
+  top: 0;
+  left: -150px;
+  padding-left: 10px;
+  background-color: #f2f2f2;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.isActive .list {
+  opacity: 1;
+}
+
+.toggle {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .toggle:hover {
+    color: #535353;
+  }
+}
+
+.choice {
+  margin-top: -5px;
+  transition: opacity 0.2s ease;
+}
+
+.choice + .choice {
+  margin-left: 20px;
+}
+
+@media (hover: hover) {
+  .choice:hover {
+    opacity: 0.5;
+  }
+}

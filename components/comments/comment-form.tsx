@@ -1,13 +1,34 @@
 'use client'
 
-import { useEffect, useRef, useTransition } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { createComment, fetchCommenterUsernames } from '@/actions/comment-actions'
-import { ArrowIcon, BrowseIcon, ElloQuickEmoji, ReplyAllIcon, XIconLG } from '@/components/icons'
-import { commentSchema, type CommentInput } from '@/lib/schemas/comment'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  type DragEvent,
+  type FormEvent,
+} from 'react'
+import { createCommentFromBlocks, type CommentRegionInput } from '@/actions/comment-post-actions'
+import { fetchCommenterUsernames } from '@/actions/comment-actions'
+import { COMMENT_MAX_LENGTH } from '@/lib/schemas/comment'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
+import { CommentFormBar } from './comment-form-bar'
+import { CommentImageBlock } from './comment-image-block'
+import { CommentQuickEmoji } from './comment-quick-emoji'
+import { CommentRegionTools } from './comment-region-tools'
+import { CommentTextBlock } from './comment-text-block'
+import { EmojiCompleter } from './emoji-completer'
+import {
+  canPostComment,
+  hasCommentContent,
+  hasUploadsInFlight,
+  useCommentBlocks,
+  type CommentBlock,
+} from './use-comment-blocks'
+import { useCommentUploads } from './use-comment-uploads'
+import { useEmojiCompleter } from './use-emoji-completer'
 import styles from './comment-editor.module.css'
 
 export interface ReplyRequest {
@@ -26,33 +47,74 @@ interface CommentFormProps {
   showReplyAll?: boolean
 }
 
-/** The original's comment editor: grey block, quick-emoji toggle and the PostActionBar. */
-export const CommentForm = ({ postId, onCreated, onCancel, reply, showReplyAll = false }: CommentFormProps) => {
+const regionsOf = (blocks: CommentBlock[]): CommentRegionInput[] =>
+  blocks.flatMap((block): CommentRegionInput[] => {
+    if (block.kind === 'image') return block.url ? [{ kind: 'image', url: block.url }] : []
+    return block.text.trim() ? [{ kind: 'text', text: block.text }] : []
+  })
+
+const lastText = (blocks: CommentBlock[]): CommentBlock | undefined =>
+  blocks.findLast((b) => b.kind === 'text')
+
+/** The original's comment editor: grey block, quick-emoji toggle, `:` completer, pictures and the PostActionBar. */
+export const CommentForm = ({
+  postId,
+  onCreated,
+  onCancel,
+  reply,
+  showReplyAll = false,
+}: CommentFormProps) => {
   const [pending, startTransition] = useTransition()
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    control,
-    formState: { errors },
-  } = useForm<CommentInput>({ resolver: zodResolver(commentSchema), mode: 'onChange', defaultValues: { body: '' } })
-  const { ref: registerRef, ...field } = register('body')
-  const textarea = useRef<HTMLTextAreaElement | null>(null)
-  const body = useWatch({ control, name: 'body' })
-  const hasContent = (body ?? '').trim().length > 0
+  const [hasDragOver, setDragOver] = useState(false)
+  const store = useCommentBlocks()
+  const { blocks, setText, appendText, addImage, updateImage, remove, move, reset } = store
+  const fields = useRef(new Map<string, HTMLTextAreaElement>())
+  const uploads = useCommentUploads({ addImage, updateImage })
+
+  const hasContent = hasCommentContent(blocks)
+  const text = blocks.flatMap((b) => (b.kind === 'text' ? [b.text.trim()] : [])).join('\n\n')
+  const tooLong = text.length > COMMENT_MAX_LENGTH
+  const canSubmit = canPostComment(blocks) && !tooLong && !pending && !hasUploadsInFlight(blocks)
+  // The original shows the quick emoji only while the first block is text.
+  const showQuickEmoji = blocks[0]?.kind === 'text'
+
+  const replaceText = useCallback(
+    (id: string, next: string, caret: number): void => {
+      setText(id, next)
+      requestAnimationFrame(() => {
+        const field = fields.current.get(id)
+        field?.focus()
+        field?.setSelectionRange(caret, caret)
+      })
+    },
+    [setText],
+  )
+  const completer = useEmojiCompleter(replaceText)
 
   useEffect(() => {
     if (!reply) return
-    setValue('body', `@${reply.username} `, { shouldValidate: true })
-    textarea.current?.focus()
-  }, [reply, setValue])
+    const target = lastText(blocks)
+    if (!target) return
+    setText(target.id, `@${reply.username} `)
+    fields.current.get(target.id)?.focus()
+    // only a new reply request (not every keystroke) should rewrite the text
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reply])
 
-  const onSubmit = (values: CommentInput): void => {
+  const clear = (): void => {
+    blocks.forEach((b) => b.kind === 'image' && uploads.forget(b.id))
+    uploads.releasePreviews()
+    completer.hide()
+    reset()
+  }
+
+  const onSubmit = (e: FormEvent): void => {
+    e.preventDefault()
+    if (!canSubmit) return
     startTransition(async () => {
-      const result = await createComment(postId, values.body)
+      const result = await createCommentFromBlocks(postId, regionsOf(blocks))
       if (!result.ok) return toast.error(result.error)
-      reset()
+      clear()
       onCreated()
     })
   }
@@ -62,91 +124,94 @@ export const CommentForm = ({ postId, onCreated, onCancel, reply, showReplyAll =
     startTransition(async () => {
       const result = await fetchCommenterUsernames(postId)
       if (!result.ok) return toast.error(result.error)
-      const text = result.data.map((name) => `@${name} `).join('')
-      const current = textarea.current?.value ?? ''
-      if (!current.includes(text)) setValue('body', current + text, { shouldValidate: true })
+      const names = result.data.map((name) => `@${name} `).join('')
+      const target = lastText(blocks)
+      if (target?.kind === 'text' && !target.text.includes(names)) appendText(names)
     })
   }
 
   const cancel = (): void => {
-    reset()
+    clear()
     onCancel?.()
   }
 
+  const onDrop = (e: DragEvent): void => {
+    e.preventDefault()
+    setDragOver(false)
+    uploads.addFiles(Array.from(e.dataTransfer.files))
+  }
+
   return (
-    <form className={cn('editor withQuickEmoji isComment', styles.editor, hasContent && 'hasContent')} data-placeholder="Comment..." onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className={cn('editor-region', styles.region)}>
-        <div className={cn('editor-block', styles.block)}>
-          <label htmlFor={`commentEditor${postId}-body`} className="sr-only">
-            Comment
-          </label>
-          <textarea
-            id={`commentEditor${postId}-body`}
-            className={cn('editable text', styles.editable)}
-            rows={1}
-            aria-invalid={!!errors.body}
-            {...field}
-            ref={(node) => {
-              registerRef(node)
-              textarea.current = node
-            }}
-          />
-        </div>
+    <form
+      className={cn(
+        'editor isComment',
+        showQuickEmoji && 'withQuickEmoji',
+        styles.editor,
+        hasContent && 'hasContent',
+        hasDragOver && 'hasDragOver',
+      )}
+      data-placeholder="Comment..."
+      onSubmit={onSubmit}
+      onDragOver={(e) => {
+        e.preventDefault()
+        setDragOver(true)
+      }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={onDrop}
+      noValidate
+    >
+      <div className={cn('editor-region', styles.region)} data-num-blocks={blocks.length}>
+        {blocks.map((block, index) => (
+          <div key={block.id} className={cn('editor-block', styles.block)} data-block-id={block.id}>
+            {block.kind === 'text' ? (
+              <CommentTextBlock
+                block={block}
+                inputId={`commentEditor${postId}-body${index === 0 ? '' : `-${index}`}`}
+                label={index === 0 ? 'Comment' : `Comment, part ${index + 1}`}
+                fieldRef={(node) => {
+                  if (node) fields.current.set(block.id, node)
+                  else fields.current.delete(block.id)
+                }}
+                invalid={tooLong}
+                onChange={setText}
+                onKeyUp={completer.onKeyUp}
+                onKeyDown={completer.onKeyDown}
+              />
+            ) : (
+              <CommentImageBlock block={block} onRetry={uploads.retry} />
+            )}
+            <CommentRegionTools
+              id={block.id}
+              onRemove={(id) => {
+                uploads.forget(id)
+                remove(id)
+              }}
+              onMove={move}
+            />
+          </div>
+        ))}
       </div>
-      <div className={styles.emoji}>
-        <button type="button" aria-label="Add emoji" onClick={() => toast.info('Emoji shortcuts are not available yet')}>
-          <ElloQuickEmoji />
-        </button>
-      </div>
-      <div className={styles.bar} id={`commentEditor${postId}`}>
-        <div className={styles.left}>
-          <button
-            type="button"
-            className={cn('PostActionButton isComment forUpload', styles.button)}
-            aria-label="Upload"
-            onClick={() => toast.info('Image uploads in comments are not available yet')}
-          >
-            <span className={styles.label}>Upload</span>
-            <BrowseIcon />
-          </button>
-          {showReplyAll ? (
-            <button
-              type="button"
-              className={cn('PostActionButton isComment forReplyAll', styles.button)}
-              aria-label="Reply All"
-              onClick={replyAll}
-            >
-              <span className={styles.label}>Reply All</span>
-              <ReplyAllIcon />
-            </button>
-          ) : null}
-          <button
-            type="button"
-            className={cn('PostActionButton isComment forCancel icon-text', styles.button, styles.cancelIcon)}
-            disabled={!hasContent}
-            aria-label="Cancel"
-            onClick={cancel}
-          >
-            <span className={styles.label}>Cancel</span>
-            <XIconLG />
-          </button>
-        </div>
-        <div className={styles.right}>
-          <button type="button" className={cn('PostActionButton isComment forCancel label', styles.cancelText)} onClick={cancel}>
-            <span>Cancel</span>
-          </button>
-          <button
-            type="submit"
-            className={cn('PostActionButton isComment forSubmit forComment', styles.button, styles.submit)}
-            disabled={!hasContent || pending}
-            aria-label="Comment"
-          >
-            <span className={styles.label}>Comment</span>
-            <ArrowIcon />
-          </button>
-        </div>
-      </div>
-      {errors.body?.message ? <p role="alert" className={styles.error}>{errors.body.message}</p> : null}
+      {showQuickEmoji ? <CommentQuickEmoji onAddEmoji={appendText} /> : null}
+      <CommentFormBar
+        id={`commentEditor${postId}`}
+        hasContent={hasContent}
+        canSubmit={canSubmit}
+        showReplyAll={showReplyAll}
+        onFiles={uploads.addFiles}
+        onReplyAll={replyAll}
+        onCancel={cancel}
+      />
+      {tooLong ? (
+        <p
+          role="alert"
+          className={styles.error}
+        >{`Keep it under ${COMMENT_MAX_LENGTH} characters`}</p>
+      ) : null}
+      <EmojiCompleter
+        state={completer.state}
+        onPick={completer.complete}
+        onClose={completer.hide}
+      />
     </form>
   )
 }
