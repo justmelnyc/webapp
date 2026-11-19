@@ -7,19 +7,24 @@ import { timeAgoInWords } from './time-ago-in-words'
 import { OwnerTools } from './owner-tools'
 import styles from './post-header.module.css'
 import { RelationshipButton } from './relationship-button'
+import { SubmissionActions } from './submission-actions'
+import { SubmissionStatusTool } from './submission-status-tool'
 
 interface DetailHeaderProps {
   post: Post
   viewerId: string | null
+  /** Where a curator's bar goes: above the header in the sidebar (from 60em), below it in the list. */
+  placement: 'list' | 'sidebar'
 }
 
 /** The original's `PostDetailHeader`: avatar, names, time ago and the follow toggle. */
-export const DetailHeader = ({ post, viewerId }: DetailHeaderProps) => {
-  const { author } = post
+export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) => {
+  const { author, artistInviteSubmission: submission } = post
   const profile = `/${author.username}`
   const isOwnPost = viewerId === author.id
   return (
     <div className="header-holder">
+      {placement === 'sidebar' && submission ? <SubmissionActions submission={submission} /> : null}
       <header className={cn('PostHeader PostDetailHeader', styles.header, isOwnPost && 'isOwnPost')}>
         <div className="PostHeaderLeft">
           <Link className="PostHeaderLinkAvatar" href={profile}>
@@ -43,6 +48,11 @@ export const DetailHeader = ({ post, viewerId }: DetailHeaderProps) => {
             <span>{timeAgoInWords(post.createdAt)}</span>
           </Link>
           {isOwnPost ? <OwnerTools postId={post.id} /> : null}
+          {submission ? (
+            <span>
+              <SubmissionStatusTool submission={submission} />
+            </span>
+          ) : null}
           <RelationshipButton
             userId={author.id}
             priority={isOwnPost ? 'self' : author.currentUserState?.relationshipPriority}
@@ -50,6 +60,7 @@ export const DetailHeader = ({ post, viewerId }: DetailHeaderProps) => {
           />
         </div>
       </header>
+      {placement === 'list' && submission ? <SubmissionActions submission={submission} /> : null}
     </div>
   )
 }

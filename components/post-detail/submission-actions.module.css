@@ -1,0 +1,11 @@
+/* `.header-holder &.post-admin-actions` of adminActionsStyle: flush in the sidebar, full width of the list below 60em. */
+:global(.header-holder) .bar {
+  margin: 0;
+}
+
+@media (max-width: 59.9375em) {
+  :global(.header-holder) .bar {
+    width: calc(100% + 20px);
+    margin: 10px 0 10px -10px;
+  }
+}

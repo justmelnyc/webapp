@@ -1,0 +1,27 @@
+/* Port of categoryPostHistoryRecordStyle (components/category_posts/CategoryPostRenderables.js) */
+.record {
+  display: block;
+  margin: 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: #aaa;
+}
+
+.record span {
+  display: inline-block;
+}
+
+.record :global(.featured-toggle) {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.record :global(.featured-toggle) :global(.BadgeFeaturedIcon) {
+  position: absolute;
+  top: -4px;
+  right: -17px;
+  transform: scale(0.64);
+}

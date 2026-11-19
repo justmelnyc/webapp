@@ -27,13 +27,13 @@ export const OwnerTools = ({ postId }: { postId: string }) => {
 
   return (
     <span>
-      <span className="PostTool EditTool ShyTool">
+      <span className="PostTool EditTool">
         <button type="button" onClick={edit} disabled={editing} aria-label="Edit post">
           <PencilIcon />
           <Hint>Edit</Hint>
         </button>
       </span>
-      <span className="PostTool DeleteTool ShyTool">
+      <span className="PostTool DeleteTool">
         <button type="button" onClick={remove} disabled={pending} aria-label="Delete post">
           <XBoxIcon />
           <Hint>Delete</Hint>

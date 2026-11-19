@@ -23,7 +23,7 @@ Unknown users get a 401. Signup is not mocked.
 | Social | Love, watch, comment (edit/delete own), follow/unfollow. Counts are computed live. |
 | Reposts | A repost is a post with `repostOfId` (`reposts.js`); `POST /api/v2/posts?repost_id=` creates one, `DELETE /api/v2/posts/:id/repost` removes it. Counts and `reposted` are derived; 5 are seeded. |
 | Profile | Name, bio, location, links, avatar, cover and the preference toggles on `/settings`. |
-| Streams | Cursor pagination (12 per page), trending vs recent, per-user and per-category filtering, user search. |
+| Streams | Cursor pagination (12 per page), trending vs recent, per-user and per-category filtering, user search. Posts carry `categoryPosts` (one per `categoryIds` entry, status `featured`), which the original turns into the "@author in Category" header on the global feeds. |
 | Moderation | Block/mute (`add/block`, `add/mute`, hidden from feeds), flags on posts/users/comments, Collab/Hire messages, per-user `isHireable`/`isCollaborateable`, community roles, NSFW posts (`contentWarning`). Seeded by a one-time migration of `db.json`. |
 | Data | 12 users, 48 seeded posts with comments and loves. Everything persists to `mock/.data/db.json`. |
 
@@ -103,4 +103,4 @@ routes/          moderation (writes), auth, upload (S3), graphql, rest (reads), 
 | `GET /api/v2/artist_invites/:id/:key_submissions` | 25 per page, `Link rel=next`, `X-Total-Pages`; submissions with `linked.posts/users/assets`, and curator `actions` for curators. |
 | `PATCH /api/v2/artist_invite_submissions/:id/:action` | approve, decline, select, unapprove, unselect (curators only). |
 
-Posting to an invite from the composer does not create a submission.
+Posting to an invite from the composer (`artist_invite_id`) creates an `unapproved` submission. GraphQL posts carry it as `artistInviteSubmission` (`id`, `status`, `artistInvite { id slug title }`, and the curator `actions` only for that invite's curators); posts that were not submitted return `null`. Deleting the post (`DELETE /api/v2/posts/:id`) removes its submission.

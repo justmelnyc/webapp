@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { responsiveImageSchema } from './image'
+import { submissionActionsSchema, submissionStatusSchema } from './submission-status'
 import { authorSchema } from './user'
 
 export const textRegionSchema = z.object({
@@ -39,6 +40,23 @@ export const repostedSourceSchema = z.object({
   assets: z.array(assetSchema).nullish(),
 })
 
+/** Set on posts submitted to an artist invite; `actions` only when the viewer curates that invite. */
+export const postSubmissionSchema = z.object({
+  id: z.string(),
+  status: submissionStatusSchema,
+  artistInvite: z.object({ id: z.string(), slug: z.string(), title: z.string() }),
+  actions: submissionActionsSchema.nullish(),
+})
+
+/** A post's place in a category (the original's `categoryPostSummary`); the first one names its category header. */
+export const categoryPostSchema = z.object({
+  id: z.string(),
+  status: z.string().nullish(),
+  featuredBy: z.object({ username: z.string() }).nullish(),
+  submittedBy: z.object({ username: z.string() }).nullish(),
+  category: z.object({ id: z.string(), slug: z.string(), name: z.string() }).nullish(),
+})
+
 export const postSchema = z.object({
   id: z.string(),
   token: z.string(),
@@ -51,6 +69,10 @@ export const postSchema = z.object({
   /** Reposts only: the original's content. `content` is then what the reposter added. */
   repostContent: z.array(regionSchema).nullish(),
   repostedSource: repostedSourceSchema.nullish(),
+  /** Submission to an artist invite, if this post is one. */
+  artistInviteSubmission: postSubmissionSchema.nullish(),
+  /** Categories the post was submitted to; absent or empty when it has none. */
+  categoryPosts: z.array(categoryPostSchema).nullish(),
   assets: z.array(assetSchema),
   postStats: z.object({
     lovesCount: z.number(),
@@ -78,6 +100,7 @@ export const pageInfoSchema = z.object({ next: z.string().nullable(), isLastPage
 export type Region = z.infer<typeof regionSchema>
 export type ImageRegion = z.infer<typeof imageRegionSchema>
 export type Asset = z.infer<typeof assetSchema>
+export type PostSubmission = z.infer<typeof postSubmissionSchema>
 export type Post = z.infer<typeof postSchema>
 export type Comment = z.infer<typeof commentSchema>
 export type PageInfo = z.infer<typeof pageInfoSchema>

@@ -80,4 +80,17 @@ describe('artist invites mock', () => {
     ai.dropPostSubmissions(db, 'new-post')
     expect(ai.countsFor(db, invite)).toEqual(before)
   })
+
+  it('describes a post\'s submission for GraphQL, with the curator actions only for admins', () => {
+    const { invites, submissions } = built()
+    const db = { artistInvites: invites, artistInviteSubmissions: submissions }
+    const invite = invites.find(i => i.slug === 'neon-nights')
+    const adminId = invite.adminIds[0]
+    const mine = submissions.find(s => s.inviteId === invite.id && s.status === 'approved')
+    const asPublic = ai.submissionForPost(db, mine.postId, null)
+    expect(asPublic).toMatchObject({ status: 'approved', artistInvite: { id: invite.id, slug: 'neon-nights', title: invite.title }, actions: null })
+    const asAdmin = ai.submissionForPost(db, mine.postId, adminId)
+    expect(Object.keys(asAdmin.actions)).toEqual(['select', 'unapprove'])
+    expect(ai.submissionForPost(db, 'not-submitted', adminId)).toBeNull()
+  })
 })

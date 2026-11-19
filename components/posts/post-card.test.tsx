@@ -62,6 +62,13 @@ describe('PostCard', () => {
     expect(screen.getByText('7')).toBeInTheDocument()
   })
 
+  it('Footer hides the 0 of a post nobody has viewed (a fresh repost) but keeps the pill', () => {
+    const fresh = postSchema.parse(gqlPost('p3', { postStats: { lovesCount: 0, commentsCount: 0, viewsCount: 0, repostsCount: 0 } }))
+    render(<PostCard.Footer post={fresh} signedIn />)
+    expect(screen.getByTitle('Views')).toHaveClass('isPill')
+    expect(screen.getByTitle('Views').querySelector('.PostToolValue')).toBeEmptyDOMElement()
+  })
+
   it('composes Root, Body and className', () => {
     const { container } = render(
       <PostCard className="mb-10">

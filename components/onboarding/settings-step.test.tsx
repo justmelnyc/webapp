@@ -1,7 +1,10 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { useOnboardInviteStore } from '@/stores/onboard-invite-store'
 import { isInfoBlank, SettingsStep } from './settings-step'
 
-jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn(), refresh: jest.fn() }) }))
+const push = jest.fn()
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push, refresh: jest.fn() }) }))
 jest.mock('@/actions/profile-actions', () => ({ saveInfo: jest.fn(), saveProfileImage: jest.fn() }))
 jest.mock('@/lib/client/upload', () => ({ uploadImage: jest.fn() }))
 
@@ -39,5 +42,26 @@ describe('SettingsStep', () => {
   it('does not count an avatar the profile says is absent', () => {
     render(<SettingsStep {...props} avatarUrl="http://x/a.jpg" />)
     expect(screen.getByRole('button', { name: 'Get Hired & Collaborate' })).toBeDisabled()
+  })
+
+  describe('"I\'m Done"', () => {
+    beforeEach(() => {
+      push.mockClear()
+      useOnboardInviteStore.getState().reset()
+    })
+
+    it('goes to the following feed', async () => {
+      render(<SettingsStep {...props} info={{ ...blank, name: 'Ada' }} />)
+      await userEvent.click(screen.getByRole('button', { name: "I'm Done" }))
+      expect(push).toHaveBeenCalledWith('/following')
+    })
+
+    it('returns to the invite the visitor pressed SUBMIT on', async () => {
+      useOnboardInviteStore.getState().start({ id: '7', title: 'Neon Nights', slug: 'neon-nights' })
+      render(<SettingsStep {...props} info={{ ...blank, name: 'Ada' }} />)
+      await userEvent.click(screen.getByRole('button', { name: "I'm Done" }))
+      expect(push).toHaveBeenCalledWith('/invites/neon-nights')
+      expect(useOnboardInviteStore.getState().isCompleting).toBe(true)
+    })
   })
 })

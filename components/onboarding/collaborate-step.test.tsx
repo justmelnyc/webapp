@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { savePreference } from '@/actions/profile-actions'
+import { useOnboardInviteStore } from '@/stores/onboard-invite-store'
 import { useToastStore } from '@/stores/toast-store'
 import { CollaborateStep } from './collaborate-step'
 
@@ -16,6 +17,7 @@ describe('CollaborateStep', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useToastStore.setState({ toasts: [] })
+    useOnboardInviteStore.getState().reset()
   })
 
   it('shows what the profile has now', () => {
@@ -46,5 +48,13 @@ describe('CollaborateStep', () => {
     render(<CollaborateStep initial={off} />)
     await userEvent.click(screen.getByRole('button', { name: 'Get To The Goods' }))
     expect(push).toHaveBeenCalledWith('/following')
+  })
+
+  it('returns to the invite the visitor pressed SUBMIT on, flagging the omnibar to open', async () => {
+    useOnboardInviteStore.getState().start({ id: '7', title: 'Neon Nights', slug: 'neon-nights' })
+    render(<CollaborateStep initial={off} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Get To The Goods' }))
+    expect(push).toHaveBeenCalledWith('/invites/neon-nights')
+    expect(useOnboardInviteStore.getState().isCompleting).toBe(true)
   })
 })

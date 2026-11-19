@@ -23,7 +23,7 @@ jest.mock('./db', () => {
 jest.mock('./content', () => ({ categories: [{ id: '1', name: 'Art', slug: 'art' }, { id: '2', name: 'Design', slug: 'design' }] }))
 jest.mock('./serialize', () => ({
   gqlPost: p => ({ id: p.id }), gqlComment: c => ({ id: c.id }), gqlAuthor: u => ({ id: u.id, username: u.username }),
-  flatPost: p => ({ id: p.id, links: { author: { id: p.authorId, type: 'users' } } }), flatUser: u => ({ id: u.id }), flatComment: c => ({ id: c.id }),
+  flatPost: p => ({ id: p.id, contentWarning: 'NSFW', isAdultContent: true, links: { author: { id: p.authorId, type: 'users' } } }), flatUser: u => ({ id: u.id }), flatComment: c => ({ id: c.id }),
 }))
 
 const { db } = require('./db')
@@ -200,6 +200,13 @@ describe('simulate', () => {
 })
 
 describe('v2 activities (the original app)', () => {
+  it('leaves the NSFW label off linked posts (the original would show its View button on feeds)', () => {
+    const { linked } = n.activities('1').body
+    expect(linked.posts.length).toBeGreaterThan(0)
+    linked.posts.forEach(p => expect(p).not.toHaveProperty('contentWarning'))
+    linked.posts.forEach(p => expect(p).not.toHaveProperty('isAdultContent'))
+  })
+
   it('links each activity to a linked subject', () => {
     const { activities, linked } = n.activities('1').body
     expect(activities.length).toBeGreaterThan(0)

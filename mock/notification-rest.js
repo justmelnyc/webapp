@@ -62,7 +62,10 @@ const activities = (userId, notifications, SUBJECT_TYPE) => {
   const addUser = id => linked.users.set(id, flatUser(userById(id), userId))
   // a repost carries `repostId` and a link to its source (the original app reads them to word "on original" kinds)
   const addPost = (post) => {
-    const flat = flatPost(post, userId)
+    // The original merges these posts into its store, so a `contentWarning` here would put the NSFW "View" button on
+    // that post in every feed once the notifications have loaded (its GraphQL reducer drops the field). Left out so
+    // the feeds do not depend on notification timing; the rewrite reads the field from GraphQL only.
+    const { contentWarning, isAdultContent, ...flat } = flatPost(post, userId)
     const source = post.repostOfId && postById(post.repostOfId)
     if (source) {
       flat.repostId = source.id
