@@ -9,9 +9,11 @@ interface CommentFormBarProps {
   id: string
   hasContent: boolean
   canSubmit: boolean
-  showReplyAll: boolean
+  /** Posting a new comment, or saving an edited one (Update; no Reply All). */
+  submitKind?: 'comment' | 'update'
+  showReplyAll?: boolean
   onFiles: (files: File[]) => void
-  onReplyAll: () => void
+  onReplyAll?: () => void
   onCancel: () => void
 }
 
@@ -20,11 +22,13 @@ export const CommentFormBar = ({
   id,
   hasContent,
   canSubmit,
-  showReplyAll,
+  submitKind = 'comment',
+  showReplyAll = false,
   onFiles,
   onReplyAll,
   onCancel,
 }: CommentFormBarProps) => {
+  const submitLabel = submitKind === 'update' ? 'Update' : 'Comment'
   const input = useRef<HTMLInputElement>(null)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -84,14 +88,14 @@ export const CommentFormBar = ({
         <button
           type="submit"
           className={cn(
-            'PostActionButton isComment forSubmit forComment',
+            `PostActionButton isComment forSubmit ${submitKind === 'update' ? 'forUpdate' : 'forComment'}`,
             styles.button,
             styles.submit,
           )}
           disabled={!canSubmit}
-          aria-label="Comment"
+          aria-label={submitLabel}
         >
-          <span className={styles.label}>Comment</span>
+          <span className={styles.label}>{submitLabel}</span>
           <ArrowIcon />
         </button>
       </div>

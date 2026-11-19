@@ -151,7 +151,7 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
           <Hint>Views</Hint>
         </Link>
       </span>
-      {signedIn && !isOwnPost ? (
+      {signedIn && !isOwnPost && viewerId !== originalAuthorOf(post).id ? (
         <span className={cn('PostTool WatchTool', watch.watching && 'isWatchingPost')}>
           <button
             type="button"

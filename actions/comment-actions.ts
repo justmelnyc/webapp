@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { rest, restVoid } from '@/lib/api/client'
 import { errorMessage } from '@/lib/errors'
+import { commentBodyOf, commentRegionsSchema, type CommentRegionInput } from '@/lib/comment-regions'
 import { commentSchema, commentToHtml } from '@/lib/schemas/comment'
 import { failure, success, type ActionResult } from '@/types/action'
 
@@ -25,31 +26,18 @@ export const createComment = async (postId: string, text: string): Promise<Actio
   }
 }
 
-const imageSchema = z.object({ url: z.string().min(1), alt: z.string() })
-
-/**
- * Save an edited comment. `text` is plain text (escaped and wrapped like `createComment`); `images`
- * are the comment's picture regions, sent again so the update does not drop them.
- */
+/** Save an edited comment: its blocks in order (text and pictures), like `createCommentFromBlocks`. */
 export const updateComment = async (
   postId: string,
   commentId: string,
-  text: string,
-  images: { url: string; alt: string }[] = [],
+  regions: CommentRegionInput[],
 ): Promise<ActionResult> => {
-  const parsed = commentSchema.safeParse({ body: text })
-  const parsedImages = z.array(imageSchema).safeParse(images)
+  const parsed = commentRegionsSchema.safeParse(regions)
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Invalid comment')
-  if (!parsedImages.success) return failure('Invalid image')
   try {
     await rest(`/api/v2/posts/${encodeURIComponent(postId)}/comments/${encodeURIComponent(commentId)}`, createdSchema, {
       method: 'PATCH',
-      body: {
-        body: [
-          { kind: 'text', data: commentToHtml(parsed.data.body) },
-          ...parsedImages.data.map((image) => ({ kind: 'image', data: image })),
-        ],
-      },
+      body: { body: commentBodyOf(parsed.data) },
     })
     revalidatePath('/', 'layout')
     return success(undefined)

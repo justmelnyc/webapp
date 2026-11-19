@@ -145,9 +145,21 @@ const repostParts = (post) => {
 }
 
 // Where a post sits in categories, like the real API's `categoryPosts` (the original shows the first one as a CategoryHeader)
-const categoryPostsOf = (post) => (post.categoryIds || []).flatMap((id) => {
+const categoryPostsOf = (post, viewerId) => (post.categoryIds || []).flatMap((id) => {
   const category = require('./content').categories.find(c => c.id === String(id))
-  return category ? [{ id: `${category.id}-${post.id}`, status: 'featured', category: { id: category.id, slug: category.slug, name: category.name } }] : []
+  if (!category) return []
+  const cp = require('./category-posts')
+  const state = cp.stateOf(db, category.id, post)
+  const name = uid => (uid ? { username: (userById(uid) || {}).username } : null)
+  const cpId = `${category.id}-${post.id}`
+  return [{
+    id: cpId,
+    status: state.status,
+    featuredBy: name(state.featuredById),
+    submittedBy: name(state.submittedById),
+    actions: cp.actionsFor(db, cpId, state.status, viewerId, category.id),
+    category: { id: category.id, slug: category.slug, name: category.name },
+  }]
 })
 
 const gqlPost = (post, viewerId) => {
@@ -167,7 +179,7 @@ const gqlPost = (post, viewerId) => {
     repostContent: repost ? repost.orig.content : [],
     repostedSource: repost ? gqlPost(repost.source, viewerId) : null,
     author: gqlAuthor(userById(post.authorId), viewerId),
-    categoryPosts: categoryPostsOf(post),
+    categoryPosts: categoryPostsOf(post, viewerId),
     assets,
     postStats: postStats(post),
     currentUserState: viewerState(post, viewerId),

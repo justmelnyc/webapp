@@ -19,6 +19,9 @@ if (require('./post-search').seedSearchPosts(db, nextId)) save()
 // Artist invites (idempotent): see artist-invites.js
 if (require('./artist-invites').seedArtistInvites(db, nextId)) save()
 
+// Category curators and post states (idempotent): see category-posts.js
+if (require('./category-posts').seedCategoryPosts(db)) save()
+
 // Invitations (idempotent): see invitations.js
 if (require('./invitations').seedInvitations(db, nextId)) save()
 
@@ -36,7 +39,7 @@ app.use((req, res, next) => {
   return next()
 })
 
-;['auth', 'notifications', 'media', 'upload', 'graphql', 'rest', 'embeds', 'moderation', 'reposts', 'mutations', 'account', 'invitations', 'artist-invites', 'onboarding', 'search', 'new-posts', 'post-search'].forEach((name) => {
+;['auth', 'notifications', 'media', 'upload', 'graphql', 'rest', 'embeds', 'moderation', 'reposts', 'mutations', 'account', 'invitations', 'artist-invites', 'onboarding', 'search', 'new-posts', 'post-search', 'category-posts'].forEach((name) => {
   app.use(require(`./routes/${name}`).router)
 })
 

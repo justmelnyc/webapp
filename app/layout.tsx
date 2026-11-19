@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 import { AppShell } from '@/components/layout/app-shell'
+import { KeyboardShortcuts } from '@/components/layout/keyboard-shortcuts'
 import { HideOnOnboarding } from '@/components/layout/hide-on-onboarding'
 import { RegistrationDialogProvider } from '@/components/auth/registration-dialog'
 import { Footer } from '@/components/layout/footer'
@@ -39,6 +40,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
               </HideOnOnboarding>
               <MainView>{children}</MainView>
               <Footer isLoggedIn={!!viewer} />
+              <KeyboardShortcuts isLoggedIn={!!viewer} />
             </AppShell>
           </RegistrationDialogProvider>
         </Providers>

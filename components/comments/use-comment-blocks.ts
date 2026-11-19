@@ -15,6 +15,8 @@ export interface CommentImageBlock {
   previewUrl: string
   /** The stored image once the upload finished. */
   url: string | null
+  /** The alt text an existing picture already carries (kept when the comment is edited). */
+  alt?: string
   status: 'uploading' | 'done' | 'error'
 }
 
@@ -111,10 +113,12 @@ export const canPostComment = (blocks: CommentBlock[]): boolean =>
   !blocks.some((b) => b.kind === 'image' && b.status !== 'done') &&
   blocks.some((b) => (b.kind === 'text' ? b.text.trim().length > 0 : true))
 
-export const useCommentBlocks = () => {
-  const [blocks, dispatch] = useReducer(commentBlocksReducer, undefined, () => [
-    emptyText(newBlockId()),
-  ])
+export const useCommentBlocks = (initial?: CommentBlock[]) => {
+  const [blocks, dispatch] = useReducer(
+    commentBlocksReducer,
+    initial,
+    (start): CommentBlock[] => start ?? [emptyText(newBlockId())],
+  )
   return {
     blocks,
     setText: (id: string, text: string): void => dispatch({ type: 'setText', id, text }),

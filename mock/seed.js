@@ -90,6 +90,8 @@ const build = () => {
   db.users.forEach((u) => {
     db.users.forEach((o) => { if (u.id !== o.id && (rand() > 0.6 || u.id === '1')) db.follows.push({ followerId: u.id, followeeId: o.id }) })
   })
+  // curators and category post states (no rand: keeps the seed above unchanged); server.js applies it to older db files too
+  require('./category-posts').seedCategoryPosts(db)
   return db
 }
 

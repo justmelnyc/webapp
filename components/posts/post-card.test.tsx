@@ -78,4 +78,30 @@ describe('PostCard', () => {
     expect(container.querySelector('article')).toHaveClass('mb-10', 'Post')
     expect(screen.getByText('content')).toHaveClass('extra')
   })
+
+  describe('Footer Watch tool (list streams)', () => {
+    const repostOfMara = postSchema.parse(
+      gqlPost('p2', {
+        author: gqlAuthor('theo', 'u2'),
+        repostContent: [textRegion('<p>Original</p>')],
+        repostedSource: { id: 'p9', token: 'tok9', author: gqlAuthor('mara', 'u3') },
+      }),
+    )
+    const hasWatch = (container: HTMLElement): boolean => !!container.querySelector('.WatchTool')
+
+    it("shows on other people's posts", () => {
+      const { container } = render(<PostCard.Footer post={post} signedIn viewerId="u9" showWatch />)
+      expect(hasWatch(container)).toBe(true)
+    })
+
+    it('is hidden on your own post', () => {
+      const { container } = render(<PostCard.Footer post={post} signedIn viewerId={post.author.id} showWatch />)
+      expect(hasWatch(container)).toBe(false)
+    })
+
+    it("is hidden on someone's repost of your own post (the original's isOwnOriginalPost)", () => {
+      const { container } = render(<PostCard.Footer post={repostOfMara} signedIn viewerId="u3" showWatch />)
+      expect(hasWatch(container)).toBe(false)
+    })
+  })
 })
