@@ -97,11 +97,33 @@ router.post('/api/v2/posts/:id/watches', toggle('watches', 'watches'))
 router.delete('/api/v2/posts/:id/watch', toggle('watches', 'watches'))
 
 // --- comments ---
+const textOf = (b) => String(b.data || '').replace(/<[^>]*>/g, '').trim()
+const commentImages = (body = []) => body.filter(b => b.kind === 'image' && b.data && b.data.url)
+const commentText = (body = []) => body.filter(b => b.kind !== 'image').map(textOf).filter(Boolean).join(' ')
+// Editor blocks -> ordered regions (text is stripped of HTML, images get their real dimensions)
+const commentRegions = (body = []) => body.flatMap((b) => {
+  if (b.kind === 'image') {
+    if (!(b.data && b.data.url)) return []
+    return [{ kind: 'image', url: b.data.url, alt: b.data.alt || '', ...(dimensionsOf(b.data.url) || { width: 1200, height: 800 }) }]
+  }
+  const text = textOf(b)
+  return text ? [{ kind: 'text', text }] : []
+})
+// Comments with pictures keep their blocks in order (text-only comments stay a bare `text`).
+const applyBody = (comment, body) => {
+  if (commentImages(body).length) {
+    comment.text = commentText(body)
+    comment.regions = commentRegions(body)
+  } else {
+    delete comment.regions
+  }
+}
 router.post('/api/v2/posts/:id/comments', (req, res) => {
   const post = postByRef(req.params.id)
   if (!post) return res.status(404).json({ error: 'not found' })
   const text = (req.body.body || []).map(b => String(b.data || '').replace(/<[^>]*>/g, '')).join(' ').trim()
   const comment = { id: nextId(), postId: post.id, authorId: req.me.id, createdAt: new Date().toISOString(), text: text || '...' }
+  applyBody(comment, req.body.body)
   db.comments.push(comment)
   save()
   return res.status(201).json(commentEnvelope(comment, req.me.id))
@@ -130,6 +152,7 @@ router.patch('/api/v2/posts/:id/comments/:cid', (req, res) => {
   const c = ownComment(req)
   if (!c) return res.status(404).json({ error: 'not found' })
   c.text = (req.body.body || []).map(b => String(b.data || '').replace(/<[^>]*>/g, '')).join(' ').trim() || c.text
+  applyBody(c, req.body.body)
   save()
   return res.json(commentEnvelope(c, req.me.id))
 })

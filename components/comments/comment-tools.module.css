@@ -40,7 +40,8 @@
   }
 }
 
-.tools :global(.TimeAgoTool) {
+/* `.Posts .CommentTools .TimeAgoTool` in the original: it beats the global `.Posts .TimeAgoTool { display: none }`. */
+.tools:global(.CommentTools) :global(.TimeAgoTool) {
   display: inline-block;
   color: #aaa;
   cursor: default;

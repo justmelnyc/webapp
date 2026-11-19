@@ -1,0 +1,13 @@
+/* Comment.css */
+.CommentBody .ImageAttachment {
+  height: auto;
+}
+
+/* PostBody.css: the post page's regions fill their column, the comments' pictures included. */
+.PostDetails .ImageRegion {
+  width: 100%;
+}
+
+.PostDetails .ImageRegion img {
+  height: auto;
+}

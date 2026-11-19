@@ -92,6 +92,8 @@ export const commentSchema = z.object({
   createdAt: z.string(),
   author: authorSchema,
   content: z.array(regionSchema),
+  /** The pictures of image regions (comments may carry images). */
+  assets: z.array(assetSchema).nullish(),
   parentPost: z.object({ id: z.string() }).nullish(),
 })
 

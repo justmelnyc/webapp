@@ -62,7 +62,7 @@ export const COMMENTS = `
   query($id: String, $perPage: String, $before: String) {
     commentStream(id: $id, perPage: $perPage, before: $before) {
       next isLastPage
-      comments { id createdAt author { ${authorFields} } content { ${regionFields} } parentPost { id } }
+      comments { id createdAt author { ${authorFields} } content { ${regionFields} } assets { id attachment ${responsive} } parentPost { id } }
     }
   }
 `

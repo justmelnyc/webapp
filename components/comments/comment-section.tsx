@@ -90,6 +90,7 @@ export const CommentSection = ({ postId, postAuthorId, viewer, initialPage, plac
                 canDelete={comment.author.id === viewer.id || postAuthorId === viewer.id}
                 onReply={onReply}
                 onDeleted={changed}
+                onUpdated={changed}
               />
             ))}
           </div>
