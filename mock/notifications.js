@@ -9,6 +9,7 @@ const { db, save, nextId, userById, postById } = require('./db')
 const { gqlPost, gqlComment, gqlAuthor, flatPost, flatUser, flatComment } = require('./serialize')
 const extras = require('./notification-extras')
 const rest = require('./notification-rest')
+const watches = require('./notification-watches')
 
 const DAY = 86400000
 const PER_PAGE = 25
@@ -35,6 +36,7 @@ const SUBJECT_TYPE = {
   new_followed_user_post: 'User',
   watch_notification: 'Watch',
   ...extras.SUBJECT_TYPE,
+  ...watches.SUBJECT_TYPE,
 }
 
 const MENTION_TEXTS = [
@@ -142,6 +144,12 @@ const sync = () => {
     extras.seedNotifications(add, now, rng(13))
     db.notificationsExtra = extras.EXTRA_SEED
     db.users.forEach((u) => { db.notificationReads[u.id] = new Date(now).toISOString() })
+  }
+  // the watch kinds and "you started following" (notification-watches.js), seeded once per db
+  if (db.notificationsWatchSeed !== watches.WATCH_SEED) {
+    watches.seed(add, now, rng(17))
+    db.notificationsWatchSeed = watches.WATCH_SEED
+    changed = true
   }
   if (changed) save()
 }
