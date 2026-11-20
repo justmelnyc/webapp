@@ -15,18 +15,18 @@ interface LayoutProps {
 
 const ProfileLayout = async ({ children, params }: LayoutProps) => {
   const { username } = await params
-  const [user, session, viewer] = await Promise.all([
+  const session = await getSession()
+  const [user, viewer, administeredCategories] = await Promise.all([
     getProfile(decodeURIComponent(username)).catch((error: unknown) => {
       if (error instanceof NotFoundError) return null
       throw error
     }),
-    getSession(),
     getViewer(),
+    // Signed-in people may administer categories: those give the Community Roles panel its assign form.
+    session ? getAdministeredCategories().catch(() => []) : [],
   ])
   // The original's UserDetailContainer renders nothing at all for a user that does not exist.
   if (!user) return null
-  // Signed-in people may administer categories: those give the Community Roles panel its assign form.
-  const administeredCategories = session ? await getAdministeredCategories().catch(() => []) : []
   return (
     <>
       <ProfileHero

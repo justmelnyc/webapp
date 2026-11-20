@@ -12,7 +12,8 @@ import { PendingMain } from '@/components/layout/pending-main'
 import { Providers } from '@/components/providers'
 import { StaffProvider } from '@/components/ui/staff-context'
 import { API_ORIGIN } from '@/lib/env'
-import { getPageHeader } from '@/services/content'
+import { getCategories, getPageHeader } from '@/services/content'
+import { getSession } from '@/lib/session'
 import { getViewer } from '@/services/viewer'
 
 export const metadata: Metadata = {
@@ -29,9 +30,14 @@ export const viewport: Viewport = {
 }
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const viewer = await getViewer()
-  // The sign-up dialog's photo (the original loads AUTHENTICATION headers for logged out visitors).
-  const authPromo = viewer ? null : await getPageHeader('AUTHENTICATION').catch(() => null)
+  // The navbar's categories load alongside the viewer instead of after it (getCategories is cached per request).
+  void getCategories().catch(() => null)
+  // The sign-up dialog's photo (the original loads AUTHENTICATION headers for logged out visitors), asked for at
+  // once when there is no session, and after the profile only when a session turns out to be expired.
+  const loadPromo = () => getPageHeader('AUTHENTICATION').catch(() => null)
+  const session = await getSession()
+  const [viewer, earlyPromo] = await Promise.all([getViewer(), session ? null : loadPromo()])
+  const authPromo = viewer ? null : (earlyPromo ?? (session ? await loadPromo() : null))
   return (
     <html lang="en">
       <body>
