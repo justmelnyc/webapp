@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import type { DiscoverKind } from '@/components/discover/category-sub-nav'
-import { DiscoverView } from '@/components/discover/discover-view'
+import { DiscoverView, SUBSCRIBED } from '@/components/discover/discover-view'
 import { getCategories } from '@/services/content'
 
 interface Props {
@@ -32,7 +32,7 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
   const { segments } = await params
   const target = resolve(segments)
   if (!target) return { title: 'Discover' }
-  if (!target.slug) return { title: target.kind === 'featured' ? 'Discover' : titleCase(target.kind) }
+  if (!target.slug || target.slug === SUBSCRIBED) return { title: target.kind === 'featured' ? 'Discover' : titleCase(target.kind) }
   const category = (await getCategories()).find((c) => c.slug === target.slug)
   return { title: category?.name ?? 'Discover' }
 }
@@ -41,7 +41,7 @@ const DiscoverPage = async ({ params }: Props) => {
   const { segments } = await params
   const target = resolve(segments)
   if (!target) notFound()
-  if (target.slug && !(await getCategories()).some((c) => c.slug === target.slug)) notFound()
+  if (target.slug && target.slug !== SUBSCRIBED && !(await getCategories()).some((c) => c.slug === target.slug)) notFound()
   return <DiscoverView slug={target.slug} kind={target.kind} />
 }
 

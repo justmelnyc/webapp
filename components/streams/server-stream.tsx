@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { PostStream } from '@/components/streams/post-stream'
 import { getSession } from '@/lib/session'
 import { fetchStream } from '@/services/streams'
@@ -5,7 +6,7 @@ import type { StreamSpec } from '@/types/stream'
 
 interface ServerStreamProps {
   spec: StreamSpec
-  emptyMessage?: string
+  emptyMessage?: ReactNode
 }
 
 /** Loads the first page on the server, then hands over to the client for infinite scroll. */

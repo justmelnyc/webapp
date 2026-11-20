@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { usePathname } from 'next/navigation'
 import { useCategoryDrawer } from '@/components/discover/category-drawer'
@@ -25,7 +25,8 @@ interface PostStreamProps {
   signedIn: boolean
   /** The signed-in user's id; enables the owner menu on their own posts. */
   viewerId?: string | null
-  emptyMessage?: string
+  /** What an empty stream shows: a string becomes a paragraph, anything else is drawn as is (the original's `asZero`). */
+  emptyMessage?: ReactNode
 }
 
 /** The original's StreamContainer: posts as columns (or a list) that load further pages on scroll. */
@@ -75,7 +76,7 @@ export const PostStream = ({ spec, initialPage, signedIn, viewerId, emptyMessage
   if (posts.length === 0) {
     return (
       <section className="StreamContainer empty">
-        <p>{emptyMessage}</p>
+        {typeof emptyMessage === 'string' ? <p>{emptyMessage}</p> : emptyMessage}
       </section>
     )
   }

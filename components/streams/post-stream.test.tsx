@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, render, screen, waitFor } from '@testing-library/react'
+import type { ReactNode } from 'react'
 import { RegistrationDialogProvider } from '@/components/auth/registration-dialog'
 import { fetchStreamPage } from '@/lib/client/streams'
 import { gqlPost, textRegion } from '@/test/fixtures/posts'
@@ -40,7 +41,7 @@ const page = (ids: string[], next: string | null): PostPage =>
 let triggerIntersect: () => void = () => undefined
 
 // Mirrors components/providers.tsx (staleTime keeps initialData from refetching on mount)
-const renderStream = (initialPage: PostPage, emptyMessage?: string) => {
+const renderStream = (initialPage: PostPage, emptyMessage?: ReactNode) => {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, staleTime: 60_000 } },
   })
@@ -98,6 +99,12 @@ describe('PostStream', () => {
     unmount()
     renderStream(page([], null), 'No loves yet')
     expect(screen.getByText('No loves yet')).toBeInTheDocument()
+  })
+
+  it('draws a zero state that is not a string as it is, without a paragraph around it', () => {
+    const { container } = renderStream(page([], null), <div className="zero">Category posts live here.</div>)
+    expect(container.querySelector('.StreamContainer.empty > .zero')).toHaveTextContent('Category posts live here.')
+    expect(container.querySelector('.StreamContainer.empty > p')).toBeNull()
   })
 
   it('loads the next page with the cursor when the sentinel is visible, and dedupes posts', async () => {

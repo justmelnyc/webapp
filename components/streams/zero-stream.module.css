@@ -1,0 +1,38 @@
+/* zeroStreamStyle, headingStyle and zeroStreamLink of the original's zeros/Zeros.js */
+.zero {
+  position: relative;
+  max-width: 540px;
+  padding: 53px 10px;
+  margin: 0 auto;
+  background-color: var(--color-white);
+}
+
+.heading {
+  font-size: 18px;
+}
+
+.link {
+  position: relative;
+}
+
+.link::before {
+  position: absolute;
+  bottom: 6px;
+  display: inline-block;
+  width: 100%;
+  height: 1px;
+  content: '';
+  background-color: var(--color-black);
+}
+
+@media (max-width: 39.9375em) {
+  .zero br {
+    display: none;
+  }
+}
+
+@media (min-width: 40em) {
+  .heading {
+    font-size: 24px;
+  }
+}
