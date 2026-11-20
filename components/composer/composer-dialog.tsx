@@ -57,7 +57,12 @@ const useOmnibarHost = (isOpen: boolean): HTMLElement | null => {
   return host
 }
 
-export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
+interface ComposerDialogProps {
+  categories: Category[]
+  featuredCategoryIds?: string[]
+}
+
+export const ComposerDialog = ({ categories, featuredCategoryIds }: ComposerDialogProps) => {
   const isOpen = useComposerStore((s) => s.isOpen)
   const blocks = useComposerStore((s) => s.blocks)
   const artistInvite = useComposerStore((s) => s.artistInvite)
@@ -134,6 +139,7 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
             <ComposerBlocks blocks={blocks} onRetry={retry} />
             <ActionBar
               categories={categories}
+              featuredCategoryIds={featuredCategoryIds}
               onFiles={addFiles}
               onCancel={() => setConfirmingCancel(true)}
             />

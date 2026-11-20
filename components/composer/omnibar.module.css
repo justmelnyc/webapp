@@ -5,9 +5,14 @@
   display: contents;
 }
 
-/* .isOmnibarActive .MainView / footer (MainView.css, FooterRenderables.js) */
+/*
+ * .isOmnibarActive .MainView / footer (MainView.css, FooterRenderables.js). The original's heroes and beacons are
+ * siblings of .MainView in .AppContainer, so they stay under the open editor; here they sit inside .MainView, so
+ * everything but a .Hero (and the boxes around it) hides instead.
+ */
 @media (max-width: 39.9375em) {
-  .host ~ :global(.MainView),
+  .host ~ :global(.MainView):not(:has(:global(.Hero))),
+  .host ~ :global(.MainView) :not(:global(.Hero), :global(.Hero) *, :has(:global(.Hero))),
   .host ~ footer {
     display: none;
   }

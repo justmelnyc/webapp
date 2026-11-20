@@ -103,7 +103,7 @@ export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
             {viewer.isBrand || viewer.isStaff ? <NavbarAnalyticsLink /> : null}
           </NavbarProfile>
           <NavbarLayoutTool />
-          <NavbarOmniButton categories={categories} />
+          <NavbarOmniButton categories={categories} featuredCategoryIds={viewer.links?.categories ?? []} />
           <NotificationsDropdown assetOrigin={API_ORIGIN} />
         </>
       ) : (

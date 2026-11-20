@@ -4,8 +4,13 @@ import type { Category } from '@/types/content'
 import styles from './navbar.module.css'
 
 /** The original's NavbarOmniButton: a pencil and "Post" that opens the omnibar. */
-export const NavbarOmniButton = ({ categories }: { categories: Category[] }) => (
-  <ComposeButton categories={categories} className={`NavbarOmniButton ${styles.omni}`}>
+interface NavbarOmniButtonProps {
+  categories: Category[]
+  featuredCategoryIds?: string[]
+}
+
+export const NavbarOmniButton = ({ categories, featuredCategoryIds }: NavbarOmniButtonProps) => (
+  <ComposeButton categories={categories} featuredCategoryIds={featuredCategoryIds} className={`NavbarOmniButton ${styles.omni}`}>
     <PencilIcon />
     <span>Post</span>
   </ComposeButton>
