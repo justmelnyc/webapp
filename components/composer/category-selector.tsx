@@ -7,8 +7,17 @@ import type { Category } from '@/types/content'
 import { cn } from '@/utils/cn'
 import styles from './category-selector.module.css'
 
-/** The original's CategoryPostSelector: a searchable single-choice "Choose Category" box. */
-export const CategorySelector = ({ categories }: { categories: Category[] }) => {
+interface CategorySelectorProps {
+  categories: Category[]
+  /** The viewer's curated/moderated category ids (the original's `featuredInCategories`). */
+  featuredCategoryIds?: string[]
+}
+
+/**
+ * The original's CategoryPostSelector: a searchable single-choice "Choose Category" box. Like the original's
+ * componentDidMount, it preselects the first of the viewer's curated/moderated categories (not while editing a post).
+ */
+export const CategorySelector = ({ categories, featuredCategoryIds = [] }: CategorySelectorProps) => {
   const categoryIds = useComposerStore((s) => s.categoryIds)
   const setCategory = useComposerStore((s) => s.setCategory)
   const isEditing = useComposerStore((s) => s.mode === 'edit') // an existing post's category is shown, not changeable
@@ -20,6 +29,15 @@ export const CategorySelector = ({ categories }: { categories: Category[] }) => 
   const listId = useId()
   const selected = categories.find((c) => c.id === categoryIds[0]) ?? null
   const matches = categories.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+
+  useEffect(() => {
+    const featured = featuredCategoryIds.find((id) => categories.some((c) => c.id === id))
+    if (featured && !useComposerStore.getState().categoryIds.length && useComposerStore.getState().mode !== 'edit') {
+      setCategory(featured)
+    }
+    // mount only, like the original's componentDidMount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!open) return

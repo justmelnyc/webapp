@@ -13,6 +13,8 @@ import styles from './action-bar.module.css'
 
 interface ActionBarProps {
   categories: Category[]
+  /** The viewer's curated/moderated category ids: the first one is preselected (the original's `featuredInCategories`). */
+  featuredCategoryIds?: string[]
   onFiles: (files: File[]) => void
   onCancel: () => void
   /** Narrow hosts (a grid card's inline editor) use the compact layout at any width. */
@@ -32,7 +34,7 @@ const CancelText = ({ onCancel }: { onCancel: () => void }) => (
 )
 
 /** The original's PostActionBar (post version): Cancel, Upload, Sell, category selector and Post. */
-export const ActionBar = ({ categories, onFiles, onCancel, compact = false, id }: ActionBarProps) => {
+export const ActionBar = ({ categories, featuredCategoryIds, onFiles, onCancel, compact = false, id }: ActionBarProps) => {
   const blocks = useComposerStore((s) => s.blocks)
   const isSubmitting = useComposerStore((s) => s.isSubmitting)
   const { submit, isPending } = useSubmitPost()
@@ -84,7 +86,7 @@ export const ActionBar = ({ categories, onFiles, onCancel, compact = false, id }
       <ArrowIcon />
     </button>
   )
-  const selector = categories.length > 0 ? <CategorySelector categories={categories} /> : null
+  const selector = categories.length > 0 ? <CategorySelector categories={categories} featuredCategoryIds={featuredCategoryIds} /> : null
   const fileInput = (
     <input
       ref={inputRef}

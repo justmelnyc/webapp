@@ -15,7 +15,6 @@ router.get('/api/v2/badges.json', (req, res) => res.json({ badges: [] }))
 router.get('/api/v2/most_recent_announcements', (req, res) => res.status(204).end())
 router.head('/api/v2/notifications', (req, res) => res.status(204).end())
 router.get('/api/v2/notifications', (req, res) => page(res, { activities: [] }))
-router.get('/api/v2/posts/:id/related', (req, res) => page(res, { posts: [] }))
 
 router.get('/api/v2/profile', (req, res) => {
   const me = viewer(req)

@@ -8,6 +8,7 @@ import type { Category } from '@/types/content'
 
 interface ComposeButtonProps {
   categories?: Category[]
+  featuredCategoryIds?: string[]
   /** When given, a plain `<button>` carrying these classes replaces the default Button. */
   className?: string
   /** Replaces the default "Post" label (e.g. an icon and a span, like the navbar's). */
@@ -15,7 +16,7 @@ interface ComposeButtonProps {
 }
 
 /** Opens the omnibar and mounts it. */
-export const ComposeButton = ({ categories = [], className, children }: ComposeButtonProps) => {
+export const ComposeButton = ({ categories = [], featuredCategoryIds, className, children }: ComposeButtonProps) => {
   const open = useComposerStore((s) => s.open)
   return (
     <>
@@ -26,7 +27,7 @@ export const ComposeButton = ({ categories = [], className, children }: ComposeB
           {children ?? 'Post'}
         </button>
       )}
-      <ComposerDialog categories={categories} />
+      <ComposerDialog categories={categories} featuredCategoryIds={featuredCategoryIds} />
     </>
   )
 }
