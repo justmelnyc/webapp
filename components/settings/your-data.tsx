@@ -9,23 +9,16 @@ interface YourDataProps {
   name: string | null | undefined
   bio: string | null | undefined
   links: Array<{ url: string; text?: string | null }>
-  avatarUrl: string | null | undefined
-  coverUrl: string | null | undefined
 }
 
 const Dash = () => <span>&mdash;</span>
 
-const OriginalLink = ({ url }: { url: string | null | undefined }) =>
-  url ? (
-    <a href={url} rel="noopener noreferrer" target="_blank">
-      View original image
-    </a>
-  ) : (
-    <Dash />
-  )
-
-/** The original's "Your Data" panel. */
-export const YourData = ({ username, name, bio, links, avatarUrl, coverUrl }: YourDataProps) => (
+/**
+ * The original's "Your Data" panel. Avatar and Header always read "—" there: its `getOriginalAssetUrl` looks for
+ * `asset.original.url` on the profile's Immutable map, which never has it, so the "View original image" link it
+ * was meant to show never appears.
+ */
+export const YourData = ({ username, name, bio, links }: YourDataProps) => (
   <TreeSection title="Your Data">
     <p className={cn('SettingsDataDescription', treeStyles.dataDescription)}>
       The only data that Ello stores about you is what you enter on your settings page and what you post. All other
@@ -52,11 +45,11 @@ export const YourData = ({ username, name, bio, links, avatarUrl, coverUrl }: Yo
       </dd>
       <dt>Avatar:</dt>
       <dd>
-        <OriginalLink url={avatarUrl} />
+        <Dash />
       </dd>
       <dt>Header:</dt>
       <dd>
-        <OriginalLink url={coverUrl} />
+        <Dash />
       </dd>
     </dl>
     <div className={cn('SettingsCell', panelStyles.cell)}>

@@ -12,10 +12,10 @@
     overflow: hidden;
     color: transparent;
     vertical-align: middle;
-    background: #f0f0f0 no-repeat 50% 50%;
+    background: var(--color-gf0) no-repeat 50% 50%;
     background-size: cover;
     border-radius: 50%;
-    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform var(--speed) var(--ease-ello);
   }
 
   .avatar::before {
@@ -27,7 +27,7 @@
     z-index: 2;
     content: '';
     background-color: transparent;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--speed) ease;
   }
 
   @media (hover: hover) {
@@ -56,7 +56,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
-    transition: opacity 0.4s;
+    transition: opacity var(--speed2);
   }
 
   .image[src=''] {

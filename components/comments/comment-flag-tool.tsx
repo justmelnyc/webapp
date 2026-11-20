@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { flagComment } from '@/actions/moderation-actions'
 import { FlagIcon } from '@/components/icons'
 import { FlagDialog } from '@/components/moderation/flag-dialog'
-import { Hint } from '@/components/post-detail/hint'
+import { Hint } from '@/components/posts/hint'
 import { cn } from '@/utils/cn'
 
 interface CommentFlagToolProps {

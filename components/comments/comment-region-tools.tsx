@@ -3,6 +3,7 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { DragIcon, XIcon } from '@/components/icons'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './comment-region-tools.module.css'
 
 interface CommentRegionToolsProps {
@@ -47,11 +48,11 @@ export const CommentRegionTools = ({ id, onRemove, onMove }: CommentRegionToolsP
   }
 
   return (
-    <div className={`RegionTools ${styles.tools}`}>
+    <div className={`RegionTools ${parts.tools} ${styles.tools}`}>
       <button
         type="button"
         aria-label="Remove"
-        className={`BlockRemove ${styles.remove}`}
+        className={`BlockRemove ${parts.remove}`}
         onClick={() => setConfirming(true)}
       >
         <XIcon />
@@ -59,7 +60,7 @@ export const CommentRegionTools = ({ id, onRemove, onMove }: CommentRegionToolsP
       <button
         type="button"
         aria-label="Reorder (arrow keys or drag)"
-        className={`DragHandler ${styles.drag}`}
+        className={`DragHandler ${parts.drag}`}
         onPointerDown={(e) => {
           dragging.current = true
           e.currentTarget.setPointerCapture(e.pointerId)

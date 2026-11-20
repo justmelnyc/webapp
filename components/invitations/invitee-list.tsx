@@ -11,6 +11,7 @@ import { cn } from '@/utils/cn'
 import type { Invitee } from '@/types/invitation'
 import { avatarUrl } from '@/utils/images'
 import styles from './invitations.module.css'
+import '@/components/streams/columns.css'
 
 const PendingInvitee = ({ email, className }: { email: string; className: string }) => {
   const [pending, startTransition] = useTransition()
@@ -60,10 +61,10 @@ export const InviteeList = ({ invitees }: { invitees: Invitee[] }) => {
     return () => useLayoutModeStore.setState({ mode: 'grid' })
   }, [])
   const isGrid = mode === 'grid'
-  const rowClass = cn('UserInvitee', styles.invitee, isGrid && ['UserInviteeGrid', styles.gridItem])
+  const rowClass = cn('UserInvitee', styles.invitee, isGrid && ['UserInviteeGrid Column', styles.gridItem])
   return (
     <section className={`StreamContainer ${styles.stream}`}>
-      <div className={cn('Users', isGrid ? ['asInviteeGrid', styles.grid] : 'asInviteeList')}>
+      <div className={cn('Users', isGrid ? ['asInviteeGrid Columns', styles.grid] : 'asInviteeList')}>
         {invitees.map((invitee) =>
           invitee.user ? (
             <AcceptedInvitee key={invitee.id} user={invitee.user} className={rowClass} />

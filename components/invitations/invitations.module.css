@@ -19,7 +19,7 @@
 .heading {
   height: 30px;
   font-family: var(--font-black);
-  font-size: 18px;
+  font-size: var(--text-18);
   font-weight: 400;
   line-height: 30px;
   white-space: nowrap;
@@ -39,7 +39,7 @@
 
 .suggestion {
   max-width: calc(100% - 120px);
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .button {
@@ -51,9 +51,9 @@
 }
 
 .button:disabled {
-  color: #aaa;
+  color: var(--color-gaa);
   background-color: transparent;
-  border-color: #aaa;
+  border-color: var(--color-gaa);
 }
 
 /* ---- invitee rows ---- */
@@ -64,8 +64,8 @@
   padding-bottom: 50px;
   margin-bottom: 10px;
   overflow: hidden;
-  font-size: 14px;
-  border-bottom: 1px solid #f2f2f2;
+  font-size: var(--text-14);
+  border-bottom: 1px solid var(--color-gf2);
 }
 
 .inviteeHeader {
@@ -94,12 +94,12 @@
   overflow: hidden;
   font-size: 0.75rem;
   line-height: 30px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   white-space: nowrap;
-  background-color: #666;
-  border: 1px solid #666;
-  border-radius: 15px;
+  background-color: var(--color-g66);
+  border: 1px solid var(--color-g66);
+  border-radius: var(--radius-pill-small);
   transition:
     background-color var(--speed) var(--ease-ello),
     border-color var(--speed) var(--ease-ello),
@@ -114,13 +114,13 @@
 
 @media (hover: hover) {
   .inviteeLink:hover {
-    color: #999;
+    color: var(--color-g99);
   }
 
   .action:hover {
-    color: #fff;
-    background-color: #aaa;
-    border-color: #aaa;
+    color: var(--color-white);
+    background-color: var(--color-gaa);
+    border-color: var(--color-gaa);
   }
 }
 
@@ -141,7 +141,7 @@
 
   .heading {
     height: 40px;
-    font-size: 24px;
+    font-size: var(--text-24);
     line-height: 40px;
   }
 
@@ -160,50 +160,19 @@
 
 /* ---- grid mode (Users.asInviteeGrid / UserInviteeGrid) ---- */
 
-@media (min-width: 40em) {
-  .grid {
-    margin-left: -20px;
+/*
+ * From 40em the invitees stand in the shared column grid (`.Columns` / `.Column`, components/streams/
+ * columns.css). Below that the original has no grid: the rows stay stacked.
+ */
+@media (max-width: 39.9375em) {
+  .grid.grid {
+    margin-left: 0;
   }
 
-  .gridItem {
-    display: inline-block;
-    width: calc(50% - 20px);
-    margin-left: 20px;
-    vertical-align: top;
-  }
-}
-
-@media (min-width: 60em) {
-  .gridItem {
-    width: calc(33.33333% - 20px);
-  }
-}
-
-@media (min-width: 85em) {
-  .grid {
-    margin-left: -40px;
-  }
-
-  .gridItem {
-    width: calc(25% - 40px);
-    margin-left: 40px;
-  }
-}
-
-@media (min-width: 107.5em) {
-  .gridItem {
-    width: calc(20% - 40px);
-  }
-}
-
-@media (min-width: 130em) {
-  .gridItem {
-    width: calc(16.66666% - 40px);
-  }
-}
-
-@media (min-width: 152.5em) {
-  .gridItem {
-    width: calc(14.28571% - 40px);
+  .grid .gridItem {
+    display: block;
+    width: auto;
+    margin-left: 0;
+    vertical-align: baseline;
   }
 }

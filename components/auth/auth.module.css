@@ -3,7 +3,7 @@
   display: flex;
   min-width: 100vw;
   min-height: 100vh;
-  color: #fff;
+  color: var(--color-white);
   background-color: transparent;
 }
 
@@ -16,7 +16,7 @@
 
 .dialog h1 {
   padding-top: 100px;
-  font-size: 24px;
+  font-size: var(--text-24);
   line-height: 1;
 }
 
@@ -36,13 +36,13 @@
 .dialog a:focus,
 .dialog a:active,
 .dialog a:hover {
-  color: #fff;
+  color: var(--color-white);
 }
 
 .alt {
   margin-top: 15px;
-  font-size: 14px;
-  color: #fff;
+  font-size: var(--text-14);
+  color: var(--color-white);
 }
 
 /* 350 / 16 = 21.875em */

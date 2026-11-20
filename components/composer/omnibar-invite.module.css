@@ -4,24 +4,24 @@
   margin-top: 5px;
   margin-bottom: 5px;
   overflow: hidden;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
-  color: #000;
+  color: var(--color-black);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .inviteTitle span {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 60em) {
   .inviteTitle {
     margin-top: 10px;
     margin-bottom: 10px;
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 
@@ -37,32 +37,32 @@
   max-width: 100%;
   margin-bottom: 10px;
   overflow: hidden;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
-  color: #00d100;
+  color: var(--color-green);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .successBody {
-  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-light);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .successDismiss {
   position: absolute;
   top: -3px;
   right: -20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (hover: hover) {
   .successDismiss:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }

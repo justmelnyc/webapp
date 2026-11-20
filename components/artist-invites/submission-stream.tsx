@@ -1,14 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useEffect, useRef } from 'react'
 import { runSubmissionAction } from '@/actions/artist-invite-actions'
 import { useLayoutModeStore } from '@/components/layout/layout-mode-store'
+import { PostsLightbox } from '@/components/lightbox/post-lightbox'
 import { PostPaginator } from '@/components/streams/post-paginator'
 import { useColumnCount } from '@/components/streams/use-column-count'
 import { toast } from '@/stores/toast-store'
-import { submissionPageSchema, type Submission, type SubmissionAction, type SubmissionPage } from '@/types/artist-invite'
+import type { Submission, SubmissionAction, SubmissionPage } from '@/types/artist-invite'
 import { SubmissionsAsGrid, SubmissionsAsList } from './submission-columns'
+import { useSubmissionPages } from './use-submission-pages'
 import '@/components/streams/stream.css'
+import '@/components/streams/columns.css'
 
 interface SubmissionStreamProps {
   /** The stream link the API gave for the invite (its href). */
@@ -21,33 +24,18 @@ interface SubmissionStreamProps {
   infinite?: boolean
 }
 
-const fetchPage = async (href: string, page: number): Promise<SubmissionPage> => {
-  const params = new URLSearchParams({ href, page: String(page) })
-  const response = await fetch(`/api/artist-invites/submissions?${params}`)
-  if (!response.ok) throw new Error('Could not load more submissions')
-  return submissionPageSchema.parse(await response.json())
-}
-
 /** The original's StreamContainer for submissions: columns of posts, 'Load More', and the curator's actions. */
 export const SubmissionStream = ({ href, initialPage, headerText, signedIn, viewerId, infinite = false }: SubmissionStreamProps) => {
   const mode = useLayoutModeStore((state) => state.mode)
   const columnCount = useColumnCount()
-  const [submissions, setSubmissions] = useState<Submission[]>(initialPage.submissions)
-  const [nextPage, setNextPage] = useState<number | null>(initialPage.nextPage)
-  const [busy, startLoading] = useTransition()
+  const { submissions, hasNextPage, isFetchingNextPage, isError, loadMore, update } = useSubmissionPages(href, initialPage)
 
-  const loadMore = useCallback(() => {
-    if (nextPage === null || busy) return
-    startLoading(async () => {
-      try {
-        const page = await fetchPage(href, nextPage)
-        setSubmissions((current) => [...current, ...page.submissions.filter((s) => !current.some((c) => c.id === s.id))])
-        setNextPage(page.nextPage)
-      } catch {
-        toast.error('Could not load more submissions')
-      }
-    })
-  }, [href, nextPage, busy])
+  // a failed page is reported once, not on every render while the query stays in its error state
+  const reported = useRef(false)
+  useEffect(() => {
+    if (isError && !reported.current) toast.error('Could not load more submissions')
+    reported.current = isError
+  }, [isError])
 
   useEffect(() => {
     if (!infinite) return undefined
@@ -62,9 +50,7 @@ export const SubmissionStream = ({ href, initialPage, headerText, signedIn, view
   const onAction = (submission: Submission, action: SubmissionAction): void => {
     void runSubmissionAction(action).then((result) => {
       if (!result.ok) return toast.error(result.error)
-      setSubmissions((current) =>
-        current.map((s) => (s.id === submission.id ? { ...s, status: result.data.status, actions: result.data.actions } : s)),
-      )
+      update(submission.id, (s) => ({ ...s, status: result.data.status, actions: result.data.actions }))
     })
   }
 
@@ -72,8 +58,10 @@ export const SubmissionStream = ({ href, initialPage, headerText, signedIn, view
   const shared = { submissions, signedIn, viewerId, headerText, onAction }
   return (
     <section className="StreamContainer">
-      {mode === 'grid' ? <SubmissionsAsGrid columnCount={columnCount} {...shared} /> : <SubmissionsAsList {...shared} />}
-      {nextPage !== null && <PostPaginator isBusy={busy} onLoadMore={loadMore} />}
+      <PostsLightbox posts={submissions.map((submission) => submission.post)} viewerId={viewerId ?? null} isGridMode={mode === 'grid'}>
+        {mode === 'grid' ? <SubmissionsAsGrid columnCount={columnCount} {...shared} /> : <SubmissionsAsList {...shared} />}
+      </PostsLightbox>
+      {hasNextPage && <PostPaginator isBusy={isFetchingNextPage} onLoadMore={loadMore} />}
     </section>
   )
 }

@@ -1,13 +1,16 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { rest } from '@/lib/api/client'
 import { errorMessage } from '@/lib/errors'
 import { sendInvitationsSchema } from '@/lib/schemas/invitation'
 import { invitationsEnvelopeSchema } from '@/types/invitation'
 import { failure, success, type ActionResult } from '@/types/action'
 
-/** The original's `inviteUsers`: sends (or re-sends, for a Re-Invite) invitations to these addresses. */
+/**
+ * The original's `inviteUsers`: sends (or re-sends, for a Re-Invite) invitations to these addresses.
+ * Like the original, the list next to the form is not refreshed: a new address (and the new order after
+ * a Re-Invite) shows the next time the page is opened.
+ */
 export const sendInvitations = async (input: unknown): Promise<ActionResult> => {
   const parsed = sendInvitationsSchema.safeParse(input)
   if (!parsed.success) return failure(parsed.error.issues[0]?.message ?? 'Check the email addresses')
@@ -16,6 +19,5 @@ export const sendInvitations = async (input: unknown): Promise<ActionResult> => 
   } catch (error) {
     return failure(errorMessage(error))
   }
-  revalidatePath('/invitations')
   return success(undefined)
 }

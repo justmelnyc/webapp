@@ -23,12 +23,18 @@ import { avatarUrl } from '@/utils/images'
 import { cn } from '@/utils/cn'
 import { cleanHtml } from '@/utils/sanitize'
 import { truncateHtml } from '@/utils/truncate-html'
+import type { AdministeredCategory } from '@/types/category'
 import type { User } from '@/types/user'
 import styles from './user-profile.module.css'
 
 interface ProfileHeroProps {
   user: User
   signedIn: boolean
+  /** The viewer may assign category roles (`selectIsRoleAdministrator`): they get the roles button on every profile. */
+  isRoleAdministrator?: boolean
+  /** The categories the viewer administers: with any, the Community Roles panel has its assign form. */
+  administeredCategories?: AdministeredCategory[]
+  isStaff?: boolean
 }
 
 const isSafeUrl = (url: string): boolean => /^https?:\/\//i.test(url)
@@ -40,7 +46,13 @@ const coverUrl = (user: User): string | null => {
 }
 
 /** The original's `Hero` > `HeroProfile` (UserDetail hero). */
-export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
+export const ProfileHero = ({
+  user,
+  signedIn,
+  isRoleAdministrator = false,
+  administeredCategories = [],
+  isStaff = false,
+}: ProfileHeroProps) => {
   const { userStats: stats } = user
   const cover = coverUrl(user)
   const priority = user.currentUserState?.relationshipPriority
@@ -84,7 +96,9 @@ export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
               userId={user.id}
               name={displayName}
               signedIn={signedIn}
-              isCollaborateable={!!user.settings?.isCollaborateable}
+              // The original never shows Collab to logged-out visitors: its GraphQL reducer drops the
+              // setting (it stores `isCollaboratable`), so only users it also got from a v2 answer have it.
+              isCollaborateable={signedIn && !!user.settings?.isCollaborateable}
               isHireable={!!user.settings?.isHireable}
             />
             <RelationshipButton
@@ -95,9 +109,16 @@ export const ProfileHero = ({ user, signedIn }: ProfileHeroProps) => {
               className="isPill inUserProfile"
             />
           </div>
-          <UserRolesPanel roles={user.categoryUsers ?? []} />
+          <UserRolesPanel
+            key={user.id}
+            userId={user.id}
+            username={user.username}
+            roles={user.categoryUsers ?? []}
+            administeredCategories={administeredCategories}
+            isStaff={isStaff}
+          />
         </div>
-        {user.categoryUsers?.length ? <HeroUserRolesButton /> : null}
+        {isRoleAdministrator || user.categoryUsers?.length ? <HeroUserRolesButton /> : null}
         <HeroShareUserButton />
         <HeroScrollToContentButton />
       </div>

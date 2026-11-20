@@ -18,24 +18,24 @@
   height: 30px;
   min-height: 30px;
   padding-left: 10px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 30px;
-  color: #000;
+  color: var(--color-black);
   vertical-align: baseline;
-  background-color: #fff;
+  background-color: var(--color-white);
   border: 0;
   border-bottom: 0;
-  transition: background-color 0.2s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    color 0.2s cubic-bezier(0.23, 1, 0.32, 1), width 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    height 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: background-color var(--speed) var(--ease-ello), border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello), width var(--speed) var(--ease-ello),
+    height var(--speed) var(--ease-ello);
 }
 
 .input::placeholder {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .input:focus {
-  border-color: #000;
+  border-color: var(--color-black);
   outline: 0;
 }
 
@@ -45,24 +45,24 @@
   padding: 0;
   margin-top: 1px;
   margin-left: 10px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 30px;
-  color: #fff;
-  background-color: #00d100;
-  border: 1px solid #00d100;
+  color: var(--color-white);
+  background-color: var(--color-green);
+  border: 1px solid var(--color-green);
   border-radius: 50%;
-  transition: background-color 0.2s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    color 0.2s cubic-bezier(0.23, 1, 0.32, 1), width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: background-color var(--speed) var(--ease-ello), border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello), width var(--speed) var(--ease-ello);
 }
 
 .button:not([disabled]):active {
-  background-color: #00b100;
-  border-color: #00b100;
+  background-color: var(--color-green-hover);
+  border-color: var(--color-green-hover);
 }
 
 .button[disabled] {
-  background-color: #000;
-  border-color: #000;
+  background-color: var(--color-black);
+  border-color: var(--color-black);
 }
 
 .button :global(.ArrowIcon) {
@@ -71,9 +71,38 @@
 
 @media (hover: hover) {
   .button:not([disabled]):hover {
-    background-color: #00b100;
-    border-color: #00b100;
+    background-color: var(--color-green-hover);
+    border-color: var(--color-green-hover);
   }
+}
+
+/* `.FormControlStatusBubble.inFooter` (FormControl.css): the answer, floating above the form */
+.bubble {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  z-index: 2;
+  display: inline-block;
+  height: 30px;
+  padding: 0 15px;
+  line-height: 30px;
+  color: var(--color-white);
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-black);
+  border-radius: 20px;
+  transition: opacity var(--speed);
+}
+
+:global(.isSucceeding) > .bubble {
+  background-color: var(--color-green);
+  border-color: var(--color-green);
+}
+
+:global(.isFailing) > .bubble {
+  background-color: var(--color-red);
+  border-color: var(--color-red);
 }
 
 @media (min-width: 40em) {
@@ -81,12 +110,17 @@
     width: 200px;
   }
 
+  .bubble {
+    right: auto;
+    left: 0;
+  }
+
   .button {
     width: auto;
     padding-right: 15px;
     padding-left: 15px;
     margin-right: 5px;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
   }
 }
 

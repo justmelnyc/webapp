@@ -1,0 +1,43 @@
+/*
+ * controlStyle of legacy/src/components/forms/ToggleControl.js: the 60x30 Yes / No pill.
+ * In @layer components, so the place that uses it (settings positions it, onboarding makes it a
+ * big button) overrides any of this from its own module without a specificity fight.
+ */
+@layer components {
+  .toggle {
+    display: inline-block;
+    width: 60px;
+    height: var(--control-small);
+    font-size: var(--text-14);
+    line-height: var(--control-small);
+    color: var(--color-white);
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    background-color: var(--color-gaa);
+    border: 1px solid var(--color-gaa);
+    border-radius: var(--radius-pill-small);
+    transition:
+      background-color var(--speed) ease,
+      border-color var(--speed) ease,
+      color var(--speed) ease,
+      opacity var(--speed) ease;
+  }
+
+  .toggle.checked {
+    background-color: var(--color-green-toggle);
+    border-color: var(--color-green-toggle);
+  }
+
+  .toggle.disabled {
+    opacity: 0.25;
+  }
+
+  @media (hover: hover) {
+    .toggle:hover {
+      color: var(--color-gaa);
+      background-color: var(--color-white);
+      border-color: var(--color-gaa);
+    }
+  }
+}

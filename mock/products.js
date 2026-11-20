@@ -34,9 +34,9 @@ const buildProducts = (users, nextId, now = Date.parse('2026-11-02T09:00:00Z')) 
   }]
 })
 
-const seedProducts = (db, nextId) => {
+const seedProducts = (db, nextId, now) => {
   if (db.posts.some(p => p.isProduct)) return 0
-  const products = buildProducts(db.users, nextId)
+  const products = buildProducts(db.users, nextId, now)
   db.posts.push(...products)
   return products.length
 }

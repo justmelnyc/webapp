@@ -32,7 +32,8 @@ const pageHeader = (kind, slug) => ({
   postToken: null,
   ctaLink: { text: 'Join', url: '/join' },
   image: media.responsive(media.photoUrl('header', 1600, 800), 1600, 800),
-  category: null,
+  // a category page's header names its category (the original reads `category { id }` to know whether the viewer subscribed)
+  category: (kind === 'CATEGORY' && categories.find(c => c.slug === slug)) || null,
   user: gqlAuthor(db.users[0]),
 })
 

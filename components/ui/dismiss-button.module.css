@@ -4,7 +4,7 @@
   top: 5px;
   right: 5px;
   z-index: 2;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 @media (min-width: 40em) {
@@ -16,6 +16,6 @@
 
 @media (hover: hover) {
   .dismiss:hover {
-    color: #aaa;
+    color: var(--color-gaa);
   }
 }

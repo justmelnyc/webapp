@@ -37,39 +37,39 @@
   height: 40px;
   padding: 0 10px;
   line-height: 40px;
-  color: #fff;
+  color: var(--color-white);
   white-space: nowrap;
-  background-color: #000;
-  border-radius: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease, width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  background-color: var(--color-black);
+  border-radius: var(--radius-box);
+  transition: background-color var(--speed) ease, color var(--speed) ease, width var(--speed) var(--ease-ello);
 }
 
 .button:disabled {
   pointer-events: none;
-  background-color: #aaa;
+  background-color: var(--color-gaa);
 }
 
 .button:hover {
-  background-color: #6a6a6a;
+  background-color: var(--color-g6a);
 }
 
 .buyLinked {
-  background-color: #00d100;
+  background-color: var(--color-green);
 }
 
 .submit {
   width: auto;
   min-width: 120px;
   padding: 0 20px;
-  background-color: #00d100;
+  background-color: var(--color-green);
 }
 
 .submit:hover {
-  background-color: #02b302;
+  background-color: var(--color-submit-hover);
 }
 
 .submit:disabled {
-  background-color: #aaa;
+  background-color: var(--color-gaa);
 }
 
 .label {
@@ -88,12 +88,12 @@
 .cancel {
   width: auto;
   padding: 0 10px;
-  color: #aaa;
+  color: var(--color-gaa);
   background: transparent;
 }
 
 .cancel:hover {
-  color: #6a6a6a;
+  color: var(--color-g6a);
   background: transparent;
 }
 

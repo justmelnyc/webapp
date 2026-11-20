@@ -19,7 +19,7 @@ export const NavLink = ({ href, children, matchPrefix }: NavLinkProps) => {
     <Link
       href={href}
       aria-current={active ? 'page' : undefined}
-      className={cn('border-b-2 pb-0.5 text-sm', active ? 'border-ink text-ink' : 'text-ash hover:text-ink border-transparent')}
+      className={cn('border-b-2 pb-0.5 text-sm', active ? 'border-black text-black' : 'text-g99 hover:text-black border-transparent')}
     >
       {children}
     </Link>

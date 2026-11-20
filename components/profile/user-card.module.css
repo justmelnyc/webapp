@@ -14,10 +14,10 @@
   padding: 20px;
   margin-top: 10px;
   overflow: hidden;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   background-color: transparent;
-  border-radius: 5px;
+  border-radius: var(--radius-box);
 }
 
 .avatar {
@@ -73,7 +73,7 @@
   z-index: 1;
   content: '';
   background-color: rgba(0, 0, 0, 0.6);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 @media (hover: hover) {

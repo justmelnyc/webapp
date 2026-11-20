@@ -1,0 +1,68 @@
+/*
+ * buttonStyle / categoryButtonStyle of legacy/src/containers/CreatorTypeContainer.js: the outlined
+ * grey choices ("An Artist" / "A Fan", then the categories) that turn black when picked. They sit
+ * two to a row, the category ones three to a row from 26.25em.
+ */
+.option {
+  width: calc(50% - 5px);
+  max-width: 230px;
+  height: var(--control);
+  padding: 0 5px;
+  margin-right: 10px;
+  overflow: hidden;
+  color: var(--color-gaa);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gaa);
+  border-radius: var(--radius-box);
+  transition:
+    background-color var(--speed),
+    border-color var(--speed),
+    color var(--speed);
+}
+
+.option:nth-child(2n) {
+  margin-right: 0;
+}
+
+.option.active {
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+@media (hover: hover) {
+  .option:hover {
+    color: var(--color-white);
+    background-color: var(--color-black);
+    border-color: var(--color-black);
+  }
+}
+
+.category {
+  margin-bottom: 10px;
+}
+
+@media (hover: hover) {
+  .category.active:hover {
+    background-color: var(--color-g66);
+    border: 1px solid var(--color-g66);
+  }
+}
+
+@media (min-width: 26.25em) {
+  .category {
+    width: calc(33% - 6px);
+    max-width: 150px;
+  }
+
+  .category:nth-child(2n) {
+    margin-right: 10px;
+  }
+
+  .category:nth-child(3n) {
+    margin-right: 0;
+  }
+}

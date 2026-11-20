@@ -9,7 +9,7 @@
 }
 
 .embetter:hover {
-  background-color: #000;
+  background-color: var(--color-black);
 }
 
 .embetter a {
@@ -81,7 +81,7 @@
 }
 
 .embetter .embetter-loading {
-  background-color: #000000;
+  background-color: var(--color-black);
   opacity: 0;
 }
 

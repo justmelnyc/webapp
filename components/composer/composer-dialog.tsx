@@ -14,6 +14,7 @@ import { isDraftDirty, useComposerStore } from '@/stores/composer-store'
 import type { Category } from '@/types/content'
 import { cn } from '@/utils/cn'
 import './fullscreen.css'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './omnibar.module.css'
 import inviteStyles from './omnibar-invite.module.css'
 
@@ -116,6 +117,7 @@ export const ComposerDialog = ({ categories }: { categories: Category[] }) => {
           <div
             className={cn(
               'editor',
+              parts.placeholder,
               styles.editor,
               hasContent && cn('hasContent', styles.hasContent),
               dragging && styles.hasDragOver,

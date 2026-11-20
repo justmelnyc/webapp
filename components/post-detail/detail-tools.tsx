@@ -10,13 +10,15 @@ import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { toast } from '@/stores/toast-store'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
-import { originalAuthorOf } from '@/utils/repost'
+import { isRepost, originalAuthorOf } from '@/utils/repost'
 import { postShareContent, type ShareContent } from '@/utils/share'
 import { timeAgoInWords } from './time-ago-in-words'
 import { PostFlagTool } from '@/components/posts/post-flag-tool'
-import { Hint } from './hint'
+import { Hint } from '@/components/posts/hint'
 import { numberToHuman } from './number-to-human'
 import styles from './post-detail-tools.module.css'
+import '@/components/posts/post-tools.css'
+import '@/components/posts/post-tools-more.css'
 
 interface DetailToolsProps {
   post: Post
@@ -43,23 +45,32 @@ const useLove = (post: Post, signedIn: boolean) => {
   return { ...state, toggle }
 }
 
-const useWatch = (post: Post) => {
+const useWatch = (post: Post, signedIn: boolean) => {
   const [watching, setOptimistic] = useOptimistic(
     post.currentUserState.watching,
     (_, next: boolean) => next,
   )
   const [, startTransition] = useTransition()
-  const toggle = (): void =>
+  const registration = useRegistrationDialog()
+  const toggle = (): void => {
+    // PostContainer: `onClickWatchPost: isLoggedIn ? this.onClickWatchPost : this.onOpenSignupModal`
+    if (!signedIn) return registration.open('post-tools')
     startTransition(async () => {
       const next = !watching
       setOptimistic(next)
       const result = await setWatching(post.id, next)
       if (!result.ok) toast.error(result.error)
     })
+  }
   return { watching, toggle }
 }
 
-/** The original's `PostTools` footer: every tool renders, the surrounding context hides some. */
+/**
+ * The original's `PostTools` footer: every tool renders, the surrounding context hides some. The
+ * Watch tool is there for signed-out visitors too, on reposts: it opens the sign-up dialog.
+ * (On phones the original adds `isPill` to it, but its `.WatchTool.isPill` rules lose to the post page's
+ * own, so it is drawn like at any other width: measured, not ported.)
+ */
 export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
   const signedIn = viewerId !== null
   const isOwnPost = viewerId === post.author.id
@@ -67,7 +78,10 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
   const [shareContent, setShareContent] = useState<ShareContent | null>(null)
   const registration = useRegistrationDialog()
   const love = useLove(post, signedIn)
-  const watch = useWatch(post)
+  const watch = useWatch(post, signedIn)
+  // `!isOwnPost && !isOwnOriginalPost`. Signed out, the original compares two missing ids for a post
+  // that is not a repost and takes it for the visitor's own, so only reposts get the Watch tool then.
+  const showWatch = signedIn ? !isOwnPost && viewerId !== originalAuthorOf(post).id : isRepost(post)
   const startRepost = useRepostStore((s) => s.start)
   const { commentsCount, repostsCount, viewsCount } = post.postStats
   const repostInert =
@@ -151,7 +165,7 @@ export const DetailTools = ({ post, viewerId }: DetailToolsProps) => {
           <Hint>Views</Hint>
         </Link>
       </span>
-      {signedIn && !isOwnPost && viewerId !== originalAuthorOf(post).id ? (
+      {showWatch ? (
         <span className={cn('PostTool WatchTool', watch.watching && 'isWatchingPost')}>
           <button
             type="button"

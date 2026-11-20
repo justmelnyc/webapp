@@ -1,44 +1,43 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { requestDataExport } from '@/actions/account-actions'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './settings-panels.module.css'
 
-/** Hands the file to the browser's download manager without leaving the page. */
-const download = (url: string): void => {
-  const link = document.createElement('a')
-  link.href = url
-  link.download = ''
-  document.body.append(link)
-  link.click()
-  link.remove()
-}
+const isSafeUrl = (url: string): boolean => /^https?:\/\//i.test(url)
 
 /**
- * The original's "Request Export" button: once requested it is disabled and reads "Exported". Here the mock
- * builds the export on the spot, so the browser downloads it too.
+ * The original's "Request Export" button: clicking disables it and makes it read "Exported"; once the API has
+ * answered with the export's address (`profile.dataExport`), a "Download Export" link takes its place.
  */
 export const ExportDataButton = () => {
-  const [exported, setExported] = useState(false)
-  const [pending, startTransition] = useTransition()
+  const [requested, setRequested] = useState(false)
+  const [url, setUrl] = useState<string | null>(null)
 
-  const onClick = (): void => {
-    startTransition(async () => {
-      const result = await requestDataExport()
-      if (!result.ok) {
-        toast.error(result.error)
-        return
-      }
-      setExported(true)
-      download(result.data.url)
-    })
+  const onClick = async (): Promise<void> => {
+    setRequested(true)
+    const result = await requestDataExport()
+    if (!result.ok) {
+      setRequested(false)
+      toast.error(result.error)
+      return
+    }
+    if (isSafeUrl(result.data.url)) setUrl(result.data.url)
+  }
+
+  if (url) {
+    return (
+      <a className={cn('SettingsButton', styles.button)} href={url} rel="noopener noreferrer" target="_blank">
+        Download Export
+      </a>
+    )
   }
 
   return (
-    <button type="button" className={cn('SettingsButton', styles.button)} disabled={exported || pending} onClick={onClick}>
-      {exported ? 'Exported' : 'Request Export'}
+    <button type="button" className={cn('SettingsButton', styles.button)} disabled={requested} onClick={onClick}>
+      {requested ? 'Exported' : 'Request Export'}
     </button>
   )
 }

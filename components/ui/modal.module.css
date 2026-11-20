@@ -2,10 +2,10 @@
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 1080;
+  z-index: var(--z-modal);
   padding-top: 40px;
   overflow-y: scroll;
-  color: #fff;
+  color: var(--color-white);
   outline: 0;
   background-color: rgba(26, 26, 26, 0.8);
   animation: fade 0.4s var(--ease-ello);
@@ -52,7 +52,7 @@
 .heading {
   height: 30px;
   margin-bottom: 10px;
-  font-size: 18px;
+  font-size: var(--text-18);
   line-height: 30px;
   white-space: nowrap;
 }
@@ -62,7 +62,7 @@
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 0;
-    font-size: 24px;
+    font-size: var(--text-24);
     vertical-align: middle;
   }
 }
@@ -70,28 +70,28 @@
 .button {
   display: inline-block;
   width: 60px;
-  height: 40px;
-  font-size: 14px;
-  line-height: 40px;
-  color: #000;
+  height: var(--control);
+  font-size: var(--text-14);
+  line-height: var(--control);
+  color: var(--color-black);
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #fff;
-  border: 1px solid #fff;
-  border-radius: 20px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-white);
+  border-radius: var(--radius-pill);
   transition:
-    background-color 0.2s var(--ease-ello),
-    border-color 0.2s var(--ease-ello),
-    color 0.2s var(--ease-ello),
-    opacity 0.2s var(--ease-ello);
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    opacity var(--speed) var(--ease-ello);
 }
 
 .button:hover,
 .button:focus-visible {
-  color: #fff;
-  background-color: #000;
-  border-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-color: var(--color-black);
 }
 
 .button + .button {

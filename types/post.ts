@@ -30,22 +30,24 @@ export const regionSchema = z.discriminatedUnion('kind', [
 
 export const assetSchema = z.object({ id: z.string(), attachment: responsiveImageSchema })
 
-/** The original post a repost points at (`repostedSource`): who wrote it and where it lives. */
-export const repostedSourceSchema = z.object({
-  id: z.string(),
-  token: z.string(),
-  author: authorSchema,
-  /** Only notifications ask for these (they summarize the original). */
-  summary: z.array(regionSchema).nullish(),
-  assets: z.array(assetSchema).nullish(),
-})
-
 /** Set on posts submitted to an artist invite; `actions` only when the viewer curates that invite. */
 export const postSubmissionSchema = z.object({
   id: z.string(),
   status: submissionStatusSchema,
   artistInvite: z.object({ id: z.string(), slug: z.string(), title: z.string() }),
   actions: submissionActionsSchema.nullish(),
+})
+
+/** The original post a repost points at (`repostedSource`): who wrote it and where it lives. */
+export const repostedSourceSchema = z.object({
+  id: z.string(),
+  token: z.string(),
+  author: authorSchema,
+  /** The original's own submission to an artist invite: a repost's page shows its status too. */
+  artistInviteSubmission: postSubmissionSchema.nullish(),
+  /** Only notifications ask for these (they summarize the original). */
+  summary: z.array(regionSchema).nullish(),
+  assets: z.array(assetSchema).nullish(),
 })
 
 /** A post's place in a category (the original's `categoryPostSummary`); the first one names its category header. */

@@ -1,5 +1,5 @@
 import type { Post } from '@/types/post'
-import { isRepost, originalAuthorOf, repostedRegions } from './repost'
+import { displaySubmissionOf, isRepost, originalAuthorOf, repostedRegions } from './repost'
 
 const author = (id: string, username: string): Post['author'] => ({ id, username })
 const base = {
@@ -27,5 +27,13 @@ describe('repost helpers', () => {
     const theirs = [{ kind: 'text' as const, data: '<p>theirs</p>' }]
     expect(repostedRegions({ ...base, content: own })).toBe(own)
     expect(repostedRegions({ ...base, content: own, repostContent: theirs })).toBe(theirs)
+  })
+
+  it('names its own submission, or on a repost the original\'s', () => {
+    const submission = (id: string) => ({ id, status: 'approved' as const, artistInvite: { id: 'i', slug: 's', title: 'T' } })
+    const source = { id: '9', token: 'o', author: author('5', 'mara'), artistInviteSubmission: submission('theirs') }
+    expect(displaySubmissionOf(base)).toBeNull()
+    expect(displaySubmissionOf({ ...base, repostedSource: source })?.id).toBe('theirs')
+    expect(displaySubmissionOf({ ...base, artistInviteSubmission: submission('own'), repostedSource: source })?.id).toBe('own')
   })
 })

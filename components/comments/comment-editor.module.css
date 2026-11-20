@@ -5,21 +5,11 @@
 .editor {
   position: relative;
   margin-top: 10px;
-  font-size: 14px;
-  color: #000;
+  font-size: var(--text-14);
+  color: var(--color-black);
 }
 
-/* the "Comment..." placeholder (Editor.css `.editor::after`) */
-.editor::after {
-  position: absolute;
-  top: 38px;
-  left: 31px;
-  max-width: calc(100% - 60px);
-  color: #999;
-  pointer-events: none;
-  content: attr(data-placeholder);
-}
-
+/* the "Comment..." placeholder is `placeholder` of components/ui/editor-parts.module.css */
 .editor:global(.hasContent)::after {
   display: none;
 }
@@ -34,8 +24,8 @@
   min-height: 91px;
   margin-top: 20px;
   overflow: hidden;
-  background-color: #f2f2f2;
-  border-radius: 5px;
+  background-color: var(--color-gf2);
+  border-radius: var(--radius-box);
   transition: background-color var(--speed) ease;
 }
 
@@ -53,7 +43,7 @@
   margin: 0 30px;
   font: inherit;
   line-height: 21px;
-  color: #000;
+  color: var(--color-black);
   white-space: pre-wrap;
   word-break: break-word;
   resize: none;
@@ -69,18 +59,10 @@
 
 /* a file dragged over the editor turns the region green */
 .editor:global(.hasDragOver) > .region {
-  background-color: #cfc;
+  background-color: var(--color-pale-green);
 }
 
-.regionTools {
-  position: absolute;
-  top: 10px;
-  right: 30px;
-  z-index: 2;
-  color: #aaa;
-}
-
-/* An uploaded picture (ImageBlock.js): `.editable` padding and margin, the picture, and the busy cover */
+/* An uploaded picture (ImageBlock.js): `.editable` padding and margin and the picture; its busy cover is editor-parts' */
 .imageBlock {
   position: relative;
   padding: 37px 0 33px;
@@ -95,35 +77,13 @@
   max-width: 100%;
 }
 
-.busy {
-  position: absolute;
-  top: 0;
-  right: -40px;
-  bottom: 0;
-  left: -40px;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.busyArrow {
-  position: relative;
-  padding: 4px;
-  color: #aaa;
-  background-color: #fff;
-  border-radius: 50%;
-  transform: rotate(-90deg);
-}
-
 .retry {
-  color: #fff;
+  color: var(--color-white);
 }
 
 /* Editor.css `.editor-block:not(:last-child)` */
 .block:not(:last-child) {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--color-ge5);
 }
 
 .emoji {
@@ -131,7 +91,7 @@
   top: 38px;
   right: 20px;
   z-index: 2;
-  color: #999;
+  color: var(--color-g99);
   white-space: nowrap;
 }
 
@@ -148,6 +108,6 @@
 
 @media (hover: hover) {
   .emoji button:hover {
-    color: #535353;
+    color: var(--color-g53);
   }
 }

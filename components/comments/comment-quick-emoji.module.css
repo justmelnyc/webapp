@@ -5,7 +5,7 @@
   top: 38px;
   right: 20px;
   z-index: 2;
-  color: #999;
+  color: var(--color-g99);
   white-space: nowrap;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .wrapper.isActive {
-  color: #535353;
+  color: var(--color-g53);
 }
 
 .list {
@@ -24,9 +24,9 @@
   top: 0;
   left: -150px;
   padding-left: 10px;
-  background-color: #f2f2f2;
+  background-color: var(--color-gf2);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--speed) ease;
 }
 
 .isActive .list {
@@ -35,18 +35,18 @@
 
 .toggle {
   color: inherit;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 @media (hover: hover) {
   .toggle:hover {
-    color: #535353;
+    color: var(--color-g53);
   }
 }
 
 .choice {
   margin-top: -5px;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--speed) ease;
 }
 
 .choice + .choice {

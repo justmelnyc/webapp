@@ -5,9 +5,9 @@
   right: 0;
   bottom: -54px;
   left: 0;
-  z-index: 1030;
+  z-index: var(--z-footer);
   height: 69px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .grabber {
@@ -30,7 +30,7 @@
   height: 54px;
   padding: 0 10px;
   margin: 0;
-  background-color: #e5e5e5;
+  background-color: var(--color-ge5);
   transition: transform 150ms ease;
   transform: translate3d(0, calc(-100% + 15px), 0);
 }
@@ -82,7 +82,7 @@
 
 @media (hover: hover) {
   .rss:hover rect {
-    fill: #000;
+    fill: var(--color-black);
   }
 }
 
@@ -97,6 +97,21 @@
 }
 
 .footer:global(.hide):hover .content {
+  transition-delay: 350ms;
+  transform: translate3d(0, -100%, 0);
+}
+
+/* Scrolled down a page (`.isNavbarHidden`): the same tuck, on any page. */
+:global(.isNavbarHidden) .grabber {
+  height: 15px;
+  margin-top: 0;
+}
+
+:global(.isNavbarHidden) .content {
+  transform: translate3d(0, 0, 0);
+}
+
+:global(.isNavbarHidden) .footer:hover .content {
   transition-delay: 350ms;
   transform: translate3d(0, -100%, 0);
 }
@@ -163,7 +178,7 @@
 
 .link {
   display: inline-block;
-  font-size: 14px;
+  font-size: var(--text-14);
   vertical-align: middle;
   border-bottom: 0;
 }
@@ -174,7 +189,7 @@
   overflow: hidden;
   white-space: nowrap;
   vertical-align: middle;
-  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: width var(--speed) var(--ease-ello);
 }
 
 @media (min-width: 40em) {
@@ -185,7 +200,7 @@
 
 @media (hover: hover) {
   .link:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
@@ -193,7 +208,7 @@
 
 .tool {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--text-12);
 }
 
 .layoutTool {
@@ -208,12 +223,12 @@
   overflow: hidden;
   white-space: nowrap;
   vertical-align: middle;
-  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s;
+  transition: width var(--speed) var(--ease-ello), color var(--speed);
 }
 
 @media (hover: hover) {
   .tool:hover {
-    color: #000;
+    color: var(--color-black);
   }
 
   :global(.TopTool):hover > .toolText {

@@ -5,7 +5,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1070;
+  z-index: var(--z-tools);
 }
 
 .completer {
@@ -15,7 +15,7 @@
   height: 235px;
   overflow-x: hidden;
   overflow-y: auto;
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 @media (min-width: 40em) {
@@ -30,12 +30,12 @@
   width: 100%;
   padding: 10px;
   overflow: hidden;
-  color: #fff;
+  color: var(--color-white);
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.95);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 .completion + .completion {
@@ -44,12 +44,12 @@
 
 @media (hover: hover) {
   .completion:hover {
-    background-color: #4d4d4d;
+    background-color: var(--color-g4d);
   }
 }
 
 .completion:global(.isActive) {
-  background-color: #4d4d4d;
+  background-color: var(--color-g4d);
 }
 
 .emoji {

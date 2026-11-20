@@ -28,7 +28,7 @@ const viewer = req => userById(viewerId(req))
 const tokenBody = (user) => ({
   access_token: user
     ? jwt({
-      id: user.id, username: user.username, email: user.email, is_staff: false,
+      id: user.id, username: user.username, email: user.email, is_staff: !!user.isStaff,
       web_onboarding_version: onboardingVersion(user), allows_analytics: false, analytics_id: `mock-${user.id}`,
       created_at: '2018-01-01T00:00:00Z',
     })

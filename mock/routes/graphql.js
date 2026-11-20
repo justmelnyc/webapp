@@ -59,9 +59,9 @@ const trending = () => [...db.posts].sort((a, b) => loveCount(b) - loveCount(a))
 const resolvers = {
   categoryNav: () => ({ categoryNav: content.categories }),
   allCategories: () => ({ allCategories: content.categories }),
-  // logged-in profile pages ask for categories the viewer administers: none
-  searchCategories: v => ({ searchCategories: { next: null, isLastPage: true, categories: v.administered ? [] : content.categories } }),
-  category: v => ({ category: content.categories.find(c => c.slug === v.slug) || content.categories[0] }),
+  // logged-in profile pages ask for the categories the viewer administers (the Community Roles form)
+  searchCategories: (v, viewer) => ({ searchCategories: { next: null, isLastPage: true, categories: v.administered ? require('../profile-roles').administeredCategories(db, viewer, content.categories, v.query) : content.categories } }),
+  ...require('./category-users').resolvers, // category(slug) with its curators and moderators
   pageHeaders: v => ({ pageHeaders: [content.pageHeader(v.kind || 'GENERIC', v.slug)] }),
   editorialStream: (v, viewer) => ({ editorialStream: { next: null, isLastPage: true, editorials: content.editorials(viewer) } }),
   findPosts: (v, viewer) => ({ findPosts: db.posts.filter(p => (v.tokens || []).includes(p.token)).map(p => gqlPost(p, viewer)) }),

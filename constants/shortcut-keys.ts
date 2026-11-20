@@ -12,4 +12,10 @@ export const SHORTCUT_KEYS = {
   OMNIBAR: '2',
   SEARCH: 's',
   TOGGLE_LAYOUT: '=',
+  // Bound while a lightbox is open, as `KeyboardEvent.key` names (the original: esc, right, left);
+  // 4 5 6 are for the numeric keypad.
+  ESC: ['Escape', '5'],
+  LOVE: 'l',
+  NEXT: ['ArrowRight', 'k', ']', '6'],
+  PREV: ['ArrowLeft', 'j', '[', '4'],
 } as const

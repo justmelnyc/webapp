@@ -1,18 +1,10 @@
 /* Port of HeroRenderables.js HeroPromotionCategory (collapsed info drawer, the default) */
-.root {
-  position: relative;
-  display: flex;
-  width: 100%;
-  min-height: 240px;
-  overflow: hidden;
-  color: #fff;
-}
-
+/* The frame is hero-promotion.module.css; `.root` only stacks it on phones. */
 .caption {
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 .heading {
@@ -30,21 +22,21 @@
 }
 
 .check :global(.svg-stroke-bevel) {
-  stroke: #fff;
+  stroke: var(--color-white);
 }
 
 .check circle {
-  stroke: #fff;
+  stroke: var(--color-white);
 }
 
 .unsubscribed .check circle {
   fill: none;
-  stroke: #fff;
+  stroke: var(--color-white);
 }
 
 .subscribed .check circle {
-  fill: #00d100;
-  stroke: #00d100;
+  fill: var(--color-green);
+  stroke: var(--color-green);
 }
 
 .subscribeHolder {
@@ -75,7 +67,7 @@
   }
 
   .label {
-    font-size: 56px;
+    font-size: var(--text-56);
     line-height: 1;
   }
 
@@ -99,11 +91,6 @@
 }
 
 @media (min-width: 40em) {
-  .root {
-    align-items: center;
-    min-height: 380px;
-  }
-
   .caption {
     margin-right: auto;
     margin-left: auto;

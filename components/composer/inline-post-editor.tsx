@@ -18,6 +18,7 @@ import {
 import { usePostEditStore } from '@/stores/post-edit-store'
 import type { Category } from '@/types/content'
 import { cn } from '@/utils/cn'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './omnibar.module.css'
 
 const PLACEHOLDER = 'Drag & drop images, paste embeds, enter text and links.'
@@ -60,7 +61,7 @@ const Editor = ({ categories }: { categories: Category[] }) => {
   return (
     <div className={`EditorWrapper ${styles.inlineWrapper}`}>
       <div
-        className={cn('editor', styles.editor, isDraftDirty(blocks) && cn('hasContent', styles.hasContent), dragging && styles.hasDragOver)}
+        className={cn('editor', parts.placeholder, styles.editor, isDraftDirty(blocks) && cn('hasContent', styles.hasContent), dragging && styles.hasDragOver)}
         data-placeholder={PLACEHOLDER}
         onDragOver={(e) => {
           e.preventDefault()

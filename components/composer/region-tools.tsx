@@ -4,6 +4,7 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { DragIcon, XIcon } from '@/components/icons'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useComposerApi, useComposerStore } from '@/stores/composer-store'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './omnibar.module.css'
 
 /** Index of the block under the pointer, found through the blocks' data-block-id. */
@@ -54,14 +55,14 @@ export const RegionTools = ({ id }: { id: string }) => {
   }
 
   return (
-    <div className={`RegionTools ${styles.tools}`}>
-      <button type="button" aria-label="Remove" className={`BlockRemove ${styles.remove}`} onClick={() => setConfirming(true)}>
+    <div className={`RegionTools ${parts.tools} ${styles.tools}`}>
+      <button type="button" aria-label="Remove" className={`BlockRemove ${parts.remove}`} onClick={() => setConfirming(true)}>
         <XIcon />
       </button>
       <button
         type="button"
         aria-label="Reorder (arrow keys or drag)"
-        className={`DragHandler ${styles.drag}`}
+        className={`DragHandler ${parts.drag}`}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

@@ -40,6 +40,22 @@ describe('DetailHeader on a repost', () => {
     expect(container.querySelector('.PostHeaderTimeAgoLink')).toHaveAttribute('href', '/theo/post/tokp2')
   })
 
+  it('shows the badge of the original post\'s artist invite submission', () => {
+    const submission = { id: 's1', status: 'approved', artistInvite: { id: 'i1', slug: 'neon-nights', title: 'Neon Nights' } }
+    const post = postSchema.parse({
+      ...repost(),
+      repostedSource: { id: 'p1', token: 'tok1', author: gqlAuthor('ada', 'u1'), artistInviteSubmission: submission },
+    })
+    const { container } = render(<DetailHeader post={post} viewerId={null} placement="list" />)
+    expect(container.querySelector('.ArtistInviteSubmissionStatusTool a')).toHaveAttribute('href', '/invites/neon-nights')
+    expect(container.querySelector('.ArtistInviteSubmissionStatusTool')).toHaveTextContent('Accepted Submission to Neon Nights')
+  })
+
+  it('has no badge when neither the repost nor its original was submitted', () => {
+    const { container } = render(<DetailHeader post={repost()} viewerId={null} placement="list" />)
+    expect(container.querySelector('.ArtistInviteSubmissionStatusTool')).toBeNull()
+  })
+
   it('keeps the author layout on an ordinary post', () => {
     const { container } = render(
       <DetailHeader post={postSchema.parse(gqlPost('p1'))} viewerId={null} placement="list" />,

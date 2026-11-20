@@ -11,7 +11,7 @@
   z-index: 2;
   content: '';
   background-color: transparent;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 .dragOver::before {
@@ -44,38 +44,38 @@
   min-width: 160px;
   height: 40px;
   padding: 0 20px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #aaa;
+  color: var(--color-gaa);
   text-align: center;
-  background-color: #fff;
-  border: 1px solid #aaa;
-  border-radius: 5px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gaa);
+  border-radius: var(--radius-box);
   transition:
-    background-color 0.2s var(--ease-ello),
-    border-color 0.2s var(--ease-ello),
-    color 0.2s var(--ease-ello),
-    width 0.2s var(--ease-ello),
-    opacity 0.2s;
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    width var(--speed) var(--ease-ello),
+    opacity var(--speed);
 }
 
 .uploadButton.blank,
 .dragOver .uploadButton {
-  color: #fff;
-  background-color: #00d100;
-  border-color: #00d100;
+  color: var(--color-white);
+  background-color: var(--color-green);
+  border-color: var(--color-green);
 }
 
 .dragOver .uploadButton {
-  background-color: #00b100;
-  border-color: #00b100;
+  background-color: var(--color-green-hover);
+  border-color: var(--color-green-hover);
 }
 
 @media (hover: hover) {
   .uploader:hover .uploadButton {
-    color: #fff;
-    background-color: #00b100;
-    border-color: #00b100;
+    color: var(--color-white);
+    background-color: var(--color-green-hover);
+    border-color: var(--color-green-hover);
   }
 }
 
@@ -85,7 +85,7 @@
   max-width: 160px;
   margin-right: auto;
   margin-left: auto;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .message > p {

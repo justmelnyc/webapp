@@ -9,22 +9,13 @@ import { outcome } from '@/components/settings/field-status'
 import type { ControlStatus } from '@/components/ui/form-control'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { infoSchema, type InfoInput } from '@/lib/schemas/profile'
+import { linksToText, textToLinks } from '@/components/settings/links-text'
 import { toast } from '@/stores/toast-store'
 
-type Link = InfoInput['links'][number]
 export type InfoField = 'name' | 'location' | 'bio' | 'links'
 
 /** The original's InfoForm saves 300ms after the last keystroke. */
 const SAVE_DELAY = 300
-
-/** The original's Links control is one text field of URLs separated by commas or spaces. */
-export const linksToText = (links: Link[]): string => links.map((link) => link.url).join(' ')
-
-export const textToLinks = (text: string, known: Link[]): Link[] =>
-  text
-    .split(/[,\s]+/)
-    .filter(Boolean)
-    .map((url) => ({ url, text: known.find((link) => link.url === url)?.text ?? '' }))
 
 /**
  * The state of the original's `InfoForm`: name, location, bio and links save by themselves while you type. A control

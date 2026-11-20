@@ -6,7 +6,7 @@
   overflow: hidden;
   background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
   background-size: cover;
-  transition: background-color 0.2s ease, opacity 0.4s ease;
+  transition: background-color var(--speed) ease, opacity var(--speed2) ease;
 }
 
 .root::before {
@@ -15,7 +15,7 @@
   z-index: 1;
   content: '';
   background-color: transparent;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 .overlay3::before { background-color: rgba(0, 0, 0, 0.3); }
@@ -29,5 +29,5 @@
   margin: 0;
   background: transparent no-repeat 50% 50%;
   background-size: cover;
-  transition: opacity 0.4s ease;
+  transition: opacity var(--speed2) ease;
 }

@@ -12,9 +12,9 @@
   position: relative;
   padding: 10px 10px 10px 60px;
   margin-top: 15vh;
-  background-color: #f2f2f2;
-  border-radius: 5px;
-  transition: margin-top 0.2s ease;
+  background-color: var(--color-gf2);
+  border-radius: var(--radius-box);
+  transition: margin-top var(--speed) ease;
   transition-delay: 1s;
 }
 
@@ -26,11 +26,11 @@
   position: absolute;
   top: calc(50% - 15px);
   left: 20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .icon :global(.SearchIcon) g {
-  stroke: #aaa;
+  stroke: var(--color-gaa);
 }
 
 .label {
@@ -42,18 +42,18 @@
   width: 100%;
   min-height: 40px;
   font-family: var(--font-black);
-  font-size: 24px;
+  font-size: var(--text-24);
   font-weight: 400;
-  color: #000;
+  color: var(--color-black);
   vertical-align: baseline;
   background-color: transparent;
   border: 0;
   transition:
-    background-color var(--speed) var(--ease),
-    border-color var(--speed) var(--ease),
-    color var(--speed) var(--ease),
-    width var(--speed) var(--ease),
-    height var(--speed) var(--ease);
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    width var(--speed) var(--ease-ello),
+    height var(--speed) var(--ease-ello);
 }
 
 .input:focus {
@@ -61,7 +61,7 @@
 }
 
 .input::placeholder {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .tabs {
@@ -76,9 +76,9 @@
   margin: 0;
   margin-right: 0;
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 1.35;
-  color: #aaa;
+  color: var(--color-gaa);
   white-space: nowrap;
   transition: color var(--speed) ease;
 }
@@ -90,29 +90,29 @@
   width: 100%;
   height: 1px;
   content: '';
-  background-color: #aaa;
+  background-color: var(--color-gaa);
   transition:
-    width var(--speed) var(--ease),
+    width var(--speed) var(--ease-ello),
     background-color var(--speed) ease;
 }
 
 .tab[aria-current='true'],
 .tab:active {
-  color: #000;
+  color: var(--color-black);
 }
 
 .tab[aria-current='true']::after,
 .tab:active::after {
-  background-color: #000;
+  background-color: var(--color-black);
 }
 
 @media (hover: hover) {
   .tab:not(:disabled):hover {
-    color: #000;
+    color: var(--color-black);
   }
 
   .tab:not(:disabled):hover::after {
-    background-color: #000;
+    background-color: var(--color-black);
   }
 }
 
@@ -121,8 +121,8 @@
 }
 
 .empty {
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 /* The original's `.Search` has no top padding: the Hero wrapper (PageOffset) above it offsets it. */

@@ -19,6 +19,9 @@ jest.mock('@/actions/repost-actions', () => ({
 }))
 jest.mock('@/actions/post-edit-actions', () => ({ updatePost: jest.fn() }))
 jest.mock('@/actions/composer-actions', () => ({ createPost: jest.fn() }))
+jest.mock('@/actions/comment-actions', () => ({ deleteComment: jest.fn(), updateComment: jest.fn(), fetchCommenterUsernames: jest.fn() }))
+jest.mock('@/actions/comment-post-actions', () => ({ createCommentFromBlocks: jest.fn() }))
+jest.mock('@/actions/emoji-actions', () => ({ fetchEmojis: jest.fn().mockResolvedValue({ ok: true, data: { origin: '', emojis: [] } }) }))
 jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }), usePathname: () => '/' }))
 jest.mock('@/lib/client/streams', () => ({ fetchStreamPage: jest.fn() }))
 // the "New Posts" check has its own tests; here it would use up the mocked pages

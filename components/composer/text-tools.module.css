@@ -14,8 +14,8 @@
   overflow: hidden;
   white-space: nowrap;
   transition:
-    width 0.2s var(--ease-ello),
-    opacity 0.2s var(--ease-ello);
+    width var(--speed) var(--ease-ello),
+    opacity var(--speed) var(--ease-ello);
 }
 
 .tools.asShowLinkForm {
@@ -39,22 +39,22 @@
   width: 30px;
   height: 30px;
   margin-left: 1px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 30px;
-  color: #aaa;
+  color: var(--color-gaa);
   text-align: center;
   vertical-align: middle;
-  background-color: #fff;
+  background-color: var(--color-white);
   border-radius: 50%;
   transition:
-    border-radius 0.2s var(--ease-ello),
-    color 0.2s,
-    width 0.2s var(--ease-ello);
+    border-radius var(--speed) var(--ease-ello),
+    color var(--speed),
+    width var(--speed) var(--ease-ello);
 }
 
 .button:hover,
 .button.isActive {
-  color: #000;
+  color: var(--color-black);
 }
 
 .forItalic > em {
@@ -78,7 +78,7 @@
   display: inline-block;
   height: 30px;
   vertical-align: middle;
-  transition: transform 0.2s var(--ease-ello);
+  transition: transform var(--speed) var(--ease-ello);
 }
 
 .asShowLinkForm .form {
@@ -90,18 +90,18 @@
   width: 210px;
   height: 30px;
   padding: 0 10px 0 35px;
-  font-size: 14px;
-  color: #000;
+  font-size: var(--text-14);
+  color: var(--color-black);
   vertical-align: baseline;
-  background-color: #fff;
+  background-color: var(--color-white);
   border: 0;
-  border-radius: 15px;
+  border-radius: var(--radius-pill-small);
   outline: 0;
   transition:
-    background-color 0.2s var(--ease-ello),
-    color 0.2s var(--ease-ello),
-    width 0.2s var(--ease-ello),
-    height 0.2s var(--ease-ello);
+    background-color var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    width var(--speed) var(--ease-ello),
+    height var(--speed) var(--ease-ello);
 }
 
 .input:focus {
@@ -109,5 +109,5 @@
 }
 
 .input::placeholder {
-  color: #aaa;
+  color: var(--color-gaa);
 }

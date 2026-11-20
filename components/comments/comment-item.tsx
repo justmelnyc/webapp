@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { deleteComment } from '@/actions/comment-actions'
 import { ChevronIcon, PencilIcon, ReplyIcon, XBoxIcon } from '@/components/icons'
-import { Hint } from '@/components/post-detail/hint'
+import { Hint } from '@/components/posts/hint'
 import { Avatar } from '@/components/ui/avatar'
 import { toast } from '@/stores/toast-store'
 import type { Comment } from '@/types/post'
@@ -15,6 +15,8 @@ import { CommentBody } from './comment-body'
 import { CommentEditForm } from './comment-edit-form'
 import { CommentFlagTool } from './comment-flag-tool'
 import toolStyles from './comment-tools.module.css'
+import '@/components/posts/post-tools.css'
+import '@/components/posts/post-tools-more.css'
 import styles from './comments.module.css'
 
 interface CommentItemProps {
@@ -26,6 +28,8 @@ interface CommentItemProps {
   onReply: (username: string) => void
   onDeleted: () => void
   onUpdated: () => void
+  /** The post's page, in a grid stream only: the comment's text and pictures link there. */
+  detailPath?: string
 }
 
 /** One `.Comment` for a signed-in viewer: header, body and the CommentTools footer. */
@@ -37,6 +41,7 @@ export const CommentItem = ({
   onReply,
   onDeleted,
   onUpdated,
+  detailPath,
 }: CommentItemProps) => {
   const [pending, startTransition] = useTransition()
   const [isMoreToolActive, setMoreToolActive] = useState(false)
@@ -82,7 +87,7 @@ export const CommentItem = ({
           </Link>
         </div>
       </header>
-      <CommentBody comment={comment} />
+      <CommentBody comment={comment} detailPath={detailPath} />
       <footer
         className={cn(
           'PostTools CommentTools',

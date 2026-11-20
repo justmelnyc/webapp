@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { logout } from '@/actions/auth'
 import { XIconLG } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
@@ -13,10 +14,20 @@ interface NavbarProfileProps {
   avatarSrc: string | null
   /** Where "Help" points (the original used `${AUTH_DOMAIN}/wtf`). */
   helpHref: string
+  /** Links only some people get, after "Settings" (`<NavbarAnalyticsLink />` for brands and staff). */
+  children?: ReactNode
 }
 
+/** "Analytics": the original shows it to brand accounts and to staff (`isBrand || isStaff`), as a plain link. */
+export const NavbarAnalyticsLink = () => (
+  // eslint-disable-next-line @next/next/no-html-link-for-pages -- /manage was a page of the Rails app: the original leaves the web app for it
+  <a className={styles.item} href="/manage">
+    Analytics
+  </a>
+)
+
 /** Avatar with its dropdown (desktop) or full screen menu (phones). */
-export const NavbarProfile = ({ username, avatarSrc, helpHref }: NavbarProfileProps) => {
+export const NavbarProfile = ({ username, avatarSrc, helpHref, children }: NavbarProfileProps) => {
   const { isProfileMenuActive, toggleProfileMenu } = useAppShell()
   return (
     <span className={cn('NavbarProfile', styles.profile)}>
@@ -47,6 +58,7 @@ export const NavbarProfile = ({ username, avatarSrc, helpHref }: NavbarProfilePr
         <Link className={styles.item} href="/settings">
           Settings
         </Link>
+        {children}
         <hr className={styles.divider} />
         <a className={styles.small} href={helpHref} rel="noopener noreferrer" target="_blank">
           Help

@@ -4,7 +4,7 @@ import { Avatar } from '@/components/ui/avatar'
 import type { Post } from '@/types/post'
 import { cn } from '@/utils/cn'
 import { avatarUrl } from '@/utils/images'
-import { isRepost, originalAuthorOf } from '@/utils/repost'
+import { displaySubmissionOf, isRepost, originalAuthorOf } from '@/utils/repost'
 import { timeAgoInWords } from './time-ago-in-words'
 import { OwnerTools } from './owner-tools'
 import styles from './post-header.module.css'
@@ -21,7 +21,9 @@ interface DetailHeaderProps {
 
 /** The original's `PostDetailHeader`: avatar, names, time ago and the follow toggle. */
 export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) => {
+  // the curator's bar is for the post's own submission; the status badge also shows a reposted original's
   const { artistInviteSubmission: submission } = post
+  const displaySubmission = displaySubmissionOf(post)
   const repost = isRepost(post)
   // On a repost the header names the original author and "by @reposter" (`post.author`).
   const author = repost ? originalAuthorOf(post) : post.author
@@ -53,26 +55,26 @@ export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) =
             {repost ? (
               <>
                 <Link className="UserNameLink RepostAuthor" href={profile}>
-                  <span className="DraggableUsername PostHeaderAuthorUsername">
+                  <span className="DraggableUsername PostHeaderAuthorUsername max-w-full truncate">
                     <span className="username-container">{`@${author.username}`}</span>
                   </span>
                   {relationship}
                 </Link>
                 <Link className="UserNameLink" href={`/${post.author.username}`}>
                   <RepostIcon />
-                  <span className="DraggableUsername">{` by @${post.author.username}`}</span>
+                  <span className="DraggableUsername max-w-full truncate">{` by @${post.author.username}`}</span>
                 </Link>
               </>
             ) : (
               <>
                 <Link className="FullNameLink" href={profile}>
-                  <span className="DraggableUsername PostHeaderAuthorName">
+                  <span className="DraggableUsername PostHeaderAuthorName max-w-full truncate">
                     <span className="username-container">{author.name || `@${author.username}`}</span>
                   </span>
                 </Link>
                 {author.name ? (
                   <Link className="UserNameLink" href={profile}>
-                    <span className="DraggableUsername PostHeaderAuthorUsername">{`@${author.username}`}</span>
+                    <span className="DraggableUsername PostHeaderAuthorUsername max-w-full truncate">{`@${author.username}`}</span>
                   </Link>
                 ) : null}
               </>
@@ -87,9 +89,9 @@ export const DetailHeader = ({ post, viewerId, placement }: DetailHeaderProps) =
             <span>{timeAgoInWords(post.createdAt)}</span>
           </Link>
           {isOwnPost ? <OwnerTools postId={post.id} /> : null}
-          {submission ? (
+          {displaySubmission ? (
             <span>
-              <SubmissionStatusTool submission={submission} />
+              <SubmissionStatusTool submission={displaySubmission} />
             </span>
           ) : null}
           {repost ? null : relationship}

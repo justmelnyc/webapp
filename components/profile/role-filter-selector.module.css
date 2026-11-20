@@ -1,0 +1,168 @@
+/*
+ * Port of FilterSelectorControl (legacy/src/components/forms/FilterSelectorControl.js, its glamor styles)
+ * as the profile's Community Roles form uses it. The composer's category selector ports the same control
+ * for its own variant (components/composer/category-selector.module.css).
+ */
+.root {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+}
+
+.control {
+  cursor: pointer;
+}
+
+.control input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.control .selector,
+.control .selected {
+  z-index: 2;
+  display: block;
+  width: 100%;
+  padding: 9px 20px;
+  line-height: 20px;
+  cursor: pointer;
+  border: 1px solid var(--color-gaa);
+  border-radius: var(--radius-box);
+}
+
+.open .selector,
+.open .selected {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.control .selector {
+  position: relative;
+}
+
+.open .selector {
+  cursor: text;
+}
+
+.label {
+  position: absolute;
+  left: 20px;
+  z-index: 1;
+  font-size: var(--text-14);
+  line-height: 40px;
+  color: var(--color-gaa);
+}
+
+.control svg:global(.ChevronIcon) {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  display: block;
+  color: var(--color-gaa);
+  cursor: pointer;
+  transform: rotate(90deg);
+}
+
+.open svg:global(.ChevronIcon) {
+  z-index: 3;
+}
+
+.control .selected {
+  font-size: var(--text-14);
+  line-height: 14px;
+  border-color: #979797;
+}
+
+.selected b {
+  display: inline-block;
+  width: calc(100% - 24px);
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.selected button {
+  position: absolute;
+  right: 15px;
+}
+
+.removeLabel {
+  display: none;
+}
+
+.list {
+  position: absolute;
+  top: 39px;
+  left: 0;
+  z-index: var(--z-tools);
+  width: 100%;
+  max-height: 260px;
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: auto;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gaa);
+  border-radius: 0 0 5px 5px;
+}
+
+.list ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+.list li {
+  padding: 0;
+  margin: 0;
+}
+
+.list li button {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 4px 10px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.list li button:active {
+  color: var(--color-black);
+  background-color: var(--color-white);
+}
+
+.list li button:hover,
+.list li.isSelected button {
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-radius: 3px;
+}
+
+@media (max-width: 39.9375em) {
+  .root {
+    width: 100%;
+    margin: 0 0 10px;
+  }
+
+  .selected button {
+    right: 18px;
+  }
+
+  .list {
+    position: relative;
+    top: auto;
+    left: auto;
+    display: block;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    border-top-width: 0;
+  }
+}

@@ -1,0 +1,223 @@
+/*
+ * Lightbox overlay, ported from the glamor styles of legacy components/light_box/LightBoxRenderables.js
+ * (baseLightBoxStyle, postsListLightBoxStyle, commentsLightBoxStyle, imageRegionStyle, navButtonStyle),
+ * regions/ImageRegion.js (lightBoxImageStyle) and buttons/Buttons.js (DismissButtonLGReverse).
+ * The post tools shown inside it are in lightbox-tools.css.
+ */
+
+.LightBoxContainer {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  background-color: var(--color-gf2);
+  outline: 0;
+}
+
+.LightBoxContainer > .LightBoxMask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: var(--z-modal);
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-modal);
+  transition: background-color 0.4s var(--ease-ello);
+}
+
+.LightBoxMask > .LightBox {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.LightBox > .LightBoxQueue {
+  position: relative;
+  width: auto;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity var(--speed) ease;
+}
+
+.LightBox.loaded > .LightBoxQueue.transition {
+  transition: transform var(--speed) var(--ease-ello);
+}
+
+.LightBox.loading > .LightBoxQueue {
+  opacity: 0;
+}
+
+/* ---- the queue: posts (or comments) reduced to their pictures, side by side ---- */
+
+.LightBox > .LightBoxQueue > .Post,
+.LightBox > .LightBoxQueue > .Comment {
+  display: inline;
+  padding: 0;
+}
+
+.LightBox > .LightBoxQueue > .Post {
+  margin: 0;
+}
+
+.LightBox > .LightBoxQueue > .Post > .PostBody,
+.LightBox > .LightBoxQueue > .Comment > .CommentBody {
+  display: inline;
+  width: auto;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.LightBox > .LightBoxQueue > .Post > .PostBody > div,
+.LightBox > .LightBoxQueue > .Comment > .CommentBody > div {
+  display: inline;
+}
+
+.LightBox > .LightBoxQueue > .Post > .PostBody > div > .ImageRegion,
+.LightBox > .LightBoxQueue > .Comment > .CommentBody > div > .ImageRegion {
+  position: relative;
+  display: inline-block;
+  width: auto;
+  padding-bottom: 20px;
+  margin: 0 40px;
+}
+
+@media (max-width: 84.9375em) {
+  .LightBox > .LightBoxQueue > .Post > .PostBody > div > .ImageRegion,
+  .LightBox > .LightBoxQueue > .Comment > .CommentBody > div > .ImageRegion {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+}
+
+@media (max-width: 59.9375em) {
+  .LightBox > .LightBoxQueue > .Post > .PostBody > div > .ImageRegion,
+  .LightBox > .LightBoxQueue > .Comment > .CommentBody > div > .ImageRegion {
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .LightBox > .LightBoxQueue > .Post > .PostBody > div > .ImageRegion,
+  .LightBox > .LightBoxQueue > .Comment > .CommentBody > div > .ImageRegion {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
+
+/* ---- one picture (lightBoxImageStyle): dimmed until it is the selected one ---- */
+
+.LightBoxImage,
+.LightBoxImage > .ImgHolderLightBox {
+  display: inline;
+}
+
+.LightBoxImage > .ImgHolderLightBox > .ImageAttachment {
+  opacity: 0.5;
+  transition: opacity var(--speed) ease;
+}
+
+.LightBoxImage > .ImgHolderLightBox > .ImageAttachment:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.LightBoxImage > .ImgHolderLightBox > .ImageAttachment.selected {
+  opacity: 1;
+  transition: opacity var(--speed) ease;
+}
+
+/* ---- close button (DismissButtonLGReverse) ---- */
+
+.LightBoxMask > .CloseModal {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  color: var(--color-white);
+  transition: color var(--speed) ease;
+}
+
+@media (min-width: 40em) {
+  .LightBoxMask > .CloseModal {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+.LightBoxMask > .CloseModal:hover {
+  color: var(--color-gaa);
+}
+
+/* ---- previous / next (navButtonStyle) ---- */
+
+.LightBoxNav {
+  position: fixed;
+  top: calc(50% - 20px);
+  left: 20px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-black);
+  border-radius: 40px;
+}
+
+.LightBoxNav.next {
+  right: 20px;
+  left: auto;
+}
+
+.LightBoxNav .label {
+  display: none;
+}
+
+.LightBoxNav .icon {
+  display: block;
+  width: 14px;
+  height: 13px;
+}
+
+.LightBoxNav .icon .LightBoxArrow {
+  display: block;
+  vertical-align: baseline;
+}
+
+.LightBoxNav .icon .LightBoxArrow path {
+  fill: var(--color-white);
+}
+
+.LightBoxNav.prev .icon {
+  transform: rotate(180deg);
+}
+
+/*
+ * While the lightbox is open the original marks its Viewport `isNavbarHidden` and drops the Discover
+ * category strip: the navbar and the footer slide out of view behind the mask.
+ */
+
+body.isLightBoxActive .Navbar .navbar-content,
+body.isLightBoxActive .Footer .footer-content {
+  transform: translate3d(0, 0, 0);
+}
+
+body.isLightBoxActive .Footer .grabber {
+  height: 15px;
+  margin-top: 0;
+}
+
+/* the category strip is whatever follows the navbar's container */
+body.isLightBoxActive .Navbar .navbar-content > .navbar-container ~ div {
+  display: none;
+}

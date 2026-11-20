@@ -1,6 +1,6 @@
 /*
  * Port of UserRolesButton (UserParts.css) and UserDetailRoles (legacy/src/components/users/UserRolesRenderables.js,
- * its glamor styles) for the profile's Community Roles panel.
+ * its glamor styles) for the profile's Community Roles panel. Its form and rows are in user-roles-form.module.css.
  */
 .button {
   position: absolute;
@@ -8,7 +8,7 @@
   left: 0;
   z-index: 2;
   display: block;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .button svg {
@@ -21,7 +21,7 @@
 }
 
 .button g path {
-  fill: #aaa;
+  fill: var(--color-gaa);
   stroke-width: 0.4;
 }
 
@@ -36,17 +36,17 @@
   position: relative;
   display: block;
   margin: 0 auto;
-  background-color: #f2f2f2;
+  background-color: var(--color-gf2);
 }
 
 .mask {
   position: fixed;
   inset: 0;
-  z-index: 1080;
+  z-index: var(--z-modal);
   width: 100%;
   height: 100%;
-  background-color: rgba(26, 26, 26, 0.9);
-  transition: background-color 0.4s var(--ease-ello);
+  background-color: var(--color-modal);
+  transition: background-color var(--speed2) var(--ease-ello);
 }
 
 @media (min-width: 40em) {
@@ -65,10 +65,10 @@
   padding-top: 20px;
   padding-bottom: 10px;
   margin-top: 40px;
-  color: #000;
+  color: var(--color-black);
   text-align: left;
-  background-color: #fff;
-  border-radius: 5px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-box);
 }
 
 @media (min-width: 40em) {
@@ -90,8 +90,8 @@
   top: 7px;
   right: 7px;
   z-index: 2;
-  color: #aaa;
-  transition: color 0.2s ease;
+  color: var(--color-gaa);
+  transition: color var(--speed) ease;
 }
 
 @media (min-width: 40em) {
@@ -103,7 +103,7 @@
 
 @media (hover: hover) {
   .close:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
@@ -122,14 +122,15 @@
 
 .assign h1 {
   font-family: var(--font-black);
-  font-size: 24px;
+  font-size: var(--text-24);
 }
 
 .list {
   padding: 20px 10px 0;
   margin: 0;
   list-style: none;
-  border-top: 1px solid #f2f2f2;
+  border-color: var(--color-gf2);
+  border-top: 1px solid var(--color-gf2);
 }
 
 @media (min-width: 40em) {
@@ -137,13 +138,4 @@
     padding-right: 20px;
     padding-left: 20px;
   }
-}
-
-.role {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 6px 8px 2px;
-  margin-bottom: 10px;
-  background-color: #f2f2f2;
 }

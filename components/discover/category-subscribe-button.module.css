@@ -1,0 +1,32 @@
+/* categorySubscribeButtonStyle from CategoryRenderables.js */
+.subscribe {
+  padding: 5px 15px 5px 6px;
+  color: var(--color-white);
+  background-color: var(--color-green);
+  border-radius: 100px;
+  transition: background-color var(--speed) var(--ease-ello);
+}
+
+.subscribe:hover {
+  background-color: var(--color-dark-green);
+}
+
+.subscribed {
+  background-color: var(--color-gaa);
+}
+
+.subscribed:hover {
+  background-color: var(--color-black);
+}
+
+.subscribe :global(.label) {
+  display: inline-block;
+  padding-top: 4px;
+  padding-left: 10px;
+  font-size: var(--text-12);
+}
+
+.subscribe :global(.CheckCircleIcon) {
+  display: inline-block;
+  margin-top: -2px;
+}

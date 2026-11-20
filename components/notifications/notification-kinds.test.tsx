@@ -151,3 +151,35 @@ describe('on a repost', () => {
     expect(screen.getByText(/you're watching\./)).toBeInTheDocument()
   })
 })
+
+describe('the thumbnail', () => {
+  const love = (post: unknown) => ({ __typename: 'Love', id: 'l1', post, user: grace })
+
+  it('is the still of a picture', () => {
+    const { container } = show('love_notification', love(gqlPost('p1')))
+    expect(container.querySelector('.hasAsset .NotificationAsset img.ImageAttachment')).not.toBeNull()
+    expect(container.querySelector('video')).toBeNull()
+  })
+
+  it('is an empty 0x0 clip for an animated upload, like the original', () => {
+    const post = gqlPost('p1')
+    const [asset] = post.assets
+    if (!asset) throw new Error('fixture without an asset')
+    const video = { url: 'http://api.test/media/loop.mp4', metadata: null }
+    const { container } = show('love_notification', love({ ...post, assets: [{ ...asset, attachment: { ...asset.attachment, video } }] }))
+    const clip = container.querySelector('.hasAsset .NotificationAsset a[href="/ada/post/tokp1"] > video.ImageAttachment')
+    expect(clip).toHaveAttribute('width', '0')
+    expect(clip).toHaveAttribute('height', '0')
+    expect(clip?.querySelector('source')).toHaveAttribute('src', 'http://api.test/media/loop.mp4')
+    expect(container.querySelector('.NotificationAsset img')).toBeNull()
+  })
+
+  it('is the picture of an embed, linking to the post', () => {
+    const embed = { kind: 'embed', data: { service: 'vimeo', id: '42', url: 'https://vimeo.com/42', thumbnailLargeUrl: 'http://api.test/thumb.png' }, linkUrl: null }
+    const { container } = show('love_notification', love(gqlPost('p1', { summary: [textRegion('<p>Reel</p>'), embed], assets: [] })))
+    const link = container.querySelector('.hasAsset .NotificationAsset .EmbedRegion.vimeo .embetter a.EmbedRegionContent')
+    expect(link).toHaveAttribute('href', '/ada/post/tokp1')
+    expect(link?.querySelector('img')).toHaveAttribute('src', 'http://api.test/thumb.png')
+    expect(screen.getByText('Reel')).toBeInTheDocument()
+  })
+})

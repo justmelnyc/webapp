@@ -1,0 +1,43 @@
+/*
+ * Under 60em the original's post page draws the post's lightbox inside `.PostList > .Post`, so the
+ * page's own tool rules (`postDetailStyle` in legacy components/views/PostDetail.js) reach the tools
+ * in the lightbox too: no comment tool, bigger icons and counts, love and repost pushed to the
+ * edges. From 60em the post body is not inside `.Post` and none of this applies.
+ */
+
+@media (max-width: 59.9375em) {
+  .LightBoxInPost .PostTools.with-lightbox {
+    justify-content: space-between;
+    height: auto;
+    padding: 30px 0 40px;
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .PostToolValue {
+    margin-left: 10px;
+    font-size: var(--text-18);
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .PostTool .SVGIcon + .PostToolValue {
+    margin-left: 15px;
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .SVGIcon {
+    transform: scale(1.5);
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .SVGIcon > g {
+    stroke-width: 0.9375;
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .CommentTool {
+    display: none;
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .ShareTool {
+    position: static;
+  }
+
+  .LightBoxInPost .PostTools.with-lightbox .ViewsTool {
+    pointer-events: none;
+  }
+}

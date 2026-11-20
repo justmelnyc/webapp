@@ -12,14 +12,19 @@ describe('timeAgoInWords', () => {
 
   it('counts minutes, hours and days', () => {
     expect(ago(5 * 60)).toBe('5m')
-    expect(ago(3 * 3600)).toBe('~3h')
+    expect(ago(3 * 3600)).toBe('3h')
     expect(ago(30 * 3600)).toBe('1d')
     expect(ago(16.6 * 86_400)).toBe('17d')
   })
 
+  it('never prefixes an age with "~" (the original turns its "about" prefix off)', () => {
+    expect(ago(50 * 60)).toBe('1h')
+    expect(ago(20 * 3600)).toBe('20h')
+  })
+
   it('switches to months and years', () => {
-    expect(ago(40 * 86_400)).toBe('~1mth')
+    expect(ago(40 * 86_400)).toBe('1mth')
     expect(ago(200 * 86_400)).toBe('7mth')
-    expect(ago(400 * 86_400)).toBe('~1y')
+    expect(ago(400 * 86_400)).toBe('1y')
   })
 })

@@ -1,0 +1,74 @@
+/*
+ * Comments opened under a post in a stream (`Post` in PostRenderables.js: the comment `Editor` and
+ * the `StreamContainer.TabListStreamContainer.isFullWidth` of comments). The editor and action bar
+ * modules carry the post page's values (`.PostDetail ...`); the rules here put back the ones the
+ * original uses everywhere else.
+ */
+
+/* the editor and the list are children of `.Post`, as in the original */
+.root {
+  display: contents;
+}
+
+/* Editor.css: only `.PostDetail .editor.isComment .editor-region` has the 20px above it */
+.root :global(.editor-region) {
+  margin-top: 0;
+}
+
+/*
+ * PostActionBar.js, outside `.PostDetail`: the X button is always there, and the "Cancel" label
+ * beside Comment as well, except in a grid card from 40em up.
+ */
+.root :global(.PostActionButton.forCancel.icon-text) {
+  display: inline-flex;
+}
+
+.root :global(.PostActionButton.forCancel.label) {
+  display: inline-block;
+}
+
+@media (min-width: 40em) {
+  :global(.PostGrid) .root :global(.PostActionButton.forCancel.label) {
+    display: none;
+  }
+}
+
+/* StreamContainer.css: `.StreamContainer.isFullWidth`, and `.PostList .TabListStreamContainer` */
+.root .stream {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+:global(.PostList) .root .stream {
+  padding-top: 0;
+}
+
+/* the comments are on their way (`.StreamContainer.isBusy`, not the page-level one in stream.css) */
+.root .stream.busy {
+  min-height: 120px;
+}
+
+:global(.PostList) .root .stream.busy {
+  max-width: 720px;
+}
+
+.stream .indicator {
+  top: 20px;
+}
+
+/* "See More" (Paginator.css: `.TabListStreamContainer .Paginator`, the grey pill that turns black under the pointer) */
+.root .stream .paginator {
+  max-width: 580px;
+}
+
+@media (hover: hover) {
+  .root .stream .paginator:hover {
+    background-color: var(--color-black);
+  }
+}
+
+.error {
+  margin-top: 20px;
+  font-size: var(--text-14);
+  color: var(--color-red);
+}

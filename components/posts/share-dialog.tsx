@@ -10,8 +10,8 @@ import {
   RedditIcon,
   TumblrIcon,
   TwitterIcon,
-  XIcon,
 } from '@/components/icons'
+import { DismissButton } from '@/components/ui/dismiss-button'
 import { Modal } from '@/components/ui/modal'
 import { SHARE_DIMENSIONS, shareUrl, type ShareContent, type ShareType } from '@/utils/share'
 import styles from './share-dialog.module.css'
@@ -68,9 +68,7 @@ export const ShareDialog = ({ content, onDismiss }: ShareDialogProps) => (
           </button>
         ))}
       </div>
-      <button type="button" className={`CloseModal ${styles.dismiss}`} aria-label="Close" onClick={onDismiss}>
-        <XIcon />
-      </button>
+      <DismissButton onClick={onDismiss} />
     </div>
   </Modal>
 )

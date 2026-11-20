@@ -7,7 +7,7 @@ import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './post-header.module.css'
-import buttonStyles from './relationship-button.module.css'
+import '@/components/posts/post-hints.css'
 
 interface RelationshipButtonProps {
   userId: string
@@ -19,7 +19,7 @@ interface RelationshipButtonProps {
 const isFollowing = (priority: string | null | undefined): boolean =>
   priority === 'friend' || priority === 'noise'
 
-/** The follow toggle in a post header: a circle icon, `Following` / `Follow` on hover. */
+/** The follow toggle in a post header: a circle icon, `Following` / `Follow` on hover (styled by posts/post-hints.css, like a stream's). */
 export const RelationshipButton = ({ userId, priority, signedIn }: RelationshipButtonProps) => {
   const [following, setOptimistic] = useOptimistic<boolean, boolean>(
     isFollowing(priority),
@@ -46,12 +46,12 @@ export const RelationshipButton = ({ userId, priority, signedIn }: RelationshipB
     >
       <button
         type="button"
-        className={cn('FollowButton isInHeader', buttonStyles.button)}
+        className="FollowButton isInHeader"
         data-priority={shown}
         onClick={toggle}
       >
         {following ? <CheckCircleIcon /> : <PlusCircleIcon />}
-        <span className={buttonStyles.label}>{following ? 'Following' : 'Follow'}</span>
+        <span className="FollowButtonLabel">{following ? 'Following' : 'Follow'}</span>
       </button>
     </div>
   )

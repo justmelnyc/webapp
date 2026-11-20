@@ -16,7 +16,7 @@
 
 .cell + .cell {
   padding-top: 20px;
-  border-top: 1px solid #aaa;
+  border-top: 1px solid var(--color-gaa);
 }
 
 .truncate {
@@ -33,16 +33,16 @@
 }
 
 .name {
-  font-size: 18px;
+  font-size: var(--text-18);
 }
 
 .name > a:hover {
-  color: #666;
+  color: var(--color-g66);
 }
 
 .username {
   margin-bottom: 10px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .location {
@@ -50,8 +50,8 @@
   margin-top: 2px;
   margin-bottom: 10px;
   margin-left: -4px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
   vertical-align: middle;
 }
 
@@ -85,7 +85,7 @@
 
 .figuresLabel {
   margin-left: 5px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 /* Stats */
@@ -99,14 +99,14 @@
 }
 
 .stats dt {
-  font-size: 16px;
+  font-size: var(--text-16);
 }
 
 .stats dd {
   display: block;
   font-size: 11px;
   line-height: 1;
-  color: #aaa;
+  color: var(--color-gaa);
   transition: color var(--speed) ease;
 }
 
@@ -121,12 +121,12 @@
 
 /* The active tab's stat (the original's .isUserDetail* ~ .Hero dl:nth-child(n) dd) */
 .stats dl[data-active] dd {
-  color: #000;
+  color: var(--color-black);
 }
 
 @media (hover: hover) {
   .statsLink:not([data-disabled]):hover dd {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
@@ -146,7 +146,7 @@
 }
 
 .bio a {
-  border-color: #aaa;
+  border-color: var(--color-gaa);
 }
 
 /* Links (the mock has no icon links, so only the label column exists) */
@@ -157,7 +157,7 @@
 
 .linksLeft {
   width: 100%;
-  font-size: 14px;
+  font-size: var(--text-14);
   word-wrap: break-word;
 }
 
@@ -176,12 +176,12 @@
 
 .linkLabel > a {
   display: inline;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid var(--color-gaa);
 }
 
 @media (hover: hover) {
   .linkLabel > a:hover {
-    color: #aaa;
+    color: var(--color-gaa);
   }
 }
 
@@ -189,16 +189,16 @@
   .username,
   .figuresLabel,
   .stats dd {
-    color: #ccc;
+    color: var(--color-gcc);
   }
 
   .stats dl[data-active] dd {
-    color: #fff;
+    color: var(--color-white);
   }
 
   @media (hover: hover) {
     .statsLink:not([data-disabled]):hover dd {
-      color: #fff;
+      color: var(--color-white);
     }
   }
 }

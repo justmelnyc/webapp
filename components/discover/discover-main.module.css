@@ -1,0 +1,110 @@
+/*
+ * `.isCategoryDrawerOpen ~ .MainView.show-info` from legacy/src/components/views/MainView.css and
+ * the matching `.Column` widths of posts/Post.css: with the info panel open the posts get one
+ * column fewer and the panel takes the last one.
+ */
+@media (min-width: 40em) {
+  .drawerOpen {
+    display: grid;
+    grid-template-columns: repeat(3, [col-start] 1fr);
+  }
+
+  .drawerOpen :global(.category-sub-nav) {
+    grid-row: 1;
+    grid-column: col-start / span 2;
+  }
+
+  .drawerOpen :global(.sidebar) {
+    grid-row: 1 / span 2;
+    grid-column: 3 / span 1;
+  }
+
+  .drawerOpen :global(.StreamContainer) {
+    grid-row: 2;
+    grid-column: col-start / span 2;
+  }
+}
+
+@media (min-width: 60em) {
+  .drawerOpen :global(.Column) {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (min-width: 85em) {
+  .drawerOpen {
+    grid-template-columns: repeat(4, [col-start] 1fr);
+  }
+
+  .drawerOpen :global(.category-sub-nav),
+  .drawerOpen :global(.StreamContainer) {
+    grid-column: col-start / span 3;
+  }
+
+  .drawerOpen :global(.sidebar) {
+    grid-column: 4 / span 1;
+  }
+
+  .drawerOpen :global(.Column) {
+    width: calc(33.33333% - 20px);
+    margin-left: 20px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .drawerOpen {
+    grid-template-columns: repeat(5, [col-start] 1fr);
+  }
+
+  .drawerOpen :global(.category-sub-nav),
+  .drawerOpen :global(.StreamContainer) {
+    grid-column: col-start / span 4;
+  }
+
+  .drawerOpen :global(.sidebar) {
+    grid-column: 5 / span 1;
+  }
+
+  .drawerOpen :global(.Column) {
+    width: calc(25% - 40px);
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 130em) {
+  .drawerOpen {
+    grid-template-columns: repeat(6, [col-start] 1fr);
+  }
+
+  .drawerOpen :global(.category-sub-nav),
+  .drawerOpen :global(.StreamContainer) {
+    grid-column: col-start / span 5;
+  }
+
+  .drawerOpen :global(.sidebar) {
+    grid-column: 6 / span 1;
+  }
+
+  .drawerOpen :global(.Column) {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .drawerOpen {
+    grid-template-columns: repeat(7, [col-start] 1fr);
+  }
+
+  .drawerOpen :global(.category-sub-nav),
+  .drawerOpen :global(.StreamContainer) {
+    grid-column: col-start / span 6;
+  }
+
+  .drawerOpen :global(.sidebar) {
+    grid-column: 7 / span 1;
+  }
+
+  .drawerOpen :global(.Column) {
+    width: calc(16.66666% - 40px);
+  }
+}

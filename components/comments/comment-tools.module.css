@@ -8,42 +8,25 @@
   display: flex;
   height: 60px;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--text-14);
   white-space: nowrap;
-  transition: transform var(--speed) var(--ease);
+  transition: transform var(--speed) var(--ease-ello);
 }
 
-.tools :global(.PostTool) {
-  position: relative;
-  display: inline-block;
-  height: 20px;
-  line-height: 20px;
-  transition: transform var(--speed) var(--ease);
-}
-
-.tools :global(.PostTool) > button {
-  padding-right: 8px;
-  padding-left: 4px;
-  color: #aaa;
-  transition: color var(--speed) ease;
-}
-
+/*
+ * `.PostTool`, its grey button and the hover are the stream's (components/posts/post-tools.css).
+ * A comment's tools get the wider padding from 60em in a grid stream too, where a post's do not.
+ */
 @media (min-width: 60em) {
   .tools :global(.PostTool) > button {
     padding-right: 12px;
   }
 }
 
-@media (hover: hover) {
-  .tools :global(.PostTool) button:hover {
-    color: #000;
-  }
-}
-
 /* `.Posts .CommentTools .TimeAgoTool` in the original: it beats the global `.Posts .TimeAgoTool { display: none }`. */
 .tools:global(.CommentTools) :global(.TimeAgoTool) {
   display: inline-block;
-  color: #aaa;
+  color: var(--color-gaa);
   cursor: default;
 }
 
@@ -98,7 +81,7 @@
   }
 
   .shyTools {
-    transition: margin-left var(--speed) var(--ease), transform var(--speed) var(--ease);
+    transition: margin-left var(--speed) var(--ease-ello), transform var(--speed) var(--ease-ello);
   }
 
   .shyTools::before {

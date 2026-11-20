@@ -45,9 +45,9 @@
 .header {
   position: relative;
   height: 30px;
-  font-size: 14px;
-  color: #aaa;
-  background-color: #fff;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
+  background-color: var(--color-white);
 }
 
 .author {
@@ -76,14 +76,14 @@
 
 @media (hover: hover) {
   .link:hover {
-    color: #535353;
+    color: var(--color-g53);
   }
 }
 
 .body {
   padding-bottom: 20px;
   margin-left: 40px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--color-ge5);
 }
 
 .body :global(.TextRegion) {
@@ -123,14 +123,14 @@
   height: 40px;
   margin-top: 30px;
   margin-bottom: 50px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   vertical-align: middle;
-  background-color: #aaa;
-  border-radius: 5px;
-  transition: background-color var(--speed) var(--ease);
+  background-color: var(--color-gaa);
+  border-radius: var(--radius-box);
+  transition: background-color var(--speed) var(--ease-ello);
 }
 
 .aside .paginator {
@@ -145,12 +145,12 @@
 
 @media (hover: hover) {
   .paginator:hover {
-    background-color: #000;
+    background-color: var(--color-black);
   }
 }
 
 .error {
   margin-top: 20px;
-  font-size: 14px;
-  color: #f00;
+  font-size: var(--text-14);
+  color: var(--color-red);
 }

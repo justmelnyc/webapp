@@ -33,7 +33,8 @@ const responsive = (url, w, h) => ({
 })
 
 const avatar = (user) => {
-  const url = size => user.avatarUrl || avatarUrl(user.username, size)
+  // accounts that never uploaded a picture get the default one (served by routes/media.js)
+  const url = size => user.avatarUrl || (user.noAvatar ? `${HOST}/img/default-avatar.svg` : avatarUrl(user.username, size))
   return {
     small: version(url(60), 60, 60),
     regular: version(url(120), 120, 120),

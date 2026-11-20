@@ -1,7 +1,7 @@
-/* heroStyle, promotionStyle, captionStyle and the promotion headings from HeroRenderables.js */
+/* heroStyle, captionStyle and the promotion headings from HeroRenderables.js (promotionStyle is components/heroes/hero-promotion.module.css) */
 .hero {
   padding-top: 85px;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 @media (max-width: 39.9375em) {
@@ -33,30 +33,21 @@
   }
 }
 
-.promotion {
-  position: relative;
-  display: flex;
-  width: 100%;
-  min-height: 240px;
-  overflow: hidden;
-  color: #fff;
-}
-
 .caption {
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;
   margin-right: 10px;
   margin-left: 10px;
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 .heading {
-  font-size: 18px;
+  font-size: var(--text-18);
 }
 
 .subheading {
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 .cta {
@@ -68,22 +59,17 @@
 }
 
 @media (min-width: 40em) {
-  .promotion {
-    align-items: center;
-    min-height: 380px;
-  }
-
   .caption {
     margin-right: 20px;
     margin-left: 20px;
   }
 
   .heading {
-    font-size: 48px;
+    font-size: var(--text-48);
   }
 
   .subheading {
-    font-size: 28px;
+    font-size: var(--text-28);
   }
 }
 

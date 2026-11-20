@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import type { MouseEvent, ReactNode } from 'react'
+import { useShownPath } from '@/components/layout/use-pending-navigation'
 import styles from './user-cells.module.css'
 
 interface UserStatsLinkProps {
@@ -19,7 +19,7 @@ const scrollToContent = (event: MouseEvent<HTMLElement>): void => {
 
 /** One `dl` of the stats cell: the stat of the current tab is highlighted like the original's `.isUserDetail*` rules. */
 export const UserStatsLink = ({ href, disabled = false, children }: UserStatsLinkProps) => {
-  const active = usePathname() === href
+  const active = useShownPath() === href
   return (
     <dl data-active={active ? '' : undefined}>
       {disabled ? (

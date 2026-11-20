@@ -26,6 +26,7 @@ router.get('/api/v2/posts', (req, res, next) => {
   const viewer = viewerId(req)
   const perPage = Math.min(parseInt(req.query.per_page, 10) || 25, 100)
   const results = visibleResults(req.query.terms, viewer)
+  if (require('../empty-list').noContentWhenEmpty(res, results.length)) return undefined
   const { items, next: cursor } = pageOf(results, req.query.before, perPage)
   const pages = Math.max(1, Math.ceil(results.length / perPage))
   const current = Math.floor((parseInt(req.query.before, 10) || 0) / perPage) + 1

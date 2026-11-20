@@ -8,13 +8,13 @@
   height: 40px;
   overflow: hidden;
   line-height: 39px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #00d100;
-  border-radius: 20px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  background-color: var(--color-green);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--speed) ease, color var(--speed) ease;
 }
 
 .ElloBuyButton::before {
@@ -26,8 +26,8 @@
 
 @media (hover: hover) {
   .ElloBuyButton:hover {
-    color: #000;
-    background-color: #eaeaea;
+    color: var(--color-black);
+    background-color: var(--color-gea);
   }
 }
 

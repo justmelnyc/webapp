@@ -19,7 +19,7 @@ describe('CommentBody', () => {
     })
     const { container } = render(<CommentBody comment={comment} />)
     const regions = Array.from(container.querySelectorAll('.CommentBody > div > div')).map(
-      (el) => el.className,
+      (el) => el.classList[0],
     )
     expect(regions).toEqual(['TextRegion', 'ImageRegion'])
     const img = container.querySelector('img.ImageAttachment')

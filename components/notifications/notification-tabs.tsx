@@ -17,8 +17,12 @@ export const NOTIFICATION_TABS: { type: NotificationTab; children: ReactNode }[]
   { type: 'relationships', children: <RelationshipIcon /> },
 ]
 
-/** Tabs as links (the /notifications page): the original's `TabListLinks`. */
-export const NotificationTabLinks = ({ active }: { active: NotificationTab }) => (
+/**
+ * Tabs as links (the /notifications page): the original's `TabListLinks`. A tab is active when its own
+ * path is the current one, so `/notifications/all` (where the navbar bolt leads on small screens) shows
+ * everything with no tab lit: pass `null` there.
+ */
+export const NotificationTabLinks = ({ active }: { active: NotificationTab | null }) => (
   <nav className="IconTabList NotificationsContainerTabs TabListLinks">
     {NOTIFICATION_TABS.map(({ type, children }) => (
       <Link key={type} href={tabPath(type)} className={cn('IconTab TabLink', type === active && 'isActive')}>

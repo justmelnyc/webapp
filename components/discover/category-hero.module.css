@@ -1,13 +1,7 @@
-/* promotionCategoryStyle, categoryCaptionStyle, categoryHeadingStyle, subscribeHolderStyle (HeroRenderables.js) */
-.promotion {
-  position: relative;
-  display: flex;
-  width: 100%;
-  min-height: 240px;
-  overflow: hidden;
-  color: #fff;
-}
-
+/*
+ * categoryCaptionStyle, categoryHeadingStyle, subscribeHolderStyle (HeroRenderables.js). The frame
+ * (promotionCategoryStyle) is components/heroes/hero-promotion.module.css.
+ */
 .promotionCollapsed {
   flex-direction: column;
   justify-content: center;
@@ -21,7 +15,7 @@
   align-self: flex-end;
   width: 100%;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 .caption,
@@ -29,7 +23,7 @@
   position: relative;
   padding-top: 20px;
   padding-bottom: 20px;
-  font-size: 14px;
+  font-size: var(--text-14);
 }
 
 .captionCollapsed {
@@ -59,12 +53,12 @@
 
 .check :global(.svg-stroke-bevel),
 .check circle {
-  stroke: #fff;
+  stroke: var(--color-white);
 }
 
 .check circle {
   fill: none;
-  stroke: #fff;
+  stroke: var(--color-white);
 }
 
 .subscribeHolder {
@@ -86,7 +80,8 @@
 }
 
 @media (max-width: 39.9375em) {
-  .desktop {
+  /* doubled: the element is also the shared promotion frame (display: flex), whose sheet may load later */
+  .desktop.desktop {
     display: none;
   }
 
@@ -113,7 +108,7 @@
 
   .label,
   .labelCollapsed {
-    font-size: 56px;
+    font-size: var(--text-56);
     line-height: 1;
   }
 
@@ -138,11 +133,6 @@
 }
 
 @media (min-width: 40em) {
-  .promotion {
-    align-items: center;
-    min-height: 380px;
-  }
-
   .caption {
     padding-right: 0;
     padding-left: 0;

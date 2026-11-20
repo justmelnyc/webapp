@@ -18,13 +18,13 @@
 .blockHeading {
   height: 30px;
   margin-bottom: 40px;
-  font-size: 18px;
+  font-size: var(--text-18);
   line-height: 30px;
 }
 
 @media (min-width: 40em) {
   .blockHeading {
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 }
 
@@ -51,37 +51,37 @@
   width: 100%;
   height: 40px;
   margin-bottom: 20px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #000;
+  color: var(--color-black);
   text-align: center;
   white-space: nowrap;
-  background-color: #fff;
-  border: 1px solid #fff;
-  border-radius: 20px;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-white);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--speed) ease, border-color var(--speed) ease, color var(--speed) ease;
 }
 
 .blockButton.active {
-  color: #fff;
-  background-color: #000;
-  border-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-color: var(--color-black);
 }
 
 @media (hover: hover) {
   .blockButton.active:hover {
-    color: #000;
-    background-color: #fff;
-    border-color: #fff;
+    color: var(--color-black);
+    background-color: var(--color-white);
+    border-color: var(--color-white);
   }
 }
 
 /* ---------- FlagDialog ---------- */
 .flagDialog {
   max-width: 480px;
-  color: #000;
+  color: var(--color-black);
   text-align: left;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 @media (min-width: 40em) {
@@ -94,13 +94,13 @@
 .flagHeading {
   height: 40px;
   margin-bottom: 20px;
-  font-size: 18px;
+  font-size: var(--text-18);
   line-height: 40px;
 }
 
 @media (min-width: 40em) {
   .flagHeading {
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 }
 
@@ -115,18 +115,18 @@
 
 .flagButton {
   height: 60px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 60px;
-  color: #fff;
-  background-color: #000;
-  border: 1px solid #000;
-  transition: background-color 0.2s ease, border-color 0.2s ease, width 0.2s ease;
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border: 1px solid var(--color-black);
+  transition: background-color var(--speed) ease, border-color var(--speed) ease, width var(--speed) ease;
 }
 
 @media (hover: hover) {
   .flagButton:hover {
-    background-color: #666;
-    border-color: #666;
+    background-color: var(--color-g66);
+    border-color: var(--color-g66);
   }
 }
 
@@ -145,8 +145,8 @@
 
 .choice.active {
   width: calc(100% - 140px);
-  background-color: #666;
-  border-color: #666;
+  background-color: var(--color-g66);
+  border-color: var(--color-g66);
 }
 
 .okay {

@@ -5,12 +5,12 @@
 }
 
 .button {
-  color: #fff;
-  transition: color 0.2s ease;
+  color: var(--color-white);
+  transition: color var(--speed) ease;
 }
 
 .button:hover {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .button:hover :global(.HeartIcon) > g,

@@ -1,8 +1,11 @@
+import { assetIdOf } from '@/components/lightbox/lightbox-queue'
+import { LightboxRegion, LightboxTriggerButton } from '@/components/lightbox/lightbox-triggers'
 import { ElloBuyButton, hasBuyLink } from '@/components/posts/ello-buy-button'
 import { EmbedRegion } from '@/components/posts/embed-region'
 import { embedFields } from '@/components/posts/embed-fields'
 import { Avatar } from '@/components/ui/avatar'
 import type { Asset, Post, Region } from '@/types/post'
+import { altOf } from '@/utils/image-region'
 import { avatarUrl } from '@/utils/images'
 import type { ResponsiveImage } from '@/types/image'
 import '@/components/posts/repost-body.css'
@@ -61,31 +64,38 @@ const DetailRegions = ({ postId, regions, assets }: DetailRegionsProps) => (
             id={id}
             url={url}
             thumbnailLargeUrl={thumbnailLargeUrl}
-            linkUrl={region.linkUrl}
           />
         )
       }
       if (region.kind !== 'image') return null
-      const assetId = region.links?.assets
+      const assetId = assetIdOf(region)
       const attachment = assets.find((asset) => asset.id === assetId)?.attachment
       const src = attachment?.hdpi?.url ?? region.data.url
       if (!src) return null
+      const holder = (
+        <div className="ImgHolder">
+          {/* eslint-disable-next-line @next/next/no-img-element -- srcset without sizes mirrors the original's rendering; like the original no empty alt, so a picture that fails shows the browser's broken-image mark */}
+          <img
+            id={assetId ? `asset_${assetId}_${postId}` : undefined}
+            className="ImageAttachment"
+            role="presentation"
+            alt={altOf(region.data.alt, attachment) || undefined}
+            src={src}
+            srcSet={attachment ? srcSetOf(attachment) : undefined}
+          />
+          {assetId ? <LightboxTriggerButton withBuy={hasBuyLink(region.linkUrl)} /> : null}
+          {hasBuyLink(region.linkUrl) ? <ElloBuyButton to={region.linkUrl} /> : null}
+        </div>
+      )
       return (
         <div key={index} className="ImageRegion">
-          <div className={styles.imageHolder}>
-            <div className="ImgHolder">
-              {/* eslint-disable-next-line @next/next/no-img-element -- srcset without sizes mirrors the original's rendering */}
-              <img
-                id={assetId ? `asset_${assetId}_${postId}` : undefined}
-                className="ImageAttachment"
-                role="presentation"
-                alt=""
-                src={src}
-                srcSet={attachment ? srcSetOf(attachment) : undefined}
-              />
-              {hasBuyLink(region.linkUrl) ? <ElloBuyButton to={region.linkUrl} /> : null}
-            </div>
-          </div>
+          {assetId ? (
+            <LightboxRegion postId={postId} assetId={assetId} className={styles.imageHolder}>
+              {holder}
+            </LightboxRegion>
+          ) : (
+            <div className={styles.imageHolder}>{holder}</div>
+          )}
         </div>
       )
     })}

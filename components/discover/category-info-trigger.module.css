@@ -9,8 +9,8 @@
 }
 
 .collapsed :global(.label) {
-  font-size: 16px;
-  color: #aaa;
+  font-size: var(--text-16);
+  color: var(--color-gaa);
 }
 
 .collapsed :global(.icon) {
@@ -23,7 +23,7 @@
 }
 
 .collapsed :global(.icon) svg polyline {
-  stroke: #aaa;
+  stroke: var(--color-gaa);
 }
 
 @media (min-width: 40em) {
@@ -33,7 +33,7 @@
   }
 
   .collapsed :global(.label) {
-    font-size: 18px;
+    font-size: var(--text-18);
   }
 }
 

@@ -2,6 +2,7 @@ import { HideWhileEditing } from './hide-while-editing'
 import { RepostEditorGate } from '@/components/posts/repost-editor-gate'
 import { EditablePostBody } from '@/components/posts/editable-post-body'
 import { CommentSection } from '@/components/comments/comment-section'
+import { PostsLightbox } from '@/components/lightbox/post-lightbox'
 import type { Post } from '@/types/post'
 import type { CommentPage } from '@/types/stream'
 import { cn } from '@/utils/cn'
@@ -18,6 +19,8 @@ interface PostDetailProps {
   post: Post
   viewer: { id: string; username: string; avatar: string | null } | null
   initialComments: CommentPage
+  /** Related posts in the API's order (`getRelatedPosts`). */
+  relatedPosts: Post[]
 }
 
 /**
@@ -27,12 +30,13 @@ interface PostDetailProps {
  * renders only in the placement that matches the viewport. Comments are for signed-in viewers
  * only, like the original's `CommentContent`.
  */
-export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) => {
+export const PostDetail = ({ post, viewer, initialComments, relatedPosts }: PostDetailProps) => {
   const viewerId = viewer?.id ?? null
   const comments = (placement: 'inline' | 'aside') =>
     viewer ? (
       <HideWhileEditing postId={post.id}>
         <CommentSection
+          post={post}
           postId={post.id}
           postAuthorId={post.author.id}
           viewer={viewer}
@@ -54,17 +58,19 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
               </div>
               <EditablePostBody postId={post.id}>
                 <RepostEditorGate post={post} layout="detail">
-                  {isRepost(post) ? (
-                    <DetailBody
-                      postId={post.id}
-                      regions={post.repostContent ?? []}
-                      assets={post.assets}
-                      repostAuthor={post.author}
-                      repostRegions={post.content}
-                    />
-                  ) : (
-                    <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
-                  )}
+                  <PostsLightbox posts={[post]} viewerId={viewerId}>
+                    {isRepost(post) ? (
+                      <DetailBody
+                        postId={post.id}
+                        regions={post.repostContent ?? []}
+                        assets={post.assets}
+                        repostAuthor={post.author}
+                        repostRegions={post.content}
+                      />
+                    ) : (
+                      <DetailBody postId={post.id} regions={post.content} assets={post.assets} />
+                    )}
+                  </PostsLightbox>
                 </RepostEditorGate>
               </EditablePostBody>
               <div className={styles.narrowOnly}>
@@ -73,7 +79,7 @@ export const PostDetail = ({ post, viewer, initialComments }: PostDetailProps) =
               </div>
             </div>
             {comments('inline')}
-            <RelatedPosts />
+            <RelatedPosts posts={relatedPosts} viewerId={viewerId} />
             <div className={cn('PostDetailAsideBottom', styles.narrowOnly, toolStyles.bottom)}>
               <DetailTools post={post} viewerId={viewerId} />
             </div>

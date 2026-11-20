@@ -1,4 +1,5 @@
 import { PageOffset } from '@/components/layout/page-offset'
+import { PendingQuery } from '@/components/layout/pending-query'
 import { SearchControl, type SearchType } from '@/components/profile/search-control'
 import { searchUserCards } from '@/components/profile/user-card-data'
 import { UserGrid } from '@/components/profile/user-grid'
@@ -33,15 +34,17 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
       <PageOffset>{null}</PageOffset>
       <div className={`Search ${styles.view}`}>
         <SearchControl query={query} type={type} />
-        {noResults ? (
-          <section className="StreamContainer empty">
-            <div className={`ZeroState ${styles.empty}`}>Sorry, no results found.</div>
-          </section>
-        ) : null}
-        {users.length > 0 ? <UserGrid users={users} signedIn={!!session} /> : null}
-        {page && page.posts.length > 0 ? (
-          <PostStream spec={spec} initialPage={page} signedIn={!!session} viewerId={session?.id ?? null} />
-        ) : null}
+        <PendingQuery>
+          {noResults ? (
+            <section className="StreamContainer empty">
+              <div className={`ZeroState ${styles.empty}`}>Sorry, no results found.</div>
+            </section>
+          ) : null}
+          {users.length > 0 ? <UserGrid users={users} signedIn={!!session} /> : null}
+          {page && page.posts.length > 0 ? (
+            <PostStream spec={spec} initialPage={page} signedIn={!!session} viewerId={session?.id ?? null} />
+          ) : null}
+        </PendingQuery>
       </div>
     </>
   )

@@ -25,11 +25,11 @@
   padding-left: 20px;
   margin-bottom: 20px;
   margin-left: 20px;
-  font-size: 16px;
-  color: #fff;
+  font-size: var(--text-16);
+  color: var(--color-white);
   text-align: center;
   vertical-align: middle;
-  background-color: #000;
+  background-color: var(--color-black);
   background-size: cover;
 }
 
@@ -39,7 +39,7 @@
   z-index: 2;
   content: '';
   background-color: rgba(0, 0, 0, 0.4);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 @media (hover: hover) {
@@ -71,8 +71,8 @@
   width: 0;
   height: 1px;
   content: '';
-  background-color: #fff;
-  transition: width 0.2s var(--ease-ello);
+  background-color: var(--color-white);
+  transition: width var(--speed) var(--ease-ello);
 }
 
 @media (hover: hover) {
@@ -92,13 +92,13 @@
 }
 
 .text :global(.CheckIconSM g) {
-  stroke: #00d100;
+  stroke: var(--color-green);
 }
 
 @media (min-width: 40em) {
   .button {
     height: 275px;
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 
   .text::after {

@@ -11,16 +11,16 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
   line-height: 30px;
-  color: #aaa;
+  color: var(--color-gaa);
   text-overflow: ellipsis;
   white-space: nowrap;
   border-bottom: 1px solid;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 @media (min-width: 40em) {
@@ -31,7 +31,7 @@
 
 @media (min-width: 60em) {
   .label {
-    font-size: 38px;
+    font-size: var(--text-38);
     line-height: 48px;
   }
 }
@@ -40,8 +40,8 @@
   display: block;
   width: 100%;
   margin-top: 20px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 @media (min-width: 40em) {
@@ -53,7 +53,7 @@
 @media (max-width: 39.9375em) {
   .explainer {
     display: none;
-    color: #000;
+    color: var(--color-black);
   }
 
   .explainer.open {
@@ -62,19 +62,19 @@
   }
 }
 
-.active .explainer { color: #000; }
+.active .explainer { color: var(--color-black); }
 
 @media (hover: hover) {
-  .approvedSubmissions:hover .label { color: #00d100; }
-  .selectedSubmissions:hover .label { color: #ffc600; }
-  .unapprovedSubmissions:hover .label { color: #000; }
-  .declinedSubmissions:hover .label { color: #c90000; }
+  .approvedSubmissions:hover .label { color: var(--color-green); }
+  .selectedSubmissions:hover .label { color: var(--color-yellow); }
+  .unapprovedSubmissions:hover .label { color: var(--color-black); }
+  .declinedSubmissions:hover .label { color: var(--color-dark-red); }
 }
 
-.approvedSubmissions.active .label { color: #00d100; }
-.selectedSubmissions.active .label { color: #ffc600; }
-.unapprovedSubmissions.active .label { color: #000; }
-.declinedSubmissions.active .label { color: #c90000; }
+.approvedSubmissions.active .label { color: var(--color-green); }
+.selectedSubmissions.active .label { color: var(--color-yellow); }
+.unapprovedSubmissions.active .label { color: var(--color-black); }
+.declinedSubmissions.active .label { color: var(--color-dark-red); }
 
 .toggle {
   position: absolute;
@@ -83,10 +83,10 @@
   width: 20px;
   height: 20px;
   line-height: 20px;
-  color: #fff;
-  background-color: #aaa;
-  border-radius: 20px;
-  transition: background-color 0.2s ease;
+  color: var(--color-white);
+  background-color: var(--color-gaa);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--speed) ease;
 }
 
 .toggle :global(.SVGIcon) {
@@ -95,8 +95,8 @@
 
 .question {
   display: block;
-  font-family: AtlasGroteskRegular, AtlasGrotesk-Regular, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 12px;
+  font-family: var(--font-sans);
+  font-size: var(--text-12);
   font-style: normal;
   font-weight: 400;
   line-height: 23px;
@@ -104,14 +104,14 @@
 
 @media (hover: hover) {
   .toggle:hover {
-    color: #fff;
-    background-color: #000;
+    color: var(--color-white);
+    background-color: var(--color-black);
   }
 }
 
 .toggle.open {
-  color: #fff;
-  background-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }
 
 .toggle.open :global(.SVGIcon) {

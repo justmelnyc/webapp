@@ -7,15 +7,15 @@
   height: 40px;
   margin-top: -10px;
   margin-bottom: 10px;
-  font-size: 14px;
-  color: #aaa;
-  background-color: #f2f2f2;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
+  background-color: var(--color-gf2);
 }
 
 .action {
   margin-right: 5px;
   margin-left: 5px;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 .action::after {
@@ -47,7 +47,7 @@
 
 @media (hover: hover) {
   .action:hover {
-    color: #000;
+    color: var(--color-black);
   }
 
   .action:hover > :global(.XBoxIcon) {
@@ -55,16 +55,16 @@
   }
 
   .select:hover {
-    color: #ffc600;
+    color: var(--color-yellow);
   }
 
   .select:hover > :global(.StarIcon) > g {
-    fill: #ffc600;
+    fill: var(--color-yellow);
   }
 }
 
 .unapprove {
-  color: #00d100;
+  color: var(--color-green);
 }
 
 .unapprove > :global(.CheckCircleIcon) {
@@ -82,7 +82,7 @@
 }
 
 .unselect {
-  color: #ffc600;
+  color: var(--color-yellow);
 }
 
 .unselect > :global(.StarIcon) {
@@ -90,7 +90,7 @@
 }
 
 .unselect > :global(.StarIcon) > g {
-  fill: #ffc600;
+  fill: var(--color-yellow);
 }
 
 @media (hover: hover) {

@@ -6,7 +6,7 @@
   padding: 30px;
   white-space: pre-wrap;
   word-break: break-word;
-  background: #e5e5e5;
+  background: var(--color-ge5);
 }
 
 .readonly img {
@@ -23,7 +23,7 @@
   top: 15px;
   right: 15px;
   z-index: 2;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 40em) {

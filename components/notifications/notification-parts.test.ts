@@ -28,6 +28,12 @@ describe('summaryRegions / splitSummary', () => {
     expect(texts.map((r) => r.kind)).toEqual(['text', 'rule'])
   })
 
+  it('takes an embed as the thumbnail when it comes first', () => {
+    const embed = { kind: 'embed' as const, data: { service: 'vimeo', id: '1' } }
+    expect(splitSummary([textRegion(), embed, imageRegion('x')]).image).toBe(embed)
+    expect(splitSummary([imageRegion('x'), embed]).image?.kind).toBe('image')
+  })
+
   it('has no thumbnail when the summary has no image', () => {
     expect(splitSummary([textRegion()]).image).toBeNull()
   })

@@ -1,0 +1,20 @@
+/*
+ * promotionStyle / promotionCategoryStyle (HeroRenderables.js): the frame of every hero promotion,
+ * a picture with white text over it, 240px tall and 380px from 40em. Discover's page and category
+ * heroes and the home page's promotion kinds all stand in it.
+ */
+.promotion {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 240px;
+  overflow: hidden;
+  color: var(--color-white);
+}
+
+@media (min-width: 40em) {
+  .promotion {
+    align-items: center;
+    min-height: 380px;
+  }
+}

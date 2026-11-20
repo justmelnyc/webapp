@@ -15,6 +15,14 @@ router.get('/img/:size/:label.svg', (req, res) => {
   )
 })
 
+// The avatar of accounts that never uploaded one (users with `noAvatar`)
+router.get('/img/default-avatar.svg', (req, res) => {
+  res.type('image/svg+xml').send(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"><rect width="240" height="240" fill="#e5e5e5"/>' +
+    '<circle cx="120" cy="120" r="78" fill="#aaa"/><path d="M82 134a40 40 0 0 0 76 0" fill="none" stroke="#e5e5e5" stroke-width="12" stroke-linecap="round"/></svg>',
+  )
+})
+
 // The app loads emoji images from ${AUTH_DOMAIN}/images/emoji/<name>.png; serve a small PNG
 const crc = (buf) => {
   let c = ~0

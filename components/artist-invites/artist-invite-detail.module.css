@@ -97,16 +97,16 @@
 }
 
 .guide {
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 .guideHeader {
   max-width: 100%;
   margin-bottom: 20px;
   overflow: hidden;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
   text-overflow: ellipsis;
@@ -115,7 +115,7 @@
 
 @media (min-width: 60em) {
   .guideHeader {
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 

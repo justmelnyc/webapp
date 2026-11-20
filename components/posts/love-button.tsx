@@ -1,11 +1,13 @@
 'use client'
 
-import { useOptimistic, useTransition } from 'react'
+import { useContext, useOptimistic, useTransition } from 'react'
+import { QueryClientContext } from '@tanstack/react-query'
 import { setLoved } from '@/actions/post-actions'
 import { HeartIcon } from '@/components/icons'
 import { Hint } from '@/components/posts/hint'
 import { numberToHuman } from '@/components/posts/number-to-human'
 import { useRegistrationDialog } from '@/components/auth/registration-dialog'
+import { patchStreamPosts } from '@/components/streams/stream-cache'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 
@@ -15,6 +17,8 @@ interface LoveButtonProps {
   count: number
   /** Logged-out viewers get a prompt instead of a request. */
   signedIn: boolean
+  /** Extra class on the tool (`isLightBox` inside the lightbox). */
+  className?: string
 }
 
 interface LoveState {
@@ -23,27 +27,33 @@ interface LoveState {
 }
 
 /** The original's `LoveTool`: heart button plus the love count. */
-export const LoveButton = ({ postId, loved, count, signedIn }: LoveButtonProps) => {
-  const [state, setOptimistic] = useOptimistic<LoveState, boolean>(
-    { loved, count },
-    (current, next) => ({
-      loved: next,
-      count: current.count + (next ? 1 : -1),
-    }),
-  )
+export const LoveButton = ({ postId, loved, count, signedIn, className }: LoveButtonProps) => {
+  const [state, setOptimistic] = useOptimistic<LoveState, LoveState>({ loved, count }, (_, next) => next)
   const [pending, startTransition] = useTransition()
   const registration = useRegistrationDialog()
+  // streams hold their posts in the query cache: without this the heart falls back once the request is done
+  const queryClient = useContext(QueryClientContext)
   const toggle = (): void => {
     if (!signedIn) return registration.open('post-tools')
     startTransition(async () => {
-      const next = !state.loved
+      const next = { loved: !state.loved, count: state.count + (state.loved ? -1 : 1) }
       setOptimistic(next)
-      const result = await setLoved(postId, next)
-      if (!result.ok) toast.error(result.error)
+      const result = await setLoved(postId, next.loved)
+      if (!result.ok) return toast.error(result.error)
+      if (!queryClient) return
+      patchStreamPosts(queryClient, (post) =>
+        post.id !== postId
+          ? post
+          : {
+              ...post,
+              currentUserState: { ...post.currentUserState, loved: next.loved },
+              postStats: { ...post.postStats, lovesCount: next.count },
+            },
+      )
     })
   }
   return (
-    <span className="PostTool LoveTool" data-count={state.count}>
+    <span className={cn('PostTool LoveTool', className)} data-count={state.count}>
       <button
         type="button"
         onClick={toggle}

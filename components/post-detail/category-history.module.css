@@ -2,9 +2,9 @@
 .record {
   display: block;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--text-12);
   line-height: 20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .record span {

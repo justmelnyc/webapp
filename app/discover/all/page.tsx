@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { CategoryGrid } from '@/components/discover/category-grid'
+import { CategorySubscriptionsProvider } from '@/components/discover/category-subscriptions'
 import { HeroFrame } from '@/components/discover/discover-hero'
 import { getCategories } from '@/services/content'
 import { getViewer } from '@/services/viewer'
@@ -11,7 +12,9 @@ const AllCategoriesPage = async () => {
   return (
     <>
       <HeroFrame isDiscover={false} />
-      <CategoryGrid categories={categories} isLoggedIn={!!viewer} />
+      <CategorySubscriptionsProvider isLoggedIn={!!viewer} subscribedIds={viewer?.followedCategoryIds ?? []}>
+        <CategoryGrid categories={categories} />
+      </CategorySubscriptionsProvider>
     </>
   )
 }

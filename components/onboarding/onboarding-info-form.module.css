@@ -18,13 +18,13 @@
 
 .form :global(.FormControlInput) {
   padding-right: 20px;
-  font-size: 18px;
-  border-bottom-color: #f0f0f0;
+  font-size: var(--text-18);
+  border-bottom-color: var(--color-gf0);
 }
 
 .form :global(.hasValue:not(.isInitialValue)) > :global(.FormControlInput) {
-  color: #000;
-  border-color: #f0f0f0;
+  color: var(--color-black);
+  border-color: var(--color-gf0);
 }
 
 .form textarea:global(.FormControlInput) {
@@ -36,7 +36,7 @@
 
 @media (min-width: 60em) {
   .form :global(.FormControlInput) {
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 
   .form :global(.hasValue) > textarea:global(.FormControlInput),
