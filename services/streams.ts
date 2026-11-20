@@ -6,6 +6,7 @@ import {
   FOLLOWING_STREAM,
   GLOBAL_STREAM,
   SEARCH_POSTS,
+  SUBSCRIBED_STREAM,
   USER_LOVES,
   USER_STREAM,
 } from '@/constants/queries'
@@ -36,6 +37,10 @@ const loadStream = async (spec: StreamSpec, before?: string | null): Promise<Pos
     case 'global': {
       const data = await graphql(GLOBAL_STREAM, { kind: spec.kind, before: cursor }, wrap('globalPostStream'))
       return data.globalPostStream
+    }
+    case 'subscribed': {
+      const data = await graphql(SUBSCRIBED_STREAM, { kind: spec.kind, before: cursor }, wrap('subscribedPostStream'))
+      return data.subscribedPostStream
     }
     case 'following': {
       const data = await graphql(FOLLOWING_STREAM, { kind: spec.kind ?? 'RECENT', before: cursor }, wrap('followingPostStream'))

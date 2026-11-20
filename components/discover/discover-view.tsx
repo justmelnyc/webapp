@@ -13,9 +13,13 @@ import { CategorySubscriptionsProvider } from './category-subscriptions'
 import { DiscoverBeacon } from './discover-beacon'
 import { HeroFrame, PageHero } from './discover-hero'
 import { DiscoverMain } from './discover-main'
+import { ZeroSubscribedStream } from '@/components/streams/zero-subscribed-stream'
+
+/** The `stream` the original treats as the viewer's subscribed categories instead of a category slug. */
+export const SUBSCRIBED = 'subscribed'
 
 interface DiscoverViewProps {
-  /** Category slug; omitted for the global Featured / Trending / Recent / Shop streams. */
+  /** Category slug (or `subscribed`); omitted for the global Featured / Trending / Recent / Shop streams. */
   slug?: string
   kind: DiscoverKind
 }
@@ -27,16 +31,24 @@ const STREAM_KINDS = {
   shop: 'SHOP',
 } as const satisfies Record<DiscoverKind, StreamKind>
 
-/** The global streams: the generic hero, the sub navigation and the posts. */
-const GlobalView = async ({ kind }: { kind: DiscoverKind }) => {
+/**
+ * The global streams and the subscribed one (`stream` 'global' / 'subscribed' in the original's DiscoverContainer):
+ * the generic hero, the sub navigation and the posts, without a category's info panel.
+ */
+const GlobalView = async ({ kind, isSubscribed = false }: { kind: DiscoverKind; isSubscribed?: boolean }) => {
   const [header, session] = await Promise.all([getPageHeader('GENERIC'), getSession()])
+  const type = isSubscribed ? 'subscribed' : 'global'
   return (
     <>
       <HeroFrame>{header && <PageHero header={header} />}</HeroFrame>
       {session && <DiscoverBeacon />}
       <div className="Discover relative">
-        <CategorySubNav kind={kind} />
-        <ServerStream key={`global-${kind}`} spec={{ type: 'global', kind: STREAM_KINDS[kind] }} />
+        <CategorySubNav slug={isSubscribed ? SUBSCRIBED : undefined} kind={kind} />
+        <ServerStream
+          key={`${type}-${kind}`}
+          spec={{ type, kind: STREAM_KINDS[kind] }}
+          emptyMessage={isSubscribed ? <ZeroSubscribedStream /> : undefined}
+        />
       </div>
     </>
   )
@@ -87,5 +99,7 @@ const CategoryView = async ({ slug, kind }: { slug: string; kind: DiscoverKind }
 }
 
 /** The original's Discover view: the hero, the sub navigation and the post stream. */
-export const DiscoverView = ({ slug, kind }: DiscoverViewProps) =>
-  slug ? <CategoryView slug={slug} kind={kind} /> : <GlobalView kind={kind} />
+export const DiscoverView = ({ slug, kind }: DiscoverViewProps) => {
+  if (slug === SUBSCRIBED) return <GlobalView kind={kind} isSubscribed />
+  return slug ? <CategoryView slug={slug} kind={kind} /> : <GlobalView kind={kind} />
+}

@@ -1,7 +1,7 @@
 /* eslint-disable */
 // POST /api/v3/graphql: the root field of the query picks a resolver
 const express = require('express')
-const { db, postById, postByRef, userByName } = require('../db')
+const { db, postById, postByRef, userById, userByName } = require('../db')
 const { gqlUser, gqlPost, gqlComment } = require('../serialize')
 const content = require('../content')
 const { viewerId } = require('./auth')
@@ -54,6 +54,8 @@ const moderation = require('../moderation')
 const feedStream = (key, posts, v, viewer) => postStream(key, moderation.visiblePosts(db, viewer, posts), v, viewer)
 
 const followingIds = viewer => db.follows.filter(f => f.followerId === viewer).map(f => f.followeeId)
+// The categories the viewer subscribed to (onboarding, the Subscribe buttons): the subscribed stream's posts are theirs.
+const subscribedIds = viewer => ((viewer && userById(viewer)) || {}).followedCategoryIds || []
 const trending = () => [...db.posts].sort((a, b) => loveCount(b) - loveCount(a))
 
 const resolvers = {
@@ -74,7 +76,7 @@ const resolvers = {
     return post ? { post: gqlPost(post, viewer) } : null
   },
   globalPostStream: (v, viewer) => feedStream('globalPostStream', shopOnly(v, v.kind === 'TRENDING' ? trending() : recent()), v, viewer),
-  subscribedPostStream: (v, viewer) => feedStream('subscribedPostStream', shopOnly(v, recent().filter(p => followingIds(viewer).includes(p.authorId))), v, viewer),
+  subscribedPostStream: (v, viewer) => feedStream('subscribedPostStream', shopOnly(v, recent().filter(p => (p.categoryIds || []).some(id => subscribedIds(viewer).includes(String(id))))), v, viewer),
   followingPostStream: (v, viewer) => feedStream('followingPostStream', (v.kind === 'TRENDING' ? trending() : recent()).filter(p => p.authorId === viewer || followingIds(viewer).includes(p.authorId)), v, viewer),
   categoryPostStream: (v, viewer) => {
     const cat = content.categories.find(c => c.slug === v.slug)
