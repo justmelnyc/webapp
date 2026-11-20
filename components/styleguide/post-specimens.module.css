@@ -1,0 +1,32 @@
+/* Stages for the post, editor and hero pieces of the style guide. Tokens only. */
+
+/* Room above for a Hint, which sits 25px over its tool. */
+.toolStage {
+  padding-top: 40px;
+}
+
+.editorStage {
+  min-height: 91px;
+}
+
+.placeholderHost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.busyStage {
+  min-height: 120px;
+  overflow: hidden;
+}
+
+.cell {
+  height: var(--control);
+  margin-bottom: 20px;
+  line-height: var(--control);
+  text-align: center;
+  background-color: var(--color-gf2);
+  border-radius: var(--radius-box);
+}

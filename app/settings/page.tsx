@@ -8,10 +8,12 @@ import { CreatorType } from '@/components/settings/creator-type'
 import { CredentialsForm } from '@/components/settings/credentials-form'
 import { InfoForm } from '@/components/settings/info-form'
 import { PreferenceToggles } from '@/components/settings/preference-toggles'
+import { RelationshipList } from '@/components/settings/relationship-list'
 import styles from '@/components/settings/settings.module.css'
 import { YourData } from '@/components/settings/your-data'
 import { requireSession } from '@/lib/require-session'
 import { getCreatorTypes, getPreferences } from '@/services/settings'
+import { getBlockedUsers } from '@/services/users'
 import { getViewer } from '@/services/viewer'
 
 export const metadata: Metadata = { title: 'Settings' }
@@ -21,6 +23,11 @@ const SettingsPage = async () => {
   const [viewer, preferences, creatorTypes] = await Promise.all([getViewer(), getPreferences(), getCreatorTypes()])
   if (!viewer) redirect('/enter?next=%2Fsettings')
 
+  // like the original, the lists are only asked for (and shown) when the profile counts someone
+  const [blocked, muted] = await Promise.all([
+    viewer.blockedCount ? getBlockedUsers('blocked') : [],
+    viewer.mutedCount ? getBlockedUsers('muted') : [],
+  ])
   const cover = viewer.coverImage
   const avatar = viewer.avatar
   const links = viewer.externalLinksList ?? []
@@ -57,13 +64,17 @@ const SettingsPage = async () => {
           <div className={`SettingsPreferences ${styles.preferences}`}>
             <CreatorType {...creatorTypes} />
             <PreferenceToggles preferences={preferences} />
+            {blocked.length > 0 ? (
+              <RelationshipList title="Blocked users" streamClassName="BlockedUsers" priority="block" users={blocked} />
+            ) : null}
+            {muted.length > 0 ? (
+              <RelationshipList title="Muted users" streamClassName="MutedUsers" priority="mute" users={muted} />
+            ) : null}
             <YourData
               username={viewer.username}
               name={viewer.name}
               bio={viewer.shortBio}
               links={links}
-              avatarUrl={avatar?.original?.url}
-              coverUrl={cover?.original?.url}
             />
             <AccountDeletion />
           </div>

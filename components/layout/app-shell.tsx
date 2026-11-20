@@ -2,9 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type MouseEvent, type ReactNode } from 'react'
+import { useNotificationsStore } from '@/stores/notifications-store'
 import { cn } from '@/utils/cn'
 import { hashtagPath } from '@/utils/hashtag-link'
 import styles from './app-shell.module.css'
+import { useNavbarHidden } from './use-navbar-hidden'
 
 interface AppShellState {
   isProfileMenuActive: boolean
@@ -32,6 +34,8 @@ interface AppShellProps {
 export const AppShell = ({ isLoggedIn, children }: AppShellProps) => {
   const [isProfileMenuActive, setActive] = useState(false)
   const router = useRouter()
+  const isNavbarHidden = useNavbarHidden()
+  const isNotificationsActive = useNotificationsStore((state) => state.isActive)
   const closeProfileMenu = useCallback(() => setActive(false), [])
   const toggleProfileMenu = useCallback(() => setActive((active) => !active), [])
 
@@ -58,8 +62,10 @@ export const AppShell = ({ isLoggedIn, children }: AppShellProps) => {
     <AppShellContext value={value}>
       <section
         onClick={onClick}
-        className={cn('AppContainer', styles.shell, isLoggedIn ? 'isLoggedIn' : 'isLoggedOut', isProfileMenuActive && 'isProfileMenuActive')}
+        className={cn('AppContainer', styles.shell, isLoggedIn ? 'isLoggedIn' : 'isLoggedOut', isProfileMenuActive && 'isProfileMenuActive', isNavbarHidden && 'isNavbarHidden')}
       >
+        {/* the original's `Viewport`: an empty element whose classes the bars after it are styled by */}
+        <div className={cn('Viewport', isNotificationsActive && 'isNotificationsActive')} />
         {children}
       </section>
     </AppShellContext>

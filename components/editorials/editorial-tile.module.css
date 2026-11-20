@@ -13,7 +13,7 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--speed) ease;
 }
 
 .body {
@@ -28,9 +28,9 @@
 
 .subtitle p {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--text-18);
   line-height: 24px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .tools {
@@ -52,10 +52,10 @@
 
 .title {
   font-family: var(--font-black);
-  font-size: 32px;
+  font-size: var(--text-32);
   font-weight: 400;
   line-height: 38px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .overlay {
@@ -63,7 +63,7 @@
   inset: 0;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.15);
-  transition: background-color 0.4s ease;
+  transition: background-color var(--speed2) ease;
 }
 
 .overlay::after {
@@ -84,12 +84,12 @@
   }
 
   .title {
-    font-size: 38px;
+    font-size: var(--text-38);
     line-height: 42px;
   }
 
   .subtitle p {
-    font-size: 24px;
+    font-size: var(--text-24);
     line-height: 30px;
   }
 }

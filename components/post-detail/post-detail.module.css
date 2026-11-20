@@ -7,7 +7,7 @@
 /* The original's empty `.Hero` spacer that offsets the view below the fixed navbar. */
 .spacer {
   padding-top: 85px;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 @media (max-width: 39.9375em) {
@@ -26,7 +26,7 @@
 .root {
   position: relative;
   padding-bottom: 30px;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 @media (max-width: 39.9375em) {
@@ -44,6 +44,14 @@
 
 .details {
   position: relative;
+}
+
+/*
+ * The page is `.Posts.asList` for the tool rules, but not a stream's list: the original's 1360px
+ * cap sits on the stream (postsAsListStyle), so from 85em the post page keeps the full width.
+ */
+.details:global(.Posts):global(.asList) {
+  max-width: none;
 }
 
 /* `listStyle` */
@@ -110,7 +118,7 @@
     padding-bottom: 160px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-left: 1px solid #f2f2f2;
+    border-left: 1px solid var(--color-gf2);
   }
 }
 
@@ -163,12 +171,12 @@
 .imageHolder > :global(.ImgHolder) {
   position: relative;
   display: inline-block;
-  background-color: #f2f2f2;
+  background-color: var(--color-gf2);
 }
 
 .body :global(.ImageAttachment) {
   max-width: 100%;
   height: auto;
-  font-size: 12px;
-  transition: opacity 0.4s;
+  font-size: var(--text-12);
+  transition: opacity var(--speed2);
 }

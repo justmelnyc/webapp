@@ -1,15 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { ChevronIcon, GridIcon, ListIcon, RSSIcon } from '@/components/icons'
 import { cn } from '@/utils/cn'
+import { scrollWindowTo, tween } from '@/utils/scroll-to-position'
 import { FooterForm } from './footer-form'
 import { FooterLink, FooterTool } from './footer-parts'
 import { isAuthenticationPath, isOnboardingPath, isDiscoverAllPath, isLayoutToolHidden, isPostDetailPath } from './layout-routes'
 import { useLayoutModeStore } from './layout-mode-store'
 import { useMediaQuery } from './use-media-query'
 import styles from './footer.module.css'
+import { useShownPath } from './use-pending-navigation'
 
 /** constants/locales/en FOOTER_LINKS */
 const LINKS = [
@@ -22,11 +23,21 @@ const LINKS = [
   { label: 'Privacy', to: '/wtf/policies/privacy/' },
 ] as const
 
-const scrollToTop = (): void => window.scrollTo({ top: 0, behavior: 'smooth' })
+/**
+ * `onClickScrollToTop`: the window eases to the top over a second (quartic in-out), and so do the post
+ * page's two columns, which scroll on their own from 60em.
+ */
+const scrollToTop = (): void => {
+  scrollWindowTo(0)
+  for (const name of ['PostList', 'PostSideBar']) {
+    const column = document.getElementsByClassName(name)[0]
+    if (column) tween(column.scrollTop, 0, (value) => { column.scrollTop = value })
+  }
+}
 
 /** The bottom bar (FooterRenderables.js). Hidden on the sign in / join screens, like the original. */
 export const Footer = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
-  const pathname = usePathname()
+  const pathname = useShownPath()
   const mode = useLayoutModeStore((state) => state.mode)
   const toggleMode = useLayoutModeStore((state) => state.toggle)
   const isMobile = useMediaQuery('(max-width: 39.9375em)')

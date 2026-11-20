@@ -51,11 +51,11 @@
 .streamTitle {
   max-width: 100%;
   overflow: hidden;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
-  color: #000;
+  color: var(--color-black);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -67,7 +67,7 @@
 
   :global(.ArtistInvitesDetail) .streamTitle {
     margin-bottom: 0;
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 
@@ -80,11 +80,11 @@
 .title {
   display: block;
   width: 100%;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 60em) {
@@ -94,7 +94,7 @@
 
   :global(.ArtistInvitesDetail) .title {
     margin-bottom: 0;
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 

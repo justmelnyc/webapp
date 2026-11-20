@@ -1,0 +1,63 @@
+/*
+ * The parts of HeroPromotionCategory (HeroRenderables.js) that depend on the info panel and on
+ * the subscription: the phone-sized hero's round trigger (promotionCategoryStyle `.category-info`),
+ * the open label and the subscribed check mark (categoryHeadingStyle).
+ */
+.stacked {
+  flex-direction: column;
+}
+
+.stacked :global(.category-info) {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  padding: 10px 20px;
+  margin: 0;
+  background-color: var(--color-modal);
+  border-radius: 40px;
+}
+
+.stacked :global(.category-info) :global(.label) {
+  display: block;
+  padding: 0;
+  font-size: var(--text-14);
+  line-height: 12;
+  color: var(--color-white);
+}
+
+.stacked :global(.category-info) :global(.icon) {
+  display: none;
+}
+
+.stacked :global(.category-info.close-trigger) {
+  top: 10px;
+  right: 10px;
+  bottom: auto;
+  left: auto;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
+.stacked :global(.category-info.close-trigger) :global(.label) {
+  display: none;
+}
+
+.subscribed :global(.category-check) circle {
+  fill: var(--color-green);
+  stroke: var(--color-green);
+}
+
+/* `.label.open`; two classes so it wins over the hero's plain label rule */
+@media (max-width: 39.9375em) {
+  .stacked .labelOpen {
+    display: inline-block;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 26.25em) {
+  .stacked .labelOpen {
+    padding-right: 20px;
+  }
+}

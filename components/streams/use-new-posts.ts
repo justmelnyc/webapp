@@ -29,8 +29,13 @@ export const useNewPosts = (spec: StreamSpec): void => {
     let cancelled = false
     fetchStreamPage(spec, null)
       .then((fresh) => {
-        const current = queryClient.getQueryData<StreamData>(queryKey)
-        if (cancelled || !current) return
+        if (cancelled || !queryClient.getQueryData<StreamData>(queryKey)) return
+        // posts that are already shown take the fresh copy (its counts), as the original's store did when the page came back
+        const freshById = new Map(fresh.posts.map((post) => [post.id, post]))
+        const current = queryClient.setQueryData<StreamData>(queryKey, (old) =>
+          old && { ...old, pages: old.pages.map((page) => ({ ...page, posts: page.posts.map((post) => freshById.get(post.id) ?? post) })) },
+        )
+        if (!current) return
         const shown = new Set(current.pages.flatMap((page) => page.posts.map((post) => post.id)))
         const unseen = fresh.posts.filter((post) => !shown.has(post.id))
         if (unseen.length === 0) return

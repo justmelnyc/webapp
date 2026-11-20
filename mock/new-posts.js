@@ -13,6 +13,13 @@ const authorsFor = (viewerId) => {
   return followed.length ? followed : db.users.filter(u => u.id !== viewerId)
 }
 
+// One post published by `author` (pure: the caller stores it). `at` is its date when that is not `now`.
+// live.js publishes through this too.
+const buildPost = ({ id, author, now, at = now, regions, categoryIds = [] }) => ({
+  id, token: `n${now.toString(36)}${id}`, authorId: author.id,
+  createdAt: new Date(at).toISOString(), regions, categoryIds, views: 0,
+})
+
 const simulate = (viewerId, count = 2, now = Date.now()) => {
   const authors = authorsFor(viewerId)
   const n = Math.min(Math.max(parseInt(count, 10) || 1, 1), MAX)
@@ -20,12 +27,8 @@ const simulate = (viewerId, count = 2, now = Date.now()) => {
   for (let i = 0; i < n; i += 1) {
     const author = authors[(db.seq + i) % authors.length]
     const id = nextId()
-    const post = {
-      id, token: `n${now.toString(36)}${id}`, authorId: author.id,
-      createdAt: new Date(now - (n - i) * 1000).toISOString(),
-      regions: [{ kind: 'text', data: `<p>${LINES[(Number(id) + i) % LINES.length]}</p>` }],
-      categoryIds: [], views: 0,
-    }
+    const regions = [{ kind: 'text', data: `<p>${LINES[(Number(id) + i) % LINES.length]}</p>` }]
+    const post = buildPost({ id, author, now, at: now - (n - i) * 1000, regions })
     db.posts.unshift(post)
     created.push({ token: post.token, by: author.username })
   }
@@ -33,4 +36,4 @@ const simulate = (viewerId, count = 2, now = Date.now()) => {
   return created
 }
 
-module.exports = { simulate, MAX }
+module.exports = { simulate, buildPost, MAX, LINES }

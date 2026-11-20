@@ -6,6 +6,7 @@ import { savePreference } from '@/actions/profile-actions'
 import { CheckIcon, XIcon } from '@/components/icons'
 import { ONBOARDING_ROUTES } from '@/constants/onboarding'
 import { finishOnboarding } from '@/stores/onboard-invite-store'
+import { ToggleControl } from '@/components/ui/toggle-control'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
 import styles from './collaborate.module.css'
@@ -44,21 +45,11 @@ const OnboardingPreference = ({ id, term, checked, onChange, children }: Onboard
       <dt id={`${id}-label`}>{term}</dt>
       <dd>{children}</dd>
     </dl>
-    <label htmlFor={id} className={cn(styles.toggle, checked && ['isChecked', styles.checked])}>
-      <input
-        id={id}
-        type="checkbox"
-        role="switch"
-        className="sr-only"
-        checked={checked}
-        aria-labelledby={`${id}-label`}
-        onChange={() => onChange(!checked)}
-      />
+    <ToggleControl id={id} checked={checked} onChange={onChange} className={styles.toggle} aria-labelledby={`${id}-label`}>
       <span className={styles.icon} style={{ marginTop: checked ? -4 : -2 }}>
         {checked ? <CheckIcon /> : <XIcon />}
       </span>
-      <span>{checked ? 'Yes' : 'No'}</span>
-    </label>
+    </ToggleControl>
   </div>
 )
 

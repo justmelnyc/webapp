@@ -8,8 +8,8 @@
 .PostHeader {
   position: relative;
   height: 60px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 .PostHeaderAuthor {
@@ -26,13 +26,6 @@
   margin-top: -2px;
   margin-left: 10px;
   vertical-align: middle;
-}
-
-.PostHeader .DraggableUsername {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .PostHeader.UserPostHeader {
@@ -91,7 +84,7 @@
 @media (hover: hover) {
   .PostHeaderLink:hover,
   .PostHeaderTimeAgoLink:hover {
-    color: #535353;
+    color: var(--color-g53);
   }
 }
 
@@ -147,6 +140,31 @@
 
 .PostHeader.UserPostHeader .PostHeaderLink .Avatar {
   top: auto;
+}
+
+/* Avatar.js `media(s.minBreak2, parent('.Post', { width: 40, height: 40 }))`: every avatar inside a post (header, reposter, comments) is 40px from 40em, not from 60em. */
+@media (min-width: 40em) {
+  .Post .Avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* PostHeader.css: the curator's feature / unfeature toggle (`FeatureCategoryPostTool`) next to the age */
+.PostHeaderTools .featured-toggle {
+  width: 18px;
+  height: 18px;
+  margin-top: -2px;
+  margin-right: 5px;
+  overflow: hidden;
+}
+
+.PostHeaderTools .featured-toggle:hover path {
+  fill: var(--color-black);
+}
+
+.PostHeaderTools .featured-toggle.featured:hover path {
+  fill: var(--color-dark-green);
 }
 
 /* Post.css: when the page is one person's posts the header is dropped but its room is kept. */

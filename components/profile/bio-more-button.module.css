@@ -16,25 +16,25 @@
     padding: 0 10px;
     font-size: 10px;
     line-height: 22px;
-    color: #aaa;
+    color: var(--color-gaa);
     vertical-align: middle;
-    background-color: #e8e8e8;
-    border-radius: 11px;
+    background-color: var(--color-ge8);
+    border-radius: var(--radius-pill-tiny);
   }
 }
 
 @media (min-width: 40em) {
   .more {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: var(--text-14);
     line-height: 1;
     border-bottom: 1px solid;
   }
 
   @media (hover: hover) {
     .more:hover {
-      color: #aaa;
-      border-bottom-color: #aaa;
+      color: var(--color-gaa);
+      border-bottom-color: var(--color-gaa);
     }
   }
 }

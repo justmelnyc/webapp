@@ -23,5 +23,5 @@
 .button :global(.Hint) {
   top: 5px;
   left: 30px;
-  font-size: 14px;
+  font-size: var(--text-14);
 }

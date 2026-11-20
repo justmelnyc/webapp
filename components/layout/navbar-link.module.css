@@ -35,12 +35,12 @@
   position: relative;
   height: 40px;
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #aaa;
+  color: var(--color-gaa);
   white-space: nowrap;
   vertical-align: middle;
-  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), color 0.2s ease, background-color 0.2s ease;
+  transition: width var(--speed) var(--ease-ello), color var(--speed) ease, background-color var(--speed) ease;
 }
 
 .link::before {
@@ -64,15 +64,15 @@
   width: 80px;
   height: 30px;
   line-height: 30px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
-  background-color: #00d100;
-  border-radius: 5px;
+  background-color: var(--color-green);
+  border-radius: var(--radius-box);
 }
 
 .link:global(.isSignUp):active,
 .link:global(.isSignUp):global(.isActive) {
-  background-color: #00b100;
+  background-color: var(--color-green-hover);
 }
 
 :global(.isLoggedOut) .link[href='/enter'] {
@@ -85,7 +85,7 @@
 
 @media (hover: hover) {
   .link:global(.isSignUp):hover {
-    background-color: #00b100;
+    background-color: var(--color-green-hover);
   }
 }
 
@@ -178,7 +178,7 @@
   height: 2px;
   content: '';
   background-color: transparent;
-  transition: width 0.2s cubic-bezier(0.23, 1, 0.32, 1), background-color 0.2s ease;
+  transition: width var(--speed) var(--ease-ello), background-color var(--speed) ease;
 }
 
 .link:global(.isSignUp) > .label::after {
@@ -187,12 +187,12 @@
 
 .link:global(.isActive) > .label,
 .link:active > .label {
-  color: #000;
+  color: var(--color-black);
 }
 
 .link:global(.isSignUp):global(.isActive) > .label,
 .link:global(.isSignUp):active > .label {
-  color: #fff;
+  color: var(--color-white);
 }
 
 .link:global(.isActive) > .label::after,
@@ -209,17 +209,17 @@
   width: 5px;
   height: 5px;
   content: '';
-  background-color: #f00;
+  background-color: var(--color-red);
   border-radius: 50%;
 }
 
 @media (hover: hover) {
   .link:hover > .label {
-    color: #000;
+    color: var(--color-black);
   }
 
   .link:global(.isSignUp):hover > .label {
-    color: #fff;
+    color: var(--color-white);
   }
 
   .link:global(.IconOnly):hover > .label::after {

@@ -19,7 +19,7 @@
   padding: 25px 0;
   margin-right: 15px;
   margin-left: 15px;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--color-ge5);
 }
 
 .preference:first-child {
@@ -31,50 +31,26 @@
 }
 
 .preference dt {
-  font-size: 18px;
+  font-size: var(--text-18);
 }
 
 .preference dd {
   margin-top: 100px;
-  color: #666;
+  color: var(--color-g66);
 }
 
+/* ToggleControl's `parent('.OnboardingPreference')` rules: ui/toggle-control as a big button. */
 .toggle {
   position: absolute;
   top: 75px;
   right: auto;
   left: 0;
-  display: inline-block;
   width: 100%;
   max-width: 290px;
   height: 50px;
-  font-size: 16px;
+  font-size: var(--text-16);
   line-height: 50px;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-  background-color: #aaa;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.toggle.checked {
-  background-color: #0c0;
-  border-color: #0c0;
-}
-
-@media (hover: hover) {
-  .toggle:hover {
-    color: #aaa;
-    background-color: #fff;
-    border-color: #aaa;
-  }
+  border-radius: var(--radius-box);
 }
 
 .icon {
@@ -90,7 +66,7 @@
     margin-right: 0;
     margin-left: 0;
     border-top: 0;
-    border-left: 1px solid #e5e5e5;
+    border-left: 1px solid var(--color-ge5);
   }
 
   .preference:first-child {
@@ -102,7 +78,7 @@
   }
 
   .preference dt {
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 
   .toggle {
@@ -110,7 +86,7 @@
     width: calc(100% - 20px);
     max-width: 330px;
     height: 70px;
-    font-size: 18px;
+    font-size: var(--text-18);
     line-height: 70px;
   }
 }

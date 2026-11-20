@@ -157,8 +157,11 @@ router.patch('/api/v2/posts/:id/comments/:cid', (req, res) => {
   return res.json(commentEnvelope(c, req.me.id))
 })
 
+// Staff may delete anybody's comment (staff.js); everyone else only their own.
 router.delete('/api/v2/posts/:id/comments/:cid', (req, res) => {
-  const c = ownComment(req)
+  const c = require('../staff').isStaff(db, req.me.id)
+    ? db.comments.find(x => x.id === req.params.cid && x.postId === (postByRef(req.params.id) || {}).id)
+    : ownComment(req)
   if (!c) return res.status(404).json({ error: 'not found' })
   db.comments = db.comments.filter(x => x.id !== c.id)
   save()

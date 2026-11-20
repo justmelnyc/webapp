@@ -12,6 +12,7 @@ import { CommentFormBar } from './comment-form-bar'
 import { CommentQuickEmoji } from './comment-quick-emoji'
 import { EmojiCompleter } from './emoji-completer'
 import { useCommentEditor } from './use-comment-editor'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './comment-editor.module.css'
 
 interface CommentEditFormProps {
@@ -48,6 +49,7 @@ export const CommentEditForm = ({ postId, comment, onSaved, onCancel }: CommentE
       className={cn(
         'editor isComment',
         editor.showQuickEmoji && 'withQuickEmoji',
+        parts.placeholder,
         styles.editor,
         editor.hasContent && 'hasContent',
         editor.hasDragOver && 'hasDragOver',

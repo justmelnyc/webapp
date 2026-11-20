@@ -1,0 +1,46 @@
+/*
+ * Port of UserCompact (legacy/src/components/users/UserRenderables.css) as the settings lists show it, and of
+ * `.SettingsPreferences .StreamContainer` (Settings.css), which takes the stream's page padding away.
+ */
+.stream:global(.StreamContainer) {
+  position: relative;
+  padding: 0;
+}
+
+.compact {
+  position: relative;
+  height: 40px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  font-size: var(--text-14);
+}
+
+.header {
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+  line-height: 40px;
+}
+
+.userLink {
+  display: inline-block;
+  max-width: calc(100% - 20px) !important;
+  transition: color var(--speed) ease;
+}
+
+.username {
+  padding-left: 10px;
+}
+
+.compact > :global(.RelationshipContainer) {
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+@media (hover: hover) {
+  .userLink:hover {
+    color: var(--color-g99);
+  }
+}

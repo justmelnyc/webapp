@@ -1,9 +1,13 @@
-/* `.ArtistInviteSubmissionStatusTool` of PostTools.css: out-specifies the header's own `.PostTool .SVGIcon` scale. */
+/*
+ * `.ArtistInviteSubmissionStatusTool` of PostTools.css. In the original its `scale(1)` wins over the
+ * header's `.PostHeaderTools .PostTool .SVGIcon` scale(1.5) by source order alone; here both the page's
+ * module and the stream cards' post-header.css carry that rule, so the class is doubled to win outright.
+ */
 .tool:global(.PostTool) > a {
   padding-right: 0 !important;
 }
 
-.tool:global(.PostTool) :global(.SVGIcon) {
+.tool.tool:global(.PostTool) :global(.SVGIcon) {
   padding-left: 4px;
   margin-top: -2px;
   transform: scale(1);

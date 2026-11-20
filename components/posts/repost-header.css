@@ -7,8 +7,8 @@
 .RepostHeader {
   position: relative;
   height: 60px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 .RepostHeaderAuthor,

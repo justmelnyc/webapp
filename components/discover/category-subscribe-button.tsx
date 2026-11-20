@@ -1,24 +1,46 @@
 'use client'
 
-import { useRegistrationDialog } from '@/components/auth/registration-dialog'
 import type { MouseEvent } from 'react'
 import { CheckCircleIcon } from '@/components/icons'
-import styles from './category-card.module.css'
+import { cn } from '@/utils/cn'
+import { useCategorySubscriptions } from './category-subscriptions'
+import styles from './category-subscribe-button.module.css'
+
+interface CategorySubscribeButtonProps {
+  categoryId: string
+  className?: string
+}
 
 /**
- * CategorySubscribeButton. The mock API has no category subscriptions, so the button only
- * does what the original does for logged-out visitors: it opens the sign-up dialog.
+ * CategorySubscribeButton: green "Subscribe", grey "Subscribed" once the viewer follows the
+ * category. Logged-out visitors get the sign-up dialog.
  */
-export const CategorySubscribeButton = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
-  const registration = useRegistrationDialog()
+export const CategorySubscribeButton = ({
+  categoryId,
+  className,
+}: CategorySubscribeButtonProps) => {
+  const { isSubscribed, toggle } = useCategorySubscriptions()
+  const subscribed = isSubscribed(categoryId)
   const onClick = (event: MouseEvent<HTMLButtonElement>): void => {
+    // inside a category card the button sits in the card's link
     event.preventDefault()
-    if (!isLoggedIn) registration.open('subscribe-from-page-header')
+    toggle(categoryId)
   }
   return (
-    <button type="button" className={`subscribe-button ${styles.subscribe}`} onClick={onClick}>
+    <button
+      type="button"
+      className={cn(
+        'subscribe-button',
+        subscribed && 'subscribed',
+        styles.subscribe,
+        subscribed && styles.subscribed,
+        className,
+      )}
+      onClick={onClick}
+      aria-pressed={subscribed}
+    >
       <CheckCircleIcon />
-      <span className="label">Subscribe</span>
+      <span className="label">{subscribed ? 'Subscribed' : 'Subscribe'}</span>
     </button>
   )
 }

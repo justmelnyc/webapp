@@ -5,25 +5,25 @@
   height: 40px;
   padding-left: 30px;
   font-family: var(--font-black);
-  font-size: 18px;
-  color: #000;
+  font-size: var(--text-18);
+  color: var(--color-black);
   white-space: nowrap;
   vertical-align: top;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 .treeButton:hover {
-  color: #000;
+  color: var(--color-black);
 }
 
 .collapsed {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 40em) {
   .treeButton {
     padding-left: 0;
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 }
 
@@ -53,7 +53,7 @@
   position: relative;
   padding-top: 30px;
   padding-bottom: 30px;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--color-ge5);
 }
 
 .preference dl {
@@ -63,43 +63,18 @@
 
 .preference dd {
   margin-top: 20px;
-  color: #666;
+  color: var(--color-g66);
 }
 
+/* ToggleControl's `parent('.Preference')` rule; the pill itself is ui/toggle-control. */
 .toggle {
   position: absolute;
   top: 30px;
   right: 0;
-  display: inline-block;
-  width: 60px;
-  height: 30px;
-  font-size: 14px;
-  line-height: 30px;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-  background-color: #aaa;
-  border: 1px solid #aaa;
-  border-radius: 15px;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-}
-
-.toggleChecked {
-  background-color: #0c0;
-  border-color: #0c0;
 }
 
 .toggle:focus-within {
-  outline: 1px dotted #000;
-}
-
-@media (hover: hover) {
-  .toggle:hover {
-    color: #aaa;
-    background-color: #fff;
-    border-color: #aaa;
-  }
+  outline: 1px dotted var(--color-black);
 }
 
 /* ---- Your Data ---- */
@@ -107,12 +82,12 @@
 .dataDescription {
   max-width: 600px;
   margin-top: 30px !important;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .dataValues {
   line-height: 40px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .dataValues dt {
@@ -135,6 +110,6 @@
 
 @media (hover: hover) {
   .dataValues a:hover {
-    color: #666;
+    color: var(--color-g66);
   }
 }

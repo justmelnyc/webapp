@@ -3,7 +3,15 @@
 // db.categoryRoles: [{ categoryId, userId, role: 'curator' | 'moderator' }] (both may feature and unfeature).
 // db.categoryPostStates: { '<categoryId>-<postId>': { status, submittedById, featuredById } }; a post
 // with no entry counts as `featured` by nobody in particular, which the apps show as "Featured by @ello.".
-const SEED_VERSION = 1
+const SEED_VERSION = 2
+
+// The original app stores `featuredBy { username }` as a user record without an id, and later finds that
+// empty record when it opens that person's profile (hero gone, zero counts). So the seed never lets someone
+// feature a post their own profile shows: not their own, not one they reposted, and not the newest post of
+// its author, which the notification seed (notification-extras.js) makes ada and grace repost later.
+const mayBeFeaturedBy = (db, post, userId) => post.authorId !== userId
+  && !db.posts.some(p => p.repostOfId === post.id && p.authorId === userId)
+  && db.posts.find(p => !p.repostOfId && p.authorId === post.authorId) !== post
 
 // [category slug, username, role]
 const ROLES = [['art', 'ada', 'curator'], ['design', 'ada', 'curator'], ['photography', 'grace', 'moderator']]
@@ -12,19 +20,33 @@ const seedCategoryPosts = (db) => {
   if (db.categoryPostsSeed === SEED_VERSION) return 0
   const names = require('./seed').CATEGORIES
   const categoryId = slug => String(names.findIndex(n => n.toLowerCase() === slug) + 1)
-  db.categoryRoles = ROLES.flatMap(([slug, username, role]) => {
+  const seedRoles = ROLES.flatMap(([slug, username, role]) => {
     const user = db.users.find(u => u.username === username)
     return user ? [{ categoryId: categoryId(slug), userId: user.id, role }] : []
   })
-  db.categoryPostStates = {}
-  db.categoryRoles.forEach(({ categoryId: cid, userId }) => {
+  // A database seeded by version 1 keeps its roles and states (people may have changed them); only the
+  // states that break the rule above are dropped and replaced.
+  const upgrade = db.categoryPostsSeed === 1 && !!db.categoryRoles && !!db.categoryPostStates
+  if (!upgrade) {
+    db.categoryRoles = seedRoles
+    db.categoryPostStates = {}
+  }
+  const states = db.categoryPostStates
+  const postOf = key => db.posts.find(p => p.id === key.slice(key.indexOf('-') + 1))
+  Object.keys(states).forEach((key) => {
+    const post = postOf(key)
+    if (states[key].featuredById && post && !mayBeFeaturedBy(db, post, states[key].featuredById)) delete states[key]
+  })
+  seedRoles.forEach(({ categoryId: cid, userId }) => {
     const posts = db.posts.filter(p => !p.repostOfId && (p.categoryIds || []).includes(cid))
-    // the first post waits for a curator, the second was featured by one
-    if (posts[0]) db.categoryPostStates[`${cid}-${posts[0].id}`] = { status: 'submitted', submittedById: posts[0].authorId }
-    if (posts[1]) db.categoryPostStates[`${cid}-${posts[1].id}`] = { status: 'featured', submittedById: posts[1].authorId, featuredById: userId }
+    // the first post waits for a curator, the next one the curator may feature was featured by them
+    if (!upgrade && posts[0]) states[`${cid}-${posts[0].id}`] = { status: 'submitted', submittedById: posts[0].authorId }
+    if (Object.keys(states).some(key => key.startsWith(`${cid}-`) && states[key].featuredById === userId)) return
+    const featured = posts.find(p => !states[`${cid}-${p.id}`] && mayBeFeaturedBy(db, p, userId))
+    if (featured) states[`${cid}-${featured.id}`] = { status: 'featured', submittedById: featured.authorId, featuredById: userId }
   })
   db.categoryPostsSeed = SEED_VERSION
-  return db.categoryRoles.length
+  return seedRoles.length
 }
 
 const canCurate = (db, viewerId, categoryId) => !!viewerId
@@ -66,4 +88,4 @@ const applyAction = (db, post, categoryId, action, viewerId) => {
   return next
 }
 
-module.exports = { seedCategoryPosts, canCurate, stateOf, actionsFor, parseId, applyAction, ROLES }
+module.exports = { seedCategoryPosts, mayBeFeaturedBy, canCurate, stateOf, actionsFor, parseId, applyAction, ROLES }

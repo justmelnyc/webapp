@@ -1,10 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
-import { ElloBuyButton, hasBuyLink } from '@/components/posts/ello-buy-button'
+import { usePathname } from 'next/navigation'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { EMBED_FALLBACK_THUMBNAIL } from '@/components/posts/embed-fallback'
+import { useMobileAutoEmbed } from '@/components/posts/use-mobile-auto-embed'
+import { useEmbedPlayerStore } from '@/stores/embed-player-store'
 import { embedPlayerSrc } from '@/utils/embed-services'
+import { isPostDetailPath } from '@/components/layout/layout-routes'
 import './embetter.css'
 
 interface EmbedRegionProps {
@@ -12,14 +15,15 @@ interface EmbedRegionProps {
   id: string
   url: string
   thumbnailLargeUrl: string
-  /** Grid mode links the thumbnail to the post; the detail page links to the embedded url. */
+  /** The post the thumbnail links to; on a post page that is the page itself, anywhere else without one the embedded url. */
   detailPath?: string
-  linkUrl?: string | null
 }
 
 /**
  * The original's EmbedRegion plus what `embetter` made of it: a thumbnail with a play button that swaps
- * in the service's player iframe.
+ * in the service's player iframe. One player plays at a time: starting another takes this one down.
+ * A buy link on an embed is not drawn: the original tests `region.get('linkUrl').size`, which a string
+ * does not have, so its published embeds never had the button (only its editor shows one).
  */
 export const EmbedRegion = ({
   service,
@@ -27,9 +31,20 @@ export const EmbedRegion = ({
   url,
   thumbnailLargeUrl,
   detailPath,
-  linkUrl,
 }: EmbedRegionProps) => {
-  const [playing, setPlaying] = useState(false)
+  const key = useId()
+  const playing = useEmbedPlayerStore((state) => state.playingKey === key)
+  const play = useEmbedPlayerStore((state) => state.play)
+  const stop = useEmbedPlayerStore((state) => state.stop)
+  const stopThis = useCallback(() => stop(key), [stop, key])
+  useEffect(() => stopThis, [stopThis])
+  const playerRef = useRef<HTMLDivElement>(null)
+  // codepen is left alone: "we don't know what might execute"
+  const inView = useMobileAutoEmbed(playerRef, service !== 'codepen', stopThis)
+  const embedded = playing || inView
+  // the original links the thumbnail to the post everywhere, on the post's own page too (`detailPath || url`)
+  const pathname = usePathname()
+  const postPath = detailPath ?? (pathname && isPostDetailPath(pathname) ? pathname : null)
   const [failed, setFailed] = useState(false)
   const imageRef = useRef<HTMLImageElement>(null)
   // embetter: a broken image still under 50px tall after 4 seconds gets the fallback too.
@@ -39,7 +54,7 @@ export const EmbedRegion = ({
     }, 4000)
     return () => clearTimeout(timer)
   }, [])
-  const src = playing ? embedPlayerSrc(service, id, true) : null
+  const src = embedded ? embedPlayerSrc(service, id, playing) : null
   const thumbnail = (
     // eslint-disable-next-line @next/next/no-img-element -- the original's plain thumbnail; embetter sizes it
     <img
@@ -52,11 +67,12 @@ export const EmbedRegion = ({
   return (
     <div className={`EmbedRegion ${service}`}>
       <div
-        className={playing ? 'embetter embetter-ready embetter-playing' : 'embetter embetter-ready'}
+        ref={playerRef}
+        className={embedded ? 'embetter embetter-ready embetter-playing' : 'embetter embetter-ready'}
         {...{ [`data-${service}-id`]: id }}
       >
-        {detailPath ? (
-          <Link className="EmbedRegionContent" href={detailPath}>
+        {postPath ? (
+          <Link className="EmbedRegionContent" href={postPath}>
             {thumbnail}
           </Link>
         ) : (
@@ -64,11 +80,10 @@ export const EmbedRegion = ({
             {thumbnail}
           </a>
         )}
-        {hasBuyLink(linkUrl) ? <ElloBuyButton to={linkUrl} /> : null}
         <div className="embetter-loading" />
         <div
           className="embetter-play-button"
-          onClick={() => setPlaying(true)}
+          onClick={() => play(key)}
           role="presentation"
         />
         {src ? (
@@ -76,6 +91,9 @@ export const EmbedRegion = ({
             className="video"
             src={src}
             title={service}
+            // embetter's markup: without these the browser draws its 2px inset frame and scrollbars
+            frameBorder="0"
+            scrolling="no"
             allow="autoplay; fullscreen"
             allowFullScreen
           />

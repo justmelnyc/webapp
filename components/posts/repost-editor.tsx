@@ -6,6 +6,7 @@ import { ActionBar } from '@/components/composer/action-bar'
 import { EmbedBlock } from '@/components/composer/embed-block'
 import { ImageBlock } from '@/components/composer/image-block'
 import omnibar from '@/components/composer/omnibar.module.css'
+import parts from '@/components/ui/editor-parts.module.css'
 import { RegionTools } from '@/components/composer/region-tools'
 import { TextBlock } from '@/components/composer/text-block'
 import { useComposerUploads } from '@/components/composer/use-composer-uploads'
@@ -57,7 +58,7 @@ const Editor = ({ post, layout }: { post: Post; layout: RepostLayout }) => {
   return (
     <div>
       <div
-        className={cn('editor isPostReposting', omnibar.editor, cn('hasContent', omnibar.hasContent), dragging && omnibar.hasDragOver)}
+        className={cn('editor isPostReposting', parts.placeholder, omnibar.editor, cn('hasContent', omnibar.hasContent), dragging && omnibar.hasDragOver)}
         data-placeholder="Drag & drop images, paste embeds, enter text and links."
         onDragOver={(e) => {
           e.preventDefault()

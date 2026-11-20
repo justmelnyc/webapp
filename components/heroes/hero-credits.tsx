@@ -18,14 +18,14 @@ export const HeroCredits = ({ user, label, className }: HeroCreditsProps) => (
   <Link href={`/${user.username}`} className={cn('HeroPromotionCredits', styles.expanded, className)}>
     {label && <span className={styles.by}>{label}</span>}
     <span className={cn(styles.author, label && styles.withLabel)}>@{user.username}</span>
-    <Avatar src={avatarUrl(user.avatar, 'regular')} name={user.username} className={styles.avatar} />
+    <Avatar src={avatarUrl(user.avatar, 'regular')} name={user.username} className={cn('inHeroPromotionCredits', styles.avatar)} />
   </Link>
 )
 
 /** The collapsed credit: just the avatar in the corner (category heroes). */
 export const HeroCreditsCollapsed = ({ user }: { user: Author }) => (
   <Link href={`/${user.username}`} className={cn('HeroPromotionCredits', styles.collapsed)}>
-    <Avatar src={avatarUrl(user.avatar, 'regular')} name={user.username} className={styles.avatar} />
+    <Avatar src={avatarUrl(user.avatar, 'regular')} name={user.username} className={cn('inHeroPromotionCredits', styles.avatar)} />
   </Link>
 )
 

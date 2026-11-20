@@ -7,13 +7,13 @@
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1040;
+  z-index: var(--z-navbar);
   height: 70px;
   padding: 10px;
-  font-size: 14px;
-  color: #000;
+  font-size: var(--text-14);
+  color: var(--color-black);
   text-align: right;
-  background-color: #f0f0f0;
+  background-color: var(--color-gf0);
 }
 
 .navbar > :global(.ElloMark) {
@@ -27,40 +27,40 @@
   height: 50px;
   padding-right: 30px;
   padding-left: 30px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
-  background-color: #00d100;
-  border: 1px solid #00d100;
-  border-radius: 5px;
+  background-color: var(--color-green);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-box);
   transition:
-    background-color 0.2s,
-    border-color 0.2s,
-    color 0.2s;
+    background-color var(--speed),
+    border-color var(--speed),
+    color var(--speed);
 }
 
 @media (hover: hover) {
   .next:hover {
-    color: #fff;
-    background-color: #00b100;
-    border-color: #00b100;
+    color: var(--color-white);
+    background-color: var(--color-green-hover);
+    border-color: var(--color-green-hover);
   }
 }
 
 .next:active {
-  color: #fff;
-  background-color: #00b100;
-  border-color: #00b100;
+  color: var(--color-white);
+  background-color: var(--color-green-hover);
+  border-color: var(--color-green-hover);
 }
 
 .next:disabled {
-  color: #aaa !important;
+  color: var(--color-gaa) !important;
   background-color: transparent !important;
-  border-color: #aaa !important;
+  border-color: var(--color-gaa) !important;
 }
 
 .done {
   margin-left: 10px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (max-width: 39.9375em) {
@@ -114,21 +114,21 @@
   padding: 10px 10px 23px;
   margin-right: auto;
   margin-left: auto;
-  font-size: 16px;
+  font-size: var(--text-16);
 }
 
 .title > span:first-child {
-  color: #000;
+  color: var(--color-black);
 }
 
 .title > span:last-child {
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 40em) {
   .title {
     padding-top: 70px;
     padding-bottom: 70px;
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 }

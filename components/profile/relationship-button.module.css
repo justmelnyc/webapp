@@ -10,27 +10,27 @@
   height: 30px;
   padding: 0 10px 0 4px;
   overflow: hidden;
-  font-size: 12px;
+  font-size: var(--text-12);
   line-height: 30px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   white-space: nowrap;
-  background-color: #00d100;
-  border: 1px solid #00d100;
-  border-radius: 15px;
+  background-color: var(--color-green);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-pill-small);
   transition:
-    background-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    border-color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    border-radius 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    color 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    width 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    background-color var(--speed) var(--ease-ello),
+    border-color var(--speed) var(--ease-ello),
+    border-radius var(--speed) var(--ease-ello),
+    color var(--speed) var(--ease-ello),
+    width var(--speed) var(--ease-ello);
 }
 
 @media (hover: hover) {
   .button:hover {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
+    color: var(--color-white);
+    background-color: var(--color-black);
+    border-color: var(--color-black);
   }
 }
 
@@ -42,25 +42,25 @@
 .button[data-priority='self'],
 .button[data-priority='friend'],
 .button[data-priority='noise'] {
-  color: #fff;
-  background-color: #aaa;
-  border-color: #aaa;
+  color: var(--color-white);
+  background-color: var(--color-gaa);
+  border-color: var(--color-gaa);
 }
 
 .button[data-priority='block'],
 .button[data-priority='mute'],
 .button[data-priority='block']:hover,
 .button[data-priority='mute']:hover {
-  color: #fff !important;
-  background-color: #f00;
-  border-color: #f00;
+  color: var(--color-white) !important;
+  background-color: var(--color-red);
+  border-color: var(--color-red);
 }
 
 @media (hover: hover) {
   .button[data-priority='self']:hover,
   .button[data-priority='friend']:hover,
   .button[data-priority='noise']:hover {
-    background-color: #000;
-    border-color: #000;
+    background-color: var(--color-black);
+    border-color: var(--color-black);
   }
 }

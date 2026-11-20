@@ -8,7 +8,7 @@
   position: relative;
   height: 60px;
   padding-top: 20px;
-  font-size: 14px;
+  font-size: var(--text-14);
   white-space: nowrap;
   transition: transform var(--speed) var(--ease-ello);
 }
@@ -29,7 +29,7 @@
 .PostTool > button {
   padding-right: 8px;
   padding-left: 4px;
-  color: #aaa;
+  color: var(--color-gaa);
   transition: color var(--speed) ease;
 }
 
@@ -54,11 +54,11 @@
 @media (hover: hover) {
   .PostTool a:hover,
   .PostTool button:hover {
-    color: #000;
+    color: var(--color-black);
   }
 
   .LoveTool > button.isActive:hover {
-    color: #aaa;
+    color: var(--color-gaa);
   }
 }
 
@@ -80,9 +80,9 @@
 .ViewsTool.isPill > a {
   padding-right: 11px;
   padding-left: 11px;
-  color: #535353;
-  background-color: #e8e8e8;
-  border-radius: 11px;
+  color: var(--color-g53);
+  background-color: var(--color-ge8);
+  border-radius: var(--radius-pill-tiny);
   transition: color var(--speed) ease, background-color var(--speed) ease;
 }
 
@@ -94,7 +94,7 @@
 
 @media (hover: hover) {
   .ViewsTool.isPill a:hover {
-    background-color: #ccc;
+    background-color: var(--color-gcc);
   }
 }
 
@@ -131,8 +131,8 @@
 .ShareTool.isPill > button {
   padding-right: 11px;
   padding-left: 11px;
-  background-color: #e8e8e8;
-  border-radius: 11px;
+  background-color: var(--color-ge8);
+  border-radius: var(--radius-pill-tiny);
   transition: color var(--speed) ease, background-color var(--speed) ease;
 }
 
@@ -140,7 +140,7 @@
   position: static;
   display: inline-block;
   padding: 0;
-  color: #535353;
+  color: var(--color-g53);
   visibility: visible;
   background-color: transparent;
   border: 0;
@@ -150,11 +150,11 @@
 
 @media (hover: hover) {
   .ShareTool.isPill > button:hover {
-    background-color: #ccc;
+    background-color: var(--color-gcc);
   }
 
   .ShareTool.isPill > button:hover > .Hint {
-    color: #000;
+    color: var(--color-black);
     transition-delay: 0s;
     transition-duration: var(--speed);
   }

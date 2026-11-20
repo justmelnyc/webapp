@@ -1,43 +1,21 @@
-/* Port of RegionTools.js styles for the comment editor (`.isComment` puts it 30px from the right at 40em). */
-
-.tools {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  z-index: 2;
-  color: #aaa;
-}
+/*
+ * RegionTools.js in the comment editor. The tools, remove and the drag handle are the shared
+ * components/ui/editor-parts.module.css; `.isComment` puts them 30px from the right at 40em.
+ */
 
 @media (min-width: 40em) {
-  .tools {
+  /* doubled: wins over editor-parts' `tools` whichever sheet loads last */
+  .tools.tools {
     right: 30px;
   }
 }
 
-@media (hover: hover) {
-  .remove:hover,
-  .drag:hover {
-    color: #000;
-  }
-}
-
-:global(.editor):not(:global(.hasContent)) .remove {
+:global(.editor):not(:global(.hasContent)) .tools :global(.BlockRemove) {
   display: none;
 }
 
-.drag {
-  display: none;
-  cursor: move;
-  transform: rotate(90deg);
-  touch-action: none;
-}
-
 @media (hover: hover) {
-  .drag {
-    display: inline-block;
-  }
-
-  :global(.editor-region)[data-num-blocks='1'] .drag {
+  :global(.editor-region)[data-num-blocks='1'] .tools :global(.DragHandler) {
     display: none;
   }
 }

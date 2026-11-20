@@ -63,6 +63,25 @@ describe('CommentForm Reply All', () => {
   })
 })
 
+describe('CommentForm cancel', () => {
+  it('asks "Cancel comment?" and only then empties the editor and tells the owner', async () => {
+    const onCancel = jest.fn()
+    render(<CommentForm postId="p1" onCreated={jest.fn()} onCancel={onCancel} />)
+    const textarea = screen.getByRole('textbox', { name: 'Comment' })
+    await userEvent.type(textarea, 'Draft')
+    await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[0] as HTMLElement)
+    const dialog = screen.getByRole('dialog', { name: 'Cancel comment?' })
+    await userEvent.click(within(dialog).getByRole('button', { name: 'No' }))
+    expect(textarea).toHaveValue('Draft')
+    expect(onCancel).not.toHaveBeenCalled()
+    await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[0] as HTMLElement)
+    await userEvent.click(within(screen.getByRole('dialog', { name: 'Cancel comment?' })).getByRole('button', { name: 'Yes' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByRole('textbox', { name: 'Comment' })).toHaveValue('')
+    expect(onCancel).toHaveBeenCalledTimes(1)
+  })
+})
+
 describe('CommentForm emoji', () => {
   it('quick emoji opens four choices and adds the clicked one to the text', async () => {
     renderForm()

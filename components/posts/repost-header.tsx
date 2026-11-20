@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { RepostIcon } from '@/components/icons'
+import { CategoryFeatureTool } from '@/components/lightbox/lightbox-feature-tool'
 import { PostFollowButton } from '@/components/posts/post-follow-button'
 import { timeAgoInWords } from '@/components/posts/time-ago-in-words'
 import { Avatar } from '@/components/ui/avatar'
@@ -28,7 +29,7 @@ export const RepostHeader = ({ post, viewerId, inUserDetail }: RepostHeaderProps
           <span className="PostHeaderAuthor RepostHeaderAuthor">
             <Link className="PostHeaderLink" href={`/${original.username}`}>
               <Avatar src={avatarUrl(original.avatar, 'regular')} name={original.username} />
-              <span className="DraggableUsername">@{original.username}</span>
+              <span className="DraggableUsername max-w-full truncate">@{original.username}</span>
             </Link>
           </span>
           <PostFollowButton
@@ -40,7 +41,7 @@ export const RepostHeader = ({ post, viewerId, inUserDetail }: RepostHeaderProps
         <span className="RepostHeaderReposter">
           <Link className="PostHeaderLink" href={`/${reposter.username}`}>
             <RepostIcon />
-            <span className="DraggableUsername">{` by @${reposter.username}`}</span>
+            <span className="DraggableUsername max-w-full truncate">{` by @${reposter.username}`}</span>
           </Link>
         </span>
       </span>
@@ -48,6 +49,7 @@ export const RepostHeader = ({ post, viewerId, inUserDetail }: RepostHeaderProps
         <Link className="PostHeaderTimeAgoLink" href={detailPath}>
           <span>{timeAgoInWords(post.createdAt)}</span>
         </Link>
+        <CategoryFeatureTool post={post} />
       </span>
     </header>
   )

@@ -52,5 +52,5 @@
 
 /* Rendered post/comment HTML: the original's body text rules apply (see base layer). */
 .rich-text {
-  font-size: 14px;
+  font-size: var(--text-14);
 }

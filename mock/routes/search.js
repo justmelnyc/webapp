@@ -15,6 +15,7 @@ const matchUsers = (terms) => {
 router.get('/api/v2/users', (req, res) => {
   const me = viewerId(req)
   const users = matchUsers(decodeURIComponent(String(req.query.terms || ''))).map(u => flatUser(u, me))
+  if (require('../empty-list').noContentWhenEmpty(res, users.length)) return
   res.set({ 'X-Total-Pages': '1', 'X-Total-Pages-Remaining': '0', 'X-TotalCount': String(users.length) }).json({ users })
 })
 

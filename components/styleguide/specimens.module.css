@@ -1,0 +1,170 @@
+/* Demo stages of the style guide: motion, layers, icons and the primitives. Tokens only. */
+
+/* ---- Motion: hover (or focus) a row and the dot travels with that token ---- */
+
+.track {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: var(--control-small);
+  background-color: var(--color-gf2);
+  border-radius: var(--radius-pill-small);
+}
+
+.runner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--control-small);
+  height: var(--control-small);
+  background-color: var(--color-black);
+  border-radius: 50%;
+}
+
+.motionRow:hover .runner,
+.motionRow:focus-visible .runner {
+  left: calc(100% - var(--control-small));
+  background-color: var(--color-green);
+}
+
+/* ---- Z layers: the highest layer first ---- */
+
+.plate {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  height: var(--control);
+  padding: 0 20px;
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-radius: var(--radius-box);
+}
+
+/* ---- Icons ---- */
+
+.icons {
+  display: grid;
+  margin: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.icon {
+  min-width: 0;
+  padding: 20px 10px 10px;
+  text-align: center;
+  border: 1px solid var(--color-gf2);
+  border-radius: var(--radius-box);
+  transition:
+    background-color var(--speed) ease,
+    color var(--speed) ease;
+}
+
+.iconArt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.iconName {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background-color: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--color-gaa);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* White-on-white icons (the ones drawn for dark heroes) show on hover. */
+@media (hover: hover) {
+  .icon:hover {
+    color: var(--color-white);
+    background-color: var(--color-black);
+  }
+}
+
+/* ---- Primitives ---- */
+
+.specimen {
+  padding: 30px 0;
+  border-top: 1px solid var(--color-gf2);
+}
+
+.specimenName {
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+}
+
+.specimenAbout {
+  max-width: 640px;
+  margin: 5px 0 20px;
+  line-height: 1.5;
+  color: var(--color-g66);
+}
+
+.variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.variant {
+  min-width: 0;
+}
+
+.variantLabel {
+  display: block;
+  margin-bottom: 10px;
+  font-size: var(--text-12);
+  color: var(--color-gaa);
+}
+
+.stage {
+  position: relative;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--color-gf2);
+  border-radius: var(--radius-box);
+}
+
+.stageGrey {
+  background-color: var(--color-gf2);
+}
+
+.stageDark {
+  color: var(--color-white);
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.stageModal {
+  color: var(--color-white);
+  background-color: var(--color-modal);
+  border-color: transparent;
+}
+
+.stageDanger {
+  color: var(--color-white);
+  background-color: var(--color-red);
+  border-color: transparent;
+}
+
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* The dismiss button pins itself to the top right of its dialog; give the stage room for it. */
+.stageDismiss {
+  min-height: 60px;
+}

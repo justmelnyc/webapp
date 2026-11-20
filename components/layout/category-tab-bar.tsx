@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { BadgeFeaturedIcon } from '@/components/icons'
 import type { CSSProperties } from 'react'
 import { cn } from '@/utils/cn'
 import styles from './category-tab-bar.module.css'
+import { useShownPath } from './use-pending-navigation'
 
 export interface CategoryTab {
   label: string
@@ -25,6 +25,13 @@ const tabArt = (tab: CategoryTab, count: number): CSSProperties => {
   return { '--tab-art-mobile': art(count < 4), '--tab-art': art(count < 10) } as CSSProperties
 }
 
+interface CategoryTabBarProps {
+  tabs: CategoryTab[]
+  isLoggedIn: boolean
+  /** The viewer subscribed to at least one category. */
+  hasSubscriptions?: boolean
+}
+
 const SUBSECTIONS = /\/(trending|recent|shop)$/
 
 const TabLabel = ({ children }: { children: string }) => (
@@ -34,11 +41,11 @@ const TabLabel = ({ children }: { children: string }) => (
 )
 
 /**
- * Discover's category strip, shown under the navbar (CategoryTabBar.js). The rewrite has no
- * category subscriptions yet, so a signed-in viewer always gets the "find a category" zero state.
+ * Discover's category strip, shown under the navbar (CategoryTabBar.js). A signed-in viewer gets
+ * the "find a category" zero state until they subscribe to a category (`selectAreCategoriesSubscribed`).
  */
-export const CategoryTabBar = ({ tabs, isLoggedIn }: { tabs: CategoryTab[]; isLoggedIn: boolean }) => {
-  const pathname = usePathname()
+export const CategoryTabBar = ({ tabs, isLoggedIn, hasSubscriptions = false }: CategoryTabBarProps) => {
+  const pathname = useShownPath()
   if (!/^\/discover\b/.test(pathname) || /^\/discover\/all\b/.test(pathname)) return null
   const base = pathname.replace(SUBSECTIONS, '')
   const isAll = ['/discover', '/discover/trending', '/discover/recent', '/discover/shop'].includes(pathname)
@@ -72,7 +79,7 @@ export const CategoryTabBar = ({ tabs, isLoggedIn }: { tabs: CategoryTab[]; isLo
             <TabLabel>{tab.label}</TabLabel>
           </Link>
         ))}
-        {isLoggedIn && (
+        {isLoggedIn && (tabs.length < 1 || !hasSubscriptions) && (
           <Link href="/discover/all" className={cn(styles.tab, styles.zeroState)}>
             <TabLabel>Find and subscribe to a category</TabLabel>
           </Link>

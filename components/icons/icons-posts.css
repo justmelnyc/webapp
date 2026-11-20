@@ -5,21 +5,21 @@
   .WatchTool > button.isActive > .BoltIcon > g,
   .Post .isCommentsActive .BubbleIcon > g,
   .Post .BubbleIcon > g:nth-child(2) {
-    fill: #000;
-    stroke: #000;
+    fill: var(--color-black);
+    stroke: var(--color-black);
   }
 
   @media (hover: hover) {
     .CommentTool > button:hover > .BubbleIcon > g,
     .FlagTool > button:hover > .FlagIcon > g:nth-of-type(2) {
-      fill: #000;
+      fill: var(--color-black);
     }
   }
 
   @media (hover: hover) {
     .CommentTool.isLightBox > button:hover > .BubbleIcon > g,
     .FlagTool.isLightBox > button:hover > .FlagIcon > g:nth-of-type(2) {
-      fill: #fff;
+      fill: var(--color-white);
     }
   }
 
@@ -28,7 +28,7 @@
     .IconTab.isActive .HeartIcon > g,
     .IconTab:hover .BubbleIcon > g,
     .IconTab:hover .HeartIcon > g {
-      fill: #fff;
+      fill: var(--color-white);
     }
   }
 
@@ -50,7 +50,7 @@
   }
 
   .Post .isCommentsRequesting .BubbleIcon polygon {
-    animation: animateCommentsLoading 0.75s infinite cubic-bezier(0.77, 0, 0.175, 1);
+    animation: animateCommentsLoading 0.75s infinite var(--ease-quart);
   }
 
   .PostTool .ShareIcon,
@@ -76,7 +76,7 @@
   }
 
   .RepostHeader .RepostIcon > g {
-    stroke: #535353;
+    stroke: var(--color-g53);
   }
 
   /* Animations ?? */
@@ -90,44 +90,44 @@
 
   @media (hover: hover) {
     .ViewsTool > a:hover > .EyeIcon > circle {
-      stroke: #000;
+      stroke: var(--color-black);
       transition-delay: var(--speed), 0s;
     }
   }
 
   @media (hover: hover) {
     .ViewsTool > a:hover > .EyeIcon > g {
-      stroke: #000;
+      stroke: var(--color-black);
     }
   }
 
   @media (hover: hover) {
     .ViewsTool.isLightBox > a:hover > .EyeIcon > g {
-      stroke: #fff;
+      stroke: var(--color-white);
     }
   }
 
   @media (hover: hover) {
     .LoveTool > button:hover > .HeartIcon > g {
-      fill: #000;
+      fill: var(--color-black);
     }
   }
 
   @media (hover: hover) {
     .LoveTool.isLightBox > button:hover > .HeartIcon > g {
-      fill: #fff;
+      fill: var(--color-white);
     }
   }
 
   .LoveTool > button.isActive > .HeartIcon > g {
-    fill: #f00;
-    stroke: #f00;
+    fill: var(--color-red);
+    stroke: var(--color-red);
   }
 
   @media (hover: hover) {
     .LoveTool > button.isActive:hover > .HeartIcon > g {
-      fill: #f99;
-      stroke: #f99;
+      fill: var(--color-pale-red);
+      stroke: var(--color-pale-red);
     }
   }
 
@@ -156,7 +156,7 @@
   }
 
   .CommentTools.isMoreToolActive .MoreTool .SVGIcon {
-    color: #000;
+    color: var(--color-black);
     transform: none;
   }
 
@@ -167,7 +167,7 @@
     }
 
     .CommentTools.isMoreToolActive .MoreTool .SVGIcon {
-      color: #000;
+      color: var(--color-black);
       transform: none;
     }
   }

@@ -1,0 +1,90 @@
+/* categoryInfoExpandedStyle from CategoryRenderables.js */
+.expanded {
+  position: relative;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-left: 1px solid var(--color-gf2);
+}
+
+.expanded h2 {
+  width: 100%;
+  padding-bottom: 5px;
+  margin: 0 0 20px;
+  font-size: var(--text-16);
+  color: var(--color-gaa);
+  border-bottom: 1px solid var(--color-gf2);
+}
+
+.expanded h3,
+.expanded h4 {
+  padding-top: 10px;
+  font-family: var(--font-black);
+  font-size: var(--text-14);
+  color: var(--color-gaa);
+}
+
+.expanded h4 {
+  margin-bottom: 10px;
+}
+
+.expanded :global(.subscribe-button) {
+  margin-bottom: 20px;
+}
+
+.expanded :global(.description) {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-gf2);
+}
+
+.expanded :global(.description) p {
+  color: var(--color-gaa);
+}
+
+.expanded :global(.description) :global(.main) p {
+  color: var(--color-black);
+}
+
+.expanded :global(.close-trigger) {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  display: block;
+  width: 16px;
+  height: 20px;
+}
+
+.expanded :global(.close-trigger) :global(.label) {
+  display: none;
+}
+
+.expanded :global(.close-trigger) :global(.icon) svg line {
+  display: block;
+  stroke: var(--color-gaa);
+  transition: stroke var(--speed) ease;
+}
+
+.expanded :global(.close-trigger):hover :global(.icon) svg line {
+  stroke: var(--color-black);
+}
+
+@media (min-width: 40em) {
+  .expanded h2 {
+    font-size: var(--text-18);
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .expanded {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: 20px;
+  }
+
+  .expanded h2,
+  .expanded :global(.subscribe-button),
+  .expanded :global(.close-trigger) {
+    display: none;
+  }
+}

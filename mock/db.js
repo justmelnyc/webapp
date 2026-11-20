@@ -5,7 +5,8 @@ const fs = require('fs')
 const path = require('path')
 const { build } = require('./seed')
 
-const DIR = path.join(__dirname, '.data')
+// MOCK_DATA_DIR keeps a second instance (another port, another database) apart from the default one
+const DIR = process.env.MOCK_DATA_DIR ? path.resolve(process.env.MOCK_DATA_DIR) : path.join(__dirname, '.data')
 const FILE = path.join(DIR, 'db.json')
 const UPLOADS = path.join(DIR, 'uploads')
 
@@ -31,4 +32,4 @@ const postByRef = ref => (String(ref).startsWith('~')
   : postById(ref))
 const userByName = name => db.users.find(u => u.username === String(name).replace(/^~/, ''))
 
-module.exports = { db, save, nextId, userById, postById, postByRef, userByName, UPLOADS }
+module.exports = { db, save, nextId, userById, postById, postByRef, userByName, UPLOADS, DIR }

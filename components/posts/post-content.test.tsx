@@ -29,4 +29,10 @@ describe('PostContent content warning', () => {
     expect(screen.getByText('NSFW')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /View/ })).toBeInTheDocument()
   })
+
+  it('shows the button where the stream asks for it (submission streams), whatever the flag says', () => {
+    mockShow = false
+    render(<PostContent post={nsfw} mode="grid" eager showContentWarning />)
+    expect(screen.getByRole('button', { name: /View/ })).toBeInTheDocument()
+  })
 })

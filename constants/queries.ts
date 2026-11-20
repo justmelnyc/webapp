@@ -1,7 +1,7 @@
 // GraphQL documents for the v3 API. The mock ignores selection sets but a real server would not.
 const image = `{ url metadata { width height type size } }`
 const avatar = `{ small ${image} regular ${image} large ${image} original ${image} }`
-const responsive = `{ xhdpi ${image} hdpi ${image} mdpi ${image} ldpi ${image} optimized ${image} original ${image} }`
+const responsive = `{ xhdpi ${image} hdpi ${image} mdpi ${image} ldpi ${image} optimized ${image} original ${image} video ${image} }`
 
 const authorFields = `
   id username name
@@ -24,7 +24,7 @@ const buildPostFields = (sourceExtra = '', submission = `artistInviteSubmission 
   summary { ${regionFields} }
   content { ${regionFields} }
   repostContent { ${regionFields} }
-  repostedSource { id token author { ${authorFields} } ${sourceExtra} }
+  repostedSource { id token author { ${authorFields} } artistInviteSubmission { ${submissionFields} } ${sourceExtra} }
   categoryPosts { id status featuredBy { username } submittedBy { username } actions { feature { method href } unfeature { method href } } category { id slug name } }
   assets { id attachment ${responsive} }
   postStats { lovesCount commentsCount viewsCount repostsCount }
@@ -109,6 +109,33 @@ export const EDITORIALS = `
         oneByOneImage ${responsive} twoByOneImage ${responsive} twoByTwoImage ${responsive}
         post { ${postFields} }
       }
+    }
+  }
+`
+
+/** The original's `categoryDetailsQuery`: a category with its curators and moderators. */
+export const CATEGORY_DETAILS = `
+  query($slug: String!, $roles: [CategoryUserRole]) {
+    category(slug: $slug) {
+      id name slug description
+      brandAccount { ${authorFields} }
+      categoryUsers(roles: $roles) { id role user { ${authorFields} } }
+    }
+  }
+`
+
+/** The original's `userQuickSearchQuery` (the user picker of the add-role dialog). */
+export const USER_QUICK_SEARCH = `
+  query($query: String!) {
+    searchUsers(query: $query, perPage: 10) { users { id username avatar { small { url } } } }
+  }
+`
+
+/** The original's `searchCategories` query as the profile's Community Roles form sends it (`administered: true`). */
+export const ADMINISTERED_CATEGORIES = `
+  query($query: String, $administered: Boolean) {
+    searchCategories(query: $query, administered: $administered) {
+      categories { id name slug currentUserState { role } }
     }
   }
 `

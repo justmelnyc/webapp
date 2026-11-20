@@ -47,10 +47,26 @@ const blockedUsers = (db, viewerId, kind) => blocksOf(db)
   .map(b => db.users.find(u => u.id === b.targetId))
   .filter(Boolean)
 
-const categoryUsers = (user) => (user.roles || []).map((r, i) => {
-  const name = CATEGORIES[Number(r.categoryId) - 1]
-  return { id: `${user.id}-role-${i + 1}`, role: r.role, category: { id: r.categoryId, name, slug: String(name).toLowerCase() } }
+// What GET /api/v2/profile reports: the original only offers the "Blocked users" / "Muted users" settings
+// sections when these are above zero.
+const blockCounts = (db, viewerId) => ({
+  blockedCount: blockedUsers(db, viewerId, 'block').length,
+  mutedCount: blockedUsers(db, viewerId, 'mute').length,
 })
+
+// A user's community roles (the profile's "Community Roles"). Curator and moderator roles come from
+// db.categoryRoles (the same records and ids the category pages serve, so both apps keep one entry per role);
+// FEATURED is only stored on the user (added and removed by profile-roles.js, which shares the id scheme).
+const categoryOf = (categoryId) => {
+  const name = CATEGORIES[Number(categoryId) - 1]
+  return { id: categoryId, name, slug: String(name).toLowerCase() }
+}
+const categoryUsers = (user, categoryRoles = []) => [
+  ...categoryRoles.filter(r => r.userId === user.id)
+    .map(r => ({ id: `${r.categoryId}-${r.userId}-${r.role}`, role: r.role.toUpperCase(), category: categoryOf(r.categoryId) })),
+  ...(user.roles || []).filter(r => r.role === 'FEATURED')
+    .map(r => ({ id: `${r.categoryId}-${user.id}-featured`, role: r.role, category: categoryOf(r.categoryId) })),
+]
 
 const LONG = {
   grace: ' I spend months with the communities I photograph before the first frame, because the work only holds up when it is made together. Prints, essays and small-run books are all in progress.',
@@ -66,9 +82,8 @@ const AVAILABILITY = {
 }
 
 const ROLES = {
-  grace: [{ categoryId: '2', role: 'CURATOR' }],
   jules: [{ categoryId: '3', role: 'FEATURED' }],
-  mara: [{ categoryId: '1', role: 'MODERATOR' }, { categoryId: '4', role: 'FEATURED' }],
+  mara: [{ categoryId: '4', role: 'FEATURED' }],
 }
 
 // Indexes into db.posts (newest first). 0 and 3 sit on page 1 of the global feed.
@@ -97,5 +112,5 @@ const ensureModerationData = (db) => {
 
 module.exports = {
   FLAG_KINDS, isFlagKind, blockKind, hasBlocked, setBlock, clearBlock, isHiddenFrom, visiblePosts,
-  blockedUsers, categoryUsers, ensureModerationData,
+  blockedUsers, blockCounts, categoryUsers, ensureModerationData,
 }

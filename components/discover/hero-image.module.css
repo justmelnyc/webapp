@@ -9,7 +9,7 @@
   overflow: hidden;
   background: rgba(0, 0, 0, 0.2) no-repeat 50% 50%;
   background-size: cover;
-  transition: background-color 0.2s ease, opacity 0.4s ease;
+  transition: background-color var(--speed) ease, opacity var(--speed2) ease;
 }
 
 .background::before {
@@ -21,7 +21,7 @@
   z-index: 1;
   content: '';
   background-color: rgba(0, 0, 0, 0.4);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--speed) ease;
 }
 
 .figure {
@@ -34,7 +34,7 @@
   background: transparent no-repeat 50% 50%;
   background-image: var(--hdpi);
   background-size: cover;
-  transition: opacity 0.4s ease;
+  transition: opacity var(--speed2) ease;
 }
 
 @media (min-width: 75.0625em) {

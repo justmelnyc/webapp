@@ -28,3 +28,9 @@ export const getUserList = async (username: string, kind: UserListKind) => {
   const data = await rest(`/api/v2/users/~${encodeURIComponent(username)}/${kind}?per_page=50`, flatUsersEnvelope)
   return data.users
 }
+
+/** The people the viewer blocked or muted (the settings page's lists). */
+export const getBlockedUsers = async (kind: 'blocked' | 'muted') => {
+  const data = await rest(`/api/v2/profile/${kind}`, flatUsersEnvelope)
+  return data.users
+}

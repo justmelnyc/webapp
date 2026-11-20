@@ -54,7 +54,7 @@
 
 @media (hover: hover) {
   .TextRegion .hashtag-link:hover {
-    color: #aaa;
+    color: var(--color-gaa);
   }
 }
 
@@ -83,6 +83,20 @@
   transition: opacity var(--speed2);
 }
 
+/* The picture stays hidden until it has loaded (ImageRegion's status class); a grid picture's box moves meanwhile. */
+.isPending .ImageAttachment,
+.isRequesting .ImageAttachment {
+  opacity: 0;
+}
+
+.isPending.ImageRegion > .RegionContent {
+  background-color: var(--color-gf0);
+}
+
+.isRequesting.ImageRegion > .RegionContent {
+  animation: animateLavaLamp 3s infinite linear;
+}
+
 .RegionContent > *:first-child,
 .RegionContent:first-child > *:first-child {
   margin-top: 0;
@@ -94,7 +108,7 @@
 }
 
 .EmbedRegionContent {
-  background-color: #000;
+  background-color: var(--color-black);
 }
 
 /* Static (list mode) image: a holder around the image and a lightbox trigger button */
@@ -107,7 +121,7 @@
 .StreamImage > .ImgHolder {
   position: relative;
   display: inline-block;
-  background-color: #f2f2f2;
+  background-color: var(--color-gf2);
 }
 
 .ImageRegion .lightbox-trigger {
@@ -120,7 +134,7 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background-color: #000;
+  background-color: var(--color-black);
   border-radius: 40px;
   opacity: 0;
   transition: opacity var(--speed) ease;
@@ -142,7 +156,7 @@
 }
 
 .ImageRegion .lightbox-trigger .icon .LightBoxTrigger polygon {
-  fill: #fff;
+  fill: var(--color-white);
 }
 
 .ImageRegion .ImgHolder:hover .lightbox-trigger,

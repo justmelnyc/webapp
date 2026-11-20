@@ -8,7 +8,10 @@ import { RegistrationDialogProvider } from '@/components/auth/registration-dialo
 import { Footer } from '@/components/layout/footer'
 import { MainView } from '@/components/layout/main-view'
 import { Navbar } from '@/components/layout/navbar'
+import { PendingMain } from '@/components/layout/pending-main'
 import { Providers } from '@/components/providers'
+import { StaffProvider } from '@/components/ui/staff-context'
+import { API_ORIGIN } from '@/lib/env'
 import { getPageHeader } from '@/services/content'
 import { getViewer } from '@/services/viewer'
 
@@ -34,14 +37,17 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       <body>
         <Providers>
           <RegistrationDialogProvider header={authPromo}>
-            <AppShell isLoggedIn={!!viewer}>
-              <HideOnOnboarding>
-                <Navbar viewer={viewer} />
-              </HideOnOnboarding>
-              <MainView>{children}</MainView>
-              <Footer isLoggedIn={!!viewer} />
-              <KeyboardShortcuts isLoggedIn={!!viewer} />
-            </AppShell>
+            <StaffProvider isStaff={!!viewer?.isStaff}>
+              <AppShell isLoggedIn={!!viewer}>
+                <HideOnOnboarding>
+                  <Navbar viewer={viewer} />
+                </HideOnOnboarding>
+                <PendingMain isLoggedIn={!!viewer} assetOrigin={API_ORIGIN} />
+                <MainView>{children}</MainView>
+                <Footer isLoggedIn={!!viewer} />
+                <KeyboardShortcuts isLoggedIn={!!viewer} />
+              </AppShell>
+            </StaffProvider>
           </RegistrationDialogProvider>
         </Providers>
       </body>

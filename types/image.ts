@@ -29,6 +29,8 @@ export const responsiveImageSchema = z.object({
   ldpi: version,
   optimized: version,
   original: version,
+  /** Animated uploads only: the clip streams play instead of the still (the original's `attachment.video`). */
+  video: version,
 })
 
 export type ImageVersion = z.infer<typeof imageVersionSchema>

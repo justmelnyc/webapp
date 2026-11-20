@@ -54,6 +54,16 @@ export const viewerSchema = z.object({
   webOnboardingVersion: z.union([z.string(), z.number()]).nullish(),
   hasAvatarPresent: z.boolean().nullish(),
   hasCoverImagePresent: z.boolean().nullish(),
+  isStaff: z.boolean().nullish(),
+  /** A brand account: like staff, it gets "Analytics" in the profile menu. */
+  isBrand: z.boolean().nullish(),
+  /** `links.categories`: the categories whose curators and moderators this user may change (`selectCuratedCategoryIds`). */
+  links: z.object({ categories: z.array(z.coerce.string()).nullish() }).nullish(),
+  /** How many people the user blocked / muted: above zero, the settings page lists them. */
+  blockedCount: z.number().nullish(),
+  mutedCount: z.number().nullish(),
+  /** The categories the user subscribed to. */
+  followedCategoryIds: z.array(z.coerce.string()).nullish(),
 })
 
 export type Author = z.infer<typeof authorSchema>

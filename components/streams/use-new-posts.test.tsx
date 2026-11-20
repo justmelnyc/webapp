@@ -44,6 +44,17 @@ describe('useNewPosts', () => {
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0 })
   })
 
+  it('refreshes the posts it already shows without moving them', async () => {
+    const base = page(['n1', 'b', 'a'])
+    const fresh: PostPage = { ...base, posts: base.posts.map((post) => (post.id === 'b' ? { ...post, postStats: { ...post.postStats, lovesCount: 41 } } : post)) }
+    fetchMock.mockResolvedValue(fresh)
+    const { client } = setup(['a', 'b'])
+    await waitFor(() => expect(useNewPostsStore.getState().count).toBe(1))
+    expect(shownIds(client)).toEqual(['a', 'b'])
+    const shown = client.getQueryData<InfiniteData<PostPage>>(queryKey)?.pages.flatMap((p) => p.posts) ?? []
+    expect(shown.map((post) => post.postStats.lovesCount)).toEqual([2, 41])
+  })
+
   it('stays quiet when nothing is new', async () => {
     fetchMock.mockResolvedValue(page(['a', 'b']))
     setup(['a', 'b'])

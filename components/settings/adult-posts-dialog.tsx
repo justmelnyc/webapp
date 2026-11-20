@@ -1,6 +1,6 @@
 'use client'
 
-import { XIcon } from '@/components/icons'
+import { DismissButton } from '@/components/ui/dismiss-button'
 import { Modal, ModalDialog } from '@/components/ui/modal'
 import styles from './settings-dialogs.module.css'
 
@@ -20,9 +20,7 @@ export const AdultPostsDialog = ({ onDismiss }: AdultPostsDialogProps) => (
       <button type="button" className={styles.okay} onClick={onDismiss}>
         Okay
       </button>
-      <button type="button" aria-label="Close" className={`CloseModal ${styles.dismiss}`} onClick={onDismiss}>
-        <XIcon />
-      </button>
+      <DismissButton onClick={onDismiss} />
     </ModalDialog>
   </Modal>
 )

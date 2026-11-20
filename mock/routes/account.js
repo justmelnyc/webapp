@@ -4,13 +4,13 @@ const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
-const { db, save } = require('../db')
+const { db, save, DIR } = require('../db')
 const { availability } = require('../credentials')
 const { exportFor, removeUser } = require('../export')
 const { viewer } = require('./auth')
 
 const router = express.Router()
-const EXPORTS = path.join(__dirname, '..', '.data', 'exports')
+const EXPORTS = path.join(DIR, 'exports')
 fs.mkdirSync(EXPORTS, { recursive: true })
 
 const requireViewer = (req, res, next) => {

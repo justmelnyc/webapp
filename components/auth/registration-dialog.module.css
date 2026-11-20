@@ -14,7 +14,7 @@
 
 .dialog h1 {
   padding-top: 0;
-  font-size: 24px;
+  font-size: var(--text-24);
   line-height: 1;
 }
 
@@ -33,12 +33,12 @@
 
 .dialog a:focus,
 .dialog a:active {
-  color: #fff;
+  color: var(--color-white);
 }
 
 @media (hover: hover) {
   .dialog a:hover {
-    color: #fff;
+    color: var(--color-white);
   }
 }
 
@@ -46,7 +46,7 @@
 .dialog .alt {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .dialog .credits {

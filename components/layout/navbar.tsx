@@ -14,23 +14,31 @@ import { NotificationsBoltLink } from '@/components/notifications/notifications-
 import { NotificationsDropdown } from '@/components/notifications/notifications-dropdown'
 import { NavbarMark } from './navbar-mark'
 import { NavbarNewPosts } from './navbar-new-posts'
-import { NavbarProfile } from './navbar-profile'
+import { NavbarAnalyticsLink, NavbarProfile } from './navbar-profile'
 import styles from './navbar.module.css'
 
 const safeCategories = (): Promise<Category[]> => getCategories().catch(() => [])
 
-/** selectCategoryTabs: promo categories first; logged out viewers also get the primary ones. */
-const toTabs = (categories: Category[], isLoggedIn: boolean): CategoryTab[] =>
-  categories
-    .filter((c) => c.level === 'promo' || (!isLoggedIn && c.level === 'primary'))
-    .sort((a, b) => Number(b.level === 'promo') - Number(a.level === 'promo'))
-    .map((c) => ({
-      label: c.name,
-      slug: c.slug,
-      isPromo: c.level === 'promo',
-      small: c.tileImage?.small?.url ?? null,
-      large: c.tileImage?.large?.url ?? null,
-    }))
+const toTab = (c: Category): CategoryTab => ({
+  label: c.name,
+  slug: c.slug,
+  isPromo: c.level === 'promo',
+  small: c.tileImage?.small?.url ?? null,
+  large: c.tileImage?.large?.url ?? null,
+})
+
+/**
+ * selectCategoryTabs: promo categories first, then the ones the viewer subscribed to (in the
+ * order they subscribed); logged out viewers get the primary ones instead.
+ */
+const toTabs = (categories: Category[], viewer: Viewer | null): CategoryTab[] => {
+  const promo = categories.filter((c) => c.level === 'promo')
+  const subscribedIds = viewer?.followedCategoryIds ?? []
+  const rest = viewer
+    ? subscribedIds.flatMap((id) => categories.find((c) => c.id === id) ?? [])
+    : categories.filter((c) => c.level === 'primary')
+  return [...new Set([...promo, ...rest])].map(toTab)
+}
 
 interface NavbarShellProps {
   children: ReactNode
@@ -45,6 +53,7 @@ const NavbarShell = ({ children, tabBar }: NavbarShellProps) => (
       </div>
       {tabBar}
     </div>
+    <div className={`grabber ${styles.grabber}`} />
   </nav>
 )
 
@@ -77,7 +86,8 @@ const LoggedInLinks = () => (
 /** The fixed top bar. The Discover category strip shows itself on /discover pages (not /discover/all). */
 export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
   const categories = await safeCategories()
-  const tabBar = <CategoryTabBar tabs={toTabs(categories, !!viewer)} isLoggedIn={!!viewer} />
+  const hasSubscriptions = (viewer?.followedCategoryIds ?? []).length > 0
+  const tabBar = <CategoryTabBar tabs={toTabs(categories, viewer)} isLoggedIn={!!viewer} hasSubscriptions={hasSubscriptions} />
   return (
     <NavbarShell tabBar={tabBar}>
       <NavbarMark />
@@ -89,7 +99,9 @@ export const Navbar = async ({ viewer }: { viewer: Viewer | null }) => {
             username={viewer.username}
             avatarSrc={avatarUrl(viewer.avatar, 'regular')}
             helpHref={`${API_ORIGIN}/wtf`}
-          />
+          >
+            {viewer.isBrand || viewer.isStaff ? <NavbarAnalyticsLink /> : null}
+          </NavbarProfile>
           <NavbarLayoutTool />
           <NavbarOmniButton categories={categories} />
           <NotificationsDropdown assetOrigin={API_ORIGIN} />

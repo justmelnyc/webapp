@@ -1,41 +1,45 @@
 /* Design tokens, ported 1:1 from legacy/src/styles/jso.js and lib/styles/properties.css. */
-@theme {
+@theme static {
   --spacing: 1px;
 
-  /* Colors (jso.js) */
+  /*
+   * Colors. The jso.js names (colorBlack, color5/6/9/A/C, bgcE5, bgcF2, colorGreen ...) map to
+   * black/white/g<hex>/green ...; greys are named g + their hex. The ones jso.js never named
+   * (g6a, gd8, ge8, gf0, green-hover, green-toggle, submit-hover, pale-green, pale-red) are raw
+   * literals in the original's component styles, named here after their value or their one use.
+   */
   --color-*: initial;
   --color-black: #000;
   --color-white: #fff;
   --color-g4d: #4d4d4d;
   --color-g53: #535353;
   --color-g66: #666;
+  --color-g6a: #6a6a6a;
   --color-g99: #999;
   --color-gaa: #aaa;
   --color-gcc: #ccc;
+  --color-gd8: #d8d8d8;
   --color-ge5: #e5e5e5;
+  --color-ge8: #e8e8e8;
   --color-gea: #eaeaea;
+  --color-gf0: #f0f0f0;
   --color-gf1: #f1f1f1;
   --color-gf2: #f2f2f2;
   --color-green: #00d100;
+  --color-green-hover: #00b100;
+  --color-green-toggle: #0c0;
+  --color-submit-hover: #02b302;
   --color-dark-green: #16a905;
+  --color-pale-green: #cfc;
   --color-yellow: #ffc600;
   --color-pale-yellow: #ffc;
   --color-red: #f00;
   --color-dark-red: #c90000;
+  --color-pale-red: #f99;
   --color-danger: #f00;
   --color-success: #06a54f;
   --color-modal: rgba(26, 26, 26, 0.9);
   --color-transparent: transparent;
-
-  /* Transitional aliases for components not yet ported. Do not use in new code. */
-  --color-ink: #000;
-  --color-paper: #fff;
-  --color-mist: #f2f2f2;
-  --color-stone: #e5e5e5;
-  --color-ash: #999;
-  --color-slate: #666;
-  --color-ello-green: #00d100;
-  --color-ello-red: #f00;
 
   /* Fonts (jso.js font stacks) */
   --font-*: initial;
@@ -71,16 +75,28 @@
   --container-site: 1360px;
   --container-view: 1440px;
 
-  /* Easing */
+  /* Radii (the original has no names for these; pills are half the height of their control) */
+  --radius-box: 5px;
+  --radius-pill: 20px;
+  --radius-pill-small: 15px;
+  --radius-pill-tiny: 11px;
+
+  /* Easing (properties.css --ease, --ease-in-out-quart, --ease-in-out-cubic) */
   --ease-ello: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-quart: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 :root {
+  /* Motion (properties.css) */
   --speed: 0.2s;
   --speed2: 0.4s;
 
+  /* Control heights (jso.js hv40 / hv30, lh40 / lh30): buttons, inputs, pills */
+  --control: 40px;
+  --control-small: 30px;
+
+  /* Z layers (properties.css) */
   --z-popover: 1020;
   --z-footer: 1030;
   --z-decapitated: 1035;
@@ -90,3 +106,17 @@
   --z-modal: 1080;
   --z-grid: 3000;
 }
+
+/*
+ * Breakpoints cannot be custom properties inside @media, so they are written out as literals.
+ * Always use these values (jso.js minBreakN / maxBreakN, properties.css --break-N):
+ *
+ *   bp2  @media (min-width: 40em)      640px    max: (max-width: 39.9375em)
+ *   bp3  @media (min-width: 60em)      960px    max: (max-width: 59.9375em)
+ *   bp4  @media (min-width: 85em)     1360px    max: (max-width: 84.9375em)
+ *   bp5  @media (min-width: 107.5em)  1720px    max: (max-width: 107.4375em)
+ *   bp6  @media (min-width: 130em)    2080px
+ *   bp7  @media (min-width: 152.5em)  2440px
+ *
+ * Hover styles go in `@media (hover: hover)` (the original's `.no-touch` prefix).
+ */

@@ -3,12 +3,12 @@
   /* Editor Icons
 ------------------------------------- */
   .BrowseIcon > g {
-    fill: #fff;
+    fill: var(--color-white);
   }
 
   .ElloBuyButton > .SVGIcon.MoneyIcon > g {
-    fill: #fff;
-    stroke: #fff;
+    fill: var(--color-white);
+    stroke: var(--color-white);
     stroke-width: 0.5;
   }
 
@@ -22,12 +22,12 @@
   }
 
   .SVGIcon.MoneyIconCircle path {
-    fill: #fff;
+    fill: var(--color-white);
     stroke: none;
   }
 
   .PostActionButton .SVGIcon > g {
-    stroke: #fff;
+    stroke: var(--color-white);
   }
 
   .TextToolButton.forLink > .SVGIcon {
@@ -52,7 +52,7 @@
 
     @media (hover: hover) {
       .ElloBuyButton:hover > .SVGIcon.MoneyIcon > g {
-        fill: #000;
+        fill: var(--color-black);
         stroke: transparent;
       }
     }
@@ -62,13 +62,13 @@
 ------------------------------------- */
   .HeroScrollToContentButton .ChevronCircleIcon {
     margin-top: -2px;
-    transition: transform var(--speed) cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform var(--speed) var(--ease-ello);
     transform: rotate(90deg);
   }
 
   .HeroScrollToContentButton .ChevronCircleIcon g {
     fill: none;
-    stroke: #fff;
+    stroke: var(--color-white);
   }
 
   .FooterTool.LayoutTool > .SVGIcon {
@@ -77,7 +77,7 @@
 
   .FooterTools .ChevronIcon {
     margin-top: -2px;
-    transition: transform var(--speed) cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform var(--speed) var(--ease-ello);
     transform: rotate(-90deg);
   }
 
@@ -91,19 +91,19 @@
 
   /* Request */
   .FormControlStatus > .CircleIconLG > g {
-    fill: #aaa;
+    fill: var(--color-gaa);
     stroke: transparent;
   }
 
   /* Success */
   .FormControlStatus > .CheckIconLG > g {
-    stroke: #06a54f;
+    stroke: var(--color-success);
     stroke-linejoin: bevel;
   }
 
   /* Failure */
   .FormControlStatus > .XIconLG > g {
-    stroke: #f00;
+    stroke: var(--color-red);
   }
 
   .MarkerIcon {
@@ -116,21 +116,21 @@
   }
 
   .BlockMuteButton > .DotsIcon > g {
-    fill: #fff;
+    fill: var(--color-white);
     stroke: transparent;
   }
 
   @media (hover: hover) {
     .BlockMuteButton:hover > .DotsIcon > g {
-      fill: #f00;
+      fill: var(--color-red);
     }
   }
   /* stylelint-enable selector-max-compound-selectors, selector-max-specificity */
 
   /* Rules that were glamor styles inside Icons.js */
   .ArrowIconAnimatedRect {
-    fill: #fff;
-    animation: animateUploaderMover 0.666s infinite cubic-bezier(0.645, 0.045, 0.355, 1);
+    fill: var(--color-white);
+    animation: animateUploaderMover 0.666s infinite var(--ease-cubic);
   }
 
   .TreeButton .ChevronIcon {
@@ -138,7 +138,7 @@
     top: 10px;
     left: 0;
     transform: rotate(90deg);
-    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform var(--speed) var(--ease-ello);
   }
 
   .TreeButton.isCollapsed .ChevronIcon {

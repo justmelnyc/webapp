@@ -1,42 +1,16 @@
 /* eslint-disable */
-// Deterministic seed data: the same people, posts and comments on every fresh start.
-const PEOPLE = [
-  ['ada', 'Ada Lindqvist', 'Generative artist working with plotters and light.', 'Stockholm'],
-  ['grace', 'Grace Okonkwo', 'Documentary photographer. Lagos / London.', 'Lagos'],
-  ['mara', 'Mara Delgado', 'Illustrator, zine maker, coffee person.', 'Mexico City'],
-  ['jules', 'Jules Beaumont', 'Type designer. I draw letters for a living.', 'Lyon'],
-  ['theo', 'Theo Nakamura', 'Street photography and film cameras.', 'Osaka'],
-  ['noor', 'Noor Haddad', 'Motion designer and sometimes painter.', 'Amman'],
-  ['ines', 'Ines Carvalho', 'Fashion editor, collage artist.', 'Lisbon'],
-  ['kofi', 'Kofi Mensah', 'Architecture student, concrete enthusiast.', 'Accra'],
-  ['saoirse', 'Saoirse Brennan', 'Ceramics and printmaking.', 'Galway'],
-  ['luca', 'Luca Ferrante', '3D artist. Mostly clay renders.', 'Milan'],
-  ['yuki', 'Yuki Tanaka', 'Watercolors, tiny comics.', 'Kyoto'],
-  ['amara', 'Amara Singh', 'Brand designer and part-time muralist.', 'Toronto'],
-]
-
-const CAPTIONS = [
-  'Early morning light in the studio today.',
-  'Finished this one after three weeks. Feedback welcome!',
-  'Work in progress. Not sure about the color yet.',
-  'Found this on a walk and could not stop looking at it.',
-  'New series starting. More soon.',
-  'Throwback to last summer.',
-  'Tried a different approach this time.',
-  'Details from the latest print run.',
-  'Quick sketch before breakfast.',
-  'Everything is a texture if you look closely enough.',
-  'Shot on film, scanned at home.',
-  'Experimenting with a limited palette.',
-]
-
-const COMMENTS = [
-  'This is gorgeous.', 'Love the colors here!', 'How long did this take?',
-  'Following for more.', 'The composition is perfect.', 'Wow.', 'This made my day.',
-]
+// Seed data for a fresh database. Deterministic apart from one thing: `now`, the moment the database is
+// created. Every date is relative to it (see clock.js), so a new database reads like a live site, and the
+// same people, posts, tokens, comments and loves come out of every run.
+//   people.js         who is here            world-posts.js   what they posted
+//   world-social.js   follows, comments, loves, reposts       copy-*.js   what they wrote
+const clock = require('./clock')
+const social = require('./world-social')
+const { addPosts } = require('./world-posts')
 
 const CATEGORIES = ['Art', 'Photography', 'Design', 'Fashion']
-const SIZES = [[1200, 800], [900, 1200], [1000, 1000], [1400, 700]]
+// 1: the first cast of twelve, dated from a fixed calendar. 2: this one. Databases without it are version 1.
+const SEED_VERSION = 2
 
 // small seeded PRNG so seed data is stable
 const rng = (seed) => () => {
@@ -46,53 +20,42 @@ const rng = (seed) => () => {
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 }
 
-const build = () => {
+const newestFirst = (a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0)
+const hasImage = post => post.regions.some(r => r.kind === 'image')
+
+const build = (now = Date.now()) => {
   const rand = rng(42)
-  const pick = list => list[Math.floor(rand() * list.length)]
   const db = { seq: 1000, users: [], posts: [], comments: [], loves: [], watches: [], follows: [] }
+  const nextId = () => String(++db.seq)
+  const context = { rand, now, nextId }
 
-  PEOPLE.forEach(([username, name, bio, location], i) => {
-    db.users.push({
-      id: String(i + 1), username, name, bio, location, email: `${username}@example.com`,
-      links: [], hasCover: rand() > 0.25,
-    })
-  })
+  social.addPeople(db)
+  social.addFollows(db, rand)
 
-  const start = Date.parse('2026-11-01T12:00:00Z')
-  for (let n = 0; n < 48; n += 1) {
-    const author = pick(db.users)
-    const imageCount = pick([0, 1, 1, 1, 2, 3])
-    const regions = [{ kind: 'text', data: `<p>${pick(CAPTIONS)}</p>` }]
-    for (let i = 0; i < imageCount; i += 1) {
-      const [w, h] = pick(SIZES)
-      regions.push({ kind: 'image', data: { url: null, seed: `${author.username}-${n}-${i}` }, width: w, height: h })
-    }
-    db.posts.push({
-      id: String(++db.seq), token: `p${n}x${Math.floor(rand() * 9000 + 1000)}`,
-      authorId: author.id, createdAt: new Date(start - n * 5.5 * 3600000).toISOString(),
-      regions, categoryIds: [String(1 + Math.floor(rand() * CATEGORIES.length))], views: Math.floor(rand() * 900),
-    })
-  }
+  // The older seeders keep their posts and tokens (shop*, emb*, srch*). They run first because each one
+  // skips itself once its kind of post exists; here they are dated from `now` instead of their fixed dates.
+  db.posts.push(...require('./products').buildProducts(db.users, nextId, now - 5 * clock.HOUR))
+  require('./embeds').seedEmbedPosts(db, nextId, now - 9 * clock.HOUR)
+  require('./post-search').seedSearchPosts(db, nextId, now - 36 * clock.HOUR)
+  const older = db.posts.slice()
 
-  db.posts.forEach((post) => {
-    const commenters = Math.floor(rand() * 4)
-    for (let i = 0; i < commenters; i += 1) {
-      db.comments.push({
-        id: String(++db.seq), postId: post.id, authorId: pick(db.users).id,
-        createdAt: new Date(Date.parse(post.createdAt) + (i + 1) * 3600000).toISOString(),
-        text: pick(COMMENTS),
-      })
-    }
-    db.users.forEach((u) => { if (u.id !== post.authorId && rand() > 0.8) db.loves.push({ userId: u.id, postId: post.id }) })
-  })
+  const heat = addPosts(db, context)
+  older.forEach(post => heat.set(post.id, rand() ** 3 * 0.8))
+  social.addComments(db, context, heat)
+  social.addLoves(db, context, heat)
+  social.addReposts(db, context, heat)
+  db.posts.sort(newestFirst)
 
-  // everyone follows a few people; user 1 (ada) is the default login
-  db.users.forEach((u) => {
-    db.users.forEach((o) => { if (u.id !== o.id && (rand() > 0.6 || u.id === '1')) db.follows.push({ followerId: u.id, followeeId: o.id }) })
-  })
-  // curators and category post states (no rand: keeps the seed above unchanged); server.js applies it to older db files too
+  require('./invitations').seedInvitations(db, nextId, now - clock.DAY)
+  // a spread of picture posts is submitted to the artist invites, not simply the newest ones
+  const submittable = db.posts.filter((post, i) => !post.repostOfId && hasImage(post) && i % 3 === 1)
+  require('./artist-invites').seedArtistInvites(db, nextId, now, submittable)
+  // curators and category post states; server.js applies it to older db files too
   require('./category-posts').seedCategoryPosts(db)
+
+  db.seededAt = now
+  db.seedVersion = SEED_VERSION
   return db
 }
 
-module.exports = { build, CATEGORIES }
+module.exports = { build, CATEGORIES, SEED_VERSION, rng }

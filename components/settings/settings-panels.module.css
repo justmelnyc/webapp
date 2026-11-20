@@ -14,7 +14,7 @@
 
 .definition dd {
   margin-top: 20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .button {
@@ -25,27 +25,27 @@
   min-width: 80px;
   height: 30px;
   padding: 0 15px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 30px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
   white-space: nowrap;
-  background-color: #aaa;
-  border: 1px solid #aaa;
-  border-radius: 5px;
+  background-color: var(--color-gaa);
+  border: 1px solid var(--color-gaa);
+  border-radius: var(--radius-box);
   transition: background-color var(--speed) ease, border-color var(--speed) ease, color var(--speed) ease;
 }
 
 @media (hover: hover) {
   .button:hover {
-    color: #aaa;
-    background-color: #fff;
-    border-color: #aaa;
+    color: var(--color-gaa);
+    background-color: var(--color-white);
+    border-color: var(--color-gaa);
   }
 
   .button.dangerous,
   .button.dangerous:hover {
-    color: #fff;
+    color: var(--color-white);
     background-color: var(--color-danger);
     border-color: var(--color-danger);
   }
@@ -71,8 +71,8 @@
 
 .creatorHeading {
   margin-bottom: 20px;
-  font-size: 24px;
-  color: #aaa;
+  font-size: var(--text-24);
+  color: var(--color-gaa);
 }
 
 .categoriesHeading {
@@ -83,63 +83,4 @@
   margin-bottom: -10px;
 }
 
-.creatorButton {
-  max-width: 230px;
-  height: 40px;
-  padding: 0 5px;
-  margin-right: 10px;
-  overflow: hidden;
-  color: #aaa;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background-color: #fff;
-  border: 1px solid #aaa;
-  border-radius: 5px;
-  width: calc(50% - 5px);
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.creatorButton:nth-child(2n) {
-  margin-right: 0;
-}
-
-.creatorButton.active {
-  color: #fff;
-  background-color: #000;
-  border-color: #000;
-}
-
-@media (hover: hover) {
-  .creatorButton:hover {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
-  }
-}
-
-.categoryButton {
-  margin-bottom: 10px;
-}
-
-@media (hover: hover) {
-  .categoryButton.active:hover {
-    background-color: #666;
-    border: 1px solid #666;
-  }
-}
-
-@media (min-width: 26.25em) {
-  .categoryButton {
-    width: calc(33% - 6px);
-    max-width: 150px;
-  }
-
-  .categoryButton:nth-child(2n) {
-    margin-right: 10px;
-  }
-
-  .categoryButton:nth-child(3n) {
-    margin-right: 0;
-  }
-}
+/* The buttons are ui/option-button. */

@@ -7,8 +7,8 @@
   display: flex;
   align-items: center;
   height: 60px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 @media (min-width: 40em) {
@@ -20,7 +20,7 @@
 :global(.PostDetailAsideTop) .header {
   padding-right: 20px;
   padding-left: 20px;
-  border-bottom: 1px solid #f2f2f2;
+  border-bottom: 1px solid var(--color-gf2);
 }
 
 .header :global(.PostHeaderLeft) {
@@ -32,7 +32,8 @@
   overflow: hidden;
 }
 
-.header :global(.Avatar) {
+/* Doubled: must beat the stream's `.PostHeader .Avatar` (post-header.css), which the related posts load on this page. */
+.header.header :global(.Avatar) {
   position: relative;
   top: auto;
   left: auto;
@@ -91,17 +92,10 @@
   vertical-align: middle;
 }
 
-.header :global(.DraggableUsername) {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .header :global(.PostHeaderAuthorName) {
   display: inline-block;
   margin-right: 0;
-  color: #000;
+  color: var(--color-black);
   vertical-align: middle;
 }
 
@@ -115,7 +109,7 @@
 @media (hover: hover) {
   .header :global(.PostHeaderLinks) a:hover,
   .timeAgo:hover {
-    color: #535353;
+    color: var(--color-g53);
   }
 
   .header :global(.PostHeaderLinks) a:hover :global(.PostHeaderAuthorName) {
@@ -124,13 +118,13 @@
 }
 
 .headerTools {
-  position: relative;
   display: block;
   flex: none;
 }
 
-/* The stream's absolute `.PostHeaderTools { top, right }` (post-header.css) stays loaded after client navigation. */
+/* Out-specifies the stream's absolute `.PostHeaderTools { top, right }` (post-header.css), loaded here by the related posts. */
 .header .headerTools {
+  position: relative;
   top: auto;
   right: auto;
 }
@@ -145,7 +139,8 @@
 }
 
 @media (min-width: 60em) {
-  :global(.PostDetailAsideTop) .timeAgo {
+  /* doubled: the stream's `.Posts.asList .PostHeaderTimeAgoLink` hides it from 60em up */
+  :global(.PostDetailAsideTop) .header .timeAgo.timeAgo {
     display: block;
     pointer-events: none;
   }
@@ -166,33 +161,15 @@
 
 /* ---- owner tools in the header (EditTool / DeleteTool) ---- */
 
-.headerTools :global(.PostTool) {
-  position: relative;
-  display: inline-block;
-  height: 20px;
-  line-height: 20px;
-}
-
-/* Four classes: out-specifies the stream's `.Posts.asList .PostTool > button` (12px / 4px) that `PostDetails Posts asList` matches. */
+/*
+ * The tools are the stream's `.PostTool` (components/posts/post-tools.css) as a header draws them
+ * (`.PostHeaderTools .PostTool` in post-header.css: 5px either side, icons at 1.5). Only the padding
+ * needs help here, four classes deep: `PostDetails Posts asList` also matches the stream's
+ * `.Posts.asList .PostTool > button` (12px / 4px from 60em).
+ */
 .header .headerTools.headerTools :global(.PostTool) > button {
   padding-right: 5px;
   padding-left: 5px;
-  color: #aaa;
-  transition: color var(--speed) ease;
-}
-
-.headerTools :global(.PostTool) :global(.SVGIcon) {
-  transform: scale(1.5);
-}
-
-.headerTools :global(.PostTool) :global(.SVGIcon) > :global(g) {
-  stroke-width: 0.9375;
-}
-
-@media (hover: hover) {
-  .headerTools :global(.PostTool) > button:hover {
-    color: #000;
-  }
 }
 
 /* ---- repost header (PostHeader.css `.RepostDetailHeader` rules) ---- */

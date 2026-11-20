@@ -21,8 +21,8 @@
   color: inherit;
   cursor: pointer;
   background: transparent;
-  border: 1px solid #aaa;
-  border-radius: 5px;
+  border: 1px solid var(--color-gaa);
+  border-radius: var(--radius-box);
   outline: 0;
   box-shadow: none;
 }
@@ -45,9 +45,9 @@
   position: absolute;
   left: 20px;
   z-index: 1;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .root svg:global(.ChevronIcon) {
@@ -56,7 +56,7 @@
   right: 10px;
   z-index: 1;
   display: block;
-  color: #aaa;
+  color: var(--color-gaa);
   cursor: pointer;
   transform: rotate(90deg);
 }
@@ -66,7 +66,7 @@
 }
 
 .selected {
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 14px;
   border-color: #979797;
 }
@@ -89,7 +89,7 @@
   font-family: var(--font-sans);
   font-style: normal;
   font-weight: 400;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .selected button {
@@ -101,14 +101,14 @@
   position: absolute;
   top: 39px;
   left: 0;
-  z-index: 1070;
+  z-index: var(--z-tools);
   width: 100%;
   max-height: 260px;
   padding: 10px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #fff;
-  border: 1px solid #aaa;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gaa);
   border-radius: 0 0 5px 5px;
 }
 
@@ -120,7 +120,7 @@
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .list ul {
@@ -146,8 +146,8 @@
 
 .list li button:hover,
 .list li.isSelected button {
-  color: #fff;
-  background-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
   border-radius: 3px;
 }
 

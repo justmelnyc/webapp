@@ -31,14 +31,14 @@
 .heading {
   height: 40px;
   font-family: var(--font-black);
-  font-size: 18px;
+  font-size: var(--text-18);
   white-space: nowrap;
 }
 
 .header > p {
   max-width: 480px;
   margin: 0 0 18px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .links {
@@ -56,21 +56,21 @@
   min-width: 160px;
   height: 40px;
   padding: 0 10px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 40px;
-  color: #fff;
+  color: var(--color-white);
   text-align: center;
-  background-color: #000;
-  border: 1px solid #000;
-  border-radius: 5px;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  background-color: var(--color-black);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-box);
+  transition: background-color var(--speed), border-color var(--speed), color var(--speed);
 }
 
 @media (hover: hover) {
   .link:hover {
-    color: #fff;
-    background-color: #00d100;
-    border-color: #00d100;
+    color: var(--color-white);
+    background-color: var(--color-green);
+    border-color: var(--color-green);
   }
 }
 
@@ -97,7 +97,7 @@
 
 @media (min-width: 40em) {
   .heading {
-    font-size: 24px;
+    font-size: var(--text-24);
   }
 
   .settings {

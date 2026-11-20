@@ -156,8 +156,14 @@ const seedNotifications = (add, now, rand) => {
       if (p.authorId === u.id) add({ key: `catrepost:${p.id}`, userId: u.id, kind: KIND.categoryRepost, createdAt: when(), postId: p.id, actorId: pick(others).id, categoryId: category })
       if (original && original.authorId === u.id) add({ key: `catvia:${p.id}`, userId: u.id, kind: KIND.categoryViaRepost, createdAt: when(), postId: p.id, actorId: pick(others).id, categoryId: category })
     })
-    ;[KIND.featured, KIND.curator, KIND.moderator].forEach((kind, n) => {
-      add({ key: `catuser:${kind}:${u.id}`, userId: u.id, kind, createdAt: when(), actorId: pick(others).id, categoryId: categories[(i + n) % categories.length].id })
+    // Only for roles the user really holds: the original keeps every category user it is sent in one store,
+    // so a notification about a role nobody has would show up as a curator on the category page.
+    const held = [
+      ...(db.categoryRoles || []).filter(r => r.userId === u.id).map(r => ({ kind: KIND[r.role], categoryId: r.categoryId })),
+      ...(u.roles || []).filter(r => r.role === 'FEATURED').map(r => ({ kind: KIND.featured, categoryId: r.categoryId })),
+    ]
+    held.forEach(({ kind, categoryId }) => {
+      add({ key: `catuser:${kind}:${u.id}:${categoryId}`, userId: u.id, kind, createdAt: when(), actorId: pick(others).id, categoryId })
     })
   })
 }
@@ -188,7 +194,7 @@ const serializeSubject = (n, viewer) => {
     case 'CategoryUser': {
       const category = categoryById(n.categoryId)
       return category && {
-        __typename: 'CategoryUser', id: `${n.categoryId}-${n.userId}`, role: ROLE_OF[n.kind],
+        __typename: 'CategoryUser', id: `${n.categoryId}-${n.userId}-${ROLE_OF[n.kind]}`, role: ROLE_OF[n.kind],
         category: { id: category.id, slug: category.slug, name: category.name },
         user: gqlAuthor(userById(n.userId), viewer), featuredBy: gqlAuthor(userById(n.actorId), viewer),
       }

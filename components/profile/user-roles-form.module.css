@@ -1,0 +1,155 @@
+/*
+ * Port of the administration parts of UserDetailRoles (legacy/src/components/users/UserRolesRenderables.js,
+ * its glamor styles): the assign form, a role's controls and the remove confirmation.
+ */
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.selectors {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.selectors .picker {
+  display: block;
+}
+
+.selectors .rolePicker {
+  width: 200px;
+  margin-left: 10px;
+}
+
+.submit {
+  height: 40px;
+  padding-right: 10px;
+  padding-left: 10px;
+  font-size: var(--text-14);
+  line-height: 40px;
+  color: var(--color-white);
+  background-color: var(--color-green);
+  border-radius: var(--radius-box);
+  transition: background-color var(--speed) ease;
+}
+
+@media (hover: hover) {
+  .submit:hover {
+    cursor: pointer;
+    background-color: var(--color-dark-green);
+  }
+}
+
+.submit:disabled,
+.submit:disabled:hover {
+  cursor: default;
+  background-color: var(--color-gaa);
+}
+
+.status {
+  padding: 0;
+  margin: 0;
+  color: var(--color-green);
+  opacity: 1;
+  transition: opacity var(--speed) ease;
+}
+
+.statusHidden {
+  opacity: 0;
+}
+
+@media (max-width: 59.9375em) {
+  .selectors .picker {
+    width: 200px;
+  }
+}
+
+@media (max-width: 39.9375em) {
+  .form {
+    display: block;
+    text-align: right;
+  }
+
+  .selectors {
+    display: block;
+    width: 100%;
+  }
+
+  .selectors .picker {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .status {
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+
+.role {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 8px 2px;
+  margin-bottom: 10px;
+  background-color: var(--color-gf2);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls .remove {
+  margin-top: -2px;
+  margin-left: 3px;
+  color: var(--color-gaa);
+  transition: color var(--speed) ease;
+}
+
+.newRole {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  background-color: var(--color-green);
+  border-radius: 12px;
+}
+
+.newRole i {
+  display: none;
+}
+
+.confirm {
+  color: var(--color-gaa);
+}
+
+.confirm :global(.confirm-text) {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.confirm :global(.confirm-text) button {
+  margin-left: 10px;
+  color: var(--color-gaa);
+  transition: color var(--speed) ease;
+}
+
+.confirm :global(.confirm-text) button:global(.remove-confirm) {
+  color: var(--color-black);
+}
+
+@media (hover: hover) {
+  .controls .remove:hover,
+  .confirm :global(.confirm-text) a:hover,
+  .confirm :global(.confirm-text) button:hover {
+    color: var(--color-black);
+  }
+}

@@ -22,9 +22,12 @@ export const summaryRegions = (post: { summary: Region[] }, comment?: { content:
   return regions
 }
 
-/** Split a summary the way regionItemsForNotifications does: the first image, and the text column. */
+/**
+ * Split a summary the way regionItemsForNotifications does: the first image or embed (the original
+ * collects both as "image assets" and shows the first), and the text column.
+ */
 export const splitSummary = (regions: SummaryRegion[]): { image: Region | null; texts: SummaryRegion[] } => ({
-  image: regions.find((region): region is Region => region.kind === 'image') ?? null,
+  image: regions.find((region): region is Region => region.kind === 'image' || region.kind === 'embed') ?? null,
   texts: regions.filter((region) => region.kind === 'text' || region.kind === 'rule'),
 })
 

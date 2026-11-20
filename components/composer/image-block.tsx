@@ -2,6 +2,7 @@
 
 import { ArrowIcon } from '@/components/icons'
 import type { ImageBlock as ImageBlockData } from '@/stores/composer-store'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './omnibar.module.css'
 
 interface ImageBlockProps {
@@ -13,14 +14,14 @@ interface ImageBlockProps {
 export const ImageBlock = ({ block, onRetry }: ImageBlockProps) => (
   <div className={`editable image ${styles.editable} ${styles.image}`}>
     {block.status === 'uploading' && (
-      <div className={styles.busy} role="status" aria-label="Uploading">
-        <div className={styles.busyArrow}>
+      <div className={parts.busy} role="status" aria-label="Uploading">
+        <div className={parts.busyArrow}>
           <ArrowIcon isAnimated />
         </div>
       </div>
     )}
     {block.status === 'error' && (
-      <div className={styles.retry}>
+      <div className={`${parts.busy} ${styles.retry}`}>
         <button type="button" onClick={() => onRetry(block.id)}>
           Retry upload
         </button>

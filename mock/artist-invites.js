@@ -107,21 +107,26 @@ const buildArtistInvites = ({ users, posts, now = Date.parse('2026-11-18T12:00:0
       ...copyFor(seed),
     }
     invites.push(invite)
-    statusList(seed.counts).forEach((status, i) => {
+    const statuses = statusList(seed.counts)
+    // one every three hours since the invite opened, closer together when that would run past `now`
+    const opened = Date.parse(seed.openedAt)
+    const step = Math.min(3 * 3600000, Math.max(0, now - opened) / (statuses.length + 1)) || 3 * 3600000
+    statuses.forEach((status, i) => {
       const post = usable[(n * 7 + i) % usable.length]
       if (!post) return
       submissions.push({
         id: nextId(), inviteId: invite.id, postId: post.id, status,
-        createdAt: new Date(Date.parse(seed.openedAt) + (i + 1) * 3 * 3600000).toISOString(),
+        createdAt: new Date(Math.round(opened + (i + 1) * step)).toISOString(),
       })
     })
   })
   return { invites, submissions }
 }
 
-const seedArtistInvites = (db, nextId, now) => {
+// `now` anchors the open / upcoming / closed dates; `posts` are the ones that may be submitted (default: all)
+const seedArtistInvites = (db, nextId, now, posts = db.posts) => {
   if (db.artistInvites && db.artistInvitesSeed === SEED_VERSION) return 0
-  const { invites, submissions } = buildArtistInvites({ users: db.users, posts: db.posts, now, nextId })
+  const { invites, submissions } = buildArtistInvites({ users: db.users, posts, now, nextId })
   db.artistInvites = invites
   db.artistInvitesSeed = SEED_VERSION
   db.artistInviteSubmissions = submissions

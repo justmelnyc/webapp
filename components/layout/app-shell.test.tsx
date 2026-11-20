@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { AppShell } from './app-shell'
 
 const push = jest.fn()
-jest.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push }), usePathname: () => '/' }))
 
 const shell = (html: string) => (
   <AppShell isLoggedIn={false}>

@@ -9,26 +9,25 @@ import { cn } from '@/utils/cn'
  *  - TextButton: PostActionBar's cancelTextButtonStyle (#aaa, #6a6a6a on hover)
  */
 const action =
-  'inline-flex h-40 items-center justify-center whitespace-nowrap rounded-[5px] px-20 text-14 leading-[40px] text-white ' +
-  'transition-[background-color,color] duration-200 ease-in-out disabled:pointer-events-none disabled:bg-gaa'
+  'inline-flex h-40 items-center justify-center whitespace-nowrap rounded-box px-20 text-14 leading-[40px] ' +
+  'transition-[background-color,color] duration-200 ease-in-out disabled:pointer-events-none'
+
+/** The filled look: white text, grey when disabled. */
+const solid = `${action} text-white disabled:bg-gaa`
 
 /** Solid black call to action. */
 export const Button = ({ className, type = 'button', ...props }: ComponentProps<'button'>) => (
-  <button type={type} className={cn(action, 'bg-black hover:bg-[#6a6a6a]', className)} {...props} />
+  <button type={type} className={cn(solid, 'bg-black hover:bg-g6a', className)} {...props} />
 )
 
 export const GreenButton = ({ className, type = 'button', ...props }: ComponentProps<'button'>) => (
-  <button type={type} className={cn(action, 'bg-green hover:bg-[#02b302]', className)} {...props} />
+  <button type={type} className={cn(solid, 'bg-green hover:bg-submit-hover', className)} {...props} />
 )
 
 export const OutlineButton = ({ className, type = 'button', ...props }: ComponentProps<'button'>) => (
   <button
     type={type}
-    className={cn(
-      action,
-      'border border-solid border-current bg-white text-gaa hover:border-black hover:bg-black hover:text-white disabled:bg-white',
-      className,
-    )}
+    className={cn(action, 'border border-solid border-current bg-white text-gaa hover:border-black hover:bg-black hover:text-white', className)}
     {...props}
   />
 )
@@ -36,7 +35,7 @@ export const OutlineButton = ({ className, type = 'button', ...props }: Componen
 export const TextButton = ({ className, type = 'button', ...props }: ComponentProps<'button'>) => (
   <button
     type={type}
-    className={cn('text-14 text-gaa transition-colors duration-200 ease-in-out hover:text-[#6a6a6a]', className)}
+    className={cn('text-14 text-gaa transition-colors duration-200 ease-in-out hover:text-g6a', className)}
     {...props}
   />
 )
@@ -45,11 +44,11 @@ export const TextButton = ({ className, type = 'button', ...props }: ComponentPr
 const formButton =
   'h-60 w-full whitespace-nowrap border border-solid border-green bg-green px-30 text-14 leading-[60px] text-white ' +
   'transition-[background-color,border-color,color,width] duration-200 ease-ello ' +
-  'enabled:active:border-[#00b100] enabled:active:bg-[#00b100] enabled:hover:border-[#00b100] enabled:hover:bg-[#00b100] ' +
+  'enabled:active:border-green-hover enabled:active:bg-green-hover enabled:hover:border-green-hover enabled:hover:bg-green-hover ' +
   'disabled:border-[#7ac97a] disabled:bg-[#7ac97a]'
 
 export const FormButton = ({ className, type = 'submit', ...props }: ComponentProps<'button'>) => (
-  <button type={type} className={cn('FormButton isRounded', formButton, 'rounded-[5px]', className)} {...props} />
+  <button type={type} className={cn('FormButton isRounded', formButton, 'rounded-box', className)} {...props} />
 )
 
 export const FormButtonSquare = ({ className, type = 'submit', ...props }: ComponentProps<'button'>) => (

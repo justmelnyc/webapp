@@ -5,7 +5,8 @@
 //   node tools/visual-diff/vdiff.js --path /discover [--width 1280] [--vh 900] [--maxh 3000]
 //        [--login ada] [--wait 8000] [--port 9333] [--out DIR]
 //        [--probe ".a|.b"] [--dump ".sel"] [--click ".sel"] [--clickwait ms] [--until ".sel"] [--type "#id=value"]
-//        [--eval "js"] [--click2 ".sel"] [--afterwait ms]
+//        [--eval "js"] [--click2 ".sel"] [--afterwait ms] [--snap ms]
+//        [--legacy-origin http://localhost:6663] [--new-origin http://localhost:6662] [--mock http://localhost:7771]
 //
 // Writes legacy.png, new.png, diff.png (differences in red) and side.png (original left, rewrite
 // right) into --out and prints the percentage of mismatching pixels.
@@ -25,7 +26,10 @@ const MAXH = +args.maxh || 2400
 const PORT = +args.port || 9300 + Math.floor(Math.random() * 600) // random: a run must never attach to the previous run's dying Chrome
 const WAIT = +args.wait || 5000
 const OUT = args.out || path.join(os.tmpdir(), 'vdiff-out')
-const SIDES = { legacy: 'http://localhost:6660', new: 'http://localhost:6661' }
+const SIDES = { legacy: args['legacy-origin'] || 'http://localhost:6660', new: args['new-origin'] || 'http://localhost:6661' }
+// --snap ms: capture the viewport that long after the last action (the load, the last --click, the --eval or the last
+// --click2) instead of waiting for the page to settle: what each app draws while a request is still out
+const SNAP = args.snap === undefined ? null : +args.snap || 0
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const wait = (ms) => new Promise((r) => setTimeout(r, ms))
 const getJson = (url) => new Promise((res, rej) => http.get(url, (r) => { let d = ''; r.on('data', (c) => { d += c }); r.on('end', () => res(JSON.parse(d))) }).on('error', rej))
@@ -82,24 +86,41 @@ const login = async (c, base, user) => {
 // --reset-email ada@example.com: every side gets its own fresh password reset token in place of `{token}` in --path
 // (a token works once, so the two apps cannot share one).
 const resetPath = async (email) => {
-  const mock = process.env.MOCK_URL || 'http://localhost:7770'
+  const mock = args.mock || process.env.MOCK_URL || 'http://localhost:7770'
   await fetch(`${mock}/api/v2/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
   const { token } = await (await fetch(`${mock}/mock/last-reset-link`)).json()
   return PATH.replace('{token}', token)
 }
 
+const freeze = (c) => c.ev(`(() => { const s = document.createElement('style'); s.textContent = ${JSON.stringify(FREEZE)}; document.head.appendChild(s) })()`)
+const clickAll = async (c, selectors, snapLast) => {
+  const list = String(selectors).split(' >> ')
+  for (const [i, sel] of list.entries()) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); if (!(snapLast && i === list.length - 1)) await wait(+args.clickwait || 1500) }
+}
+// --snap: the viewport as it is right now (no scrolling, no resizing, no waiting for pictures)
+const snap = async (c, label) => {
+  await wait(SNAP); await freeze(c)
+  const shot = await c.send('Page.captureScreenshot', { format: 'png' })
+  fs.writeFileSync(path.join(OUT, `${label}.png`), Buffer.from(shot.result.data, 'base64'))
+  return { height: await c.ev('document.documentElement.scrollHeight'), probes: await probe(c), dumps: await dump(c) }
+}
+
 const capture = async (c, base, label) => {
-  await c.send('Emulation.setDeviceMetricsOverride', { width: WIDTH, height: 900, deviceScaleFactor: 1, mobile: WIDTH < 600 })
+  await c.send('Emulation.setDeviceMetricsOverride', { width: WIDTH, height: (SNAP !== null && +args.vh) || 900, deviceScaleFactor: 1, mobile: WIDTH < 600 })
+  const lastAction = args.eval ? (args.click2 ? 'click2' : 'eval') : args.click ? 'click' : 'load'
+  const snapAt = SNAP === null ? null : lastAction
   await c.send('Page.navigate', { url: base + (args['reset-email'] ? await resetPath(args['reset-email']) : PATH) })
+  if (snapAt === 'load') return snap(c, label)
   await wait(WAIT)
-  await c.ev(`(() => { const s = document.createElement('style'); s.textContent = ${JSON.stringify(FREEZE)}; document.head.appendChild(s) })()`)
+  await freeze(c)
   if (args.type) {
     const [sel, ...rest] = String(args.type).split('=')
     await c.ev(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); if (!el) return; Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, ${JSON.stringify(rest.join('='))}); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })) })()`)
     await wait(2500)
   }
   // --click "a >> b": click several elements in turn (e.g. switch to list view, then open the repost editor)
-  if (args.click) { for (const sel of String(args.click).split(' >> ')) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); await wait(+args.clickwait || 1500) }
+  if (args.click) { await clickAll(c, args.click, snapAt === 'click')
+    if (snapAt === 'click') return snap(c, label)
     // --until ".sel": keep waiting (up to 15s) for something that loads late after the click
     if (args.until) for (let i = 0; i < 60 && !(await c.ev(`!!document.querySelector(${JSON.stringify(args.until)})`)); i += 1) await wait(250)
     if (args.until) await wait(500)
@@ -107,8 +128,10 @@ const capture = async (c, base, label) => {
     await wait(1200); await c.ev('window.scrollTo(0, 0)'); await wait(1500) }
   // --eval "js": run JS on both sides after the clicks (e.g. type into the editor); --click2 "a >> b": click again afterwards
   if (args.eval) {
-    await c.ev(String(args.eval)); await wait(1500)
-    if (args.click2) { for (const sel of String(args.click2).split(' >> ')) { await c.ev(`document.querySelector(${JSON.stringify(sel)}) && document.querySelector(${JSON.stringify(sel)}).click()`); await wait(+args.clickwait || 1500) }
+    await c.ev(String(args.eval)); if (snapAt === 'eval') return snap(c, label)
+    await wait(1500)
+    if (args.click2) { await clickAll(c, args.click2, snapAt === 'click2')
+      if (snapAt === 'click2') return snap(c, label)
       await wait(+args.afterwait || 1500); await c.ev('window.scrollTo(0, 0)'); await wait(1000) }
   }
   // Fetch natively lazy-loaded images without scrolling (scrolling would trigger infinite scroll).
@@ -125,18 +148,20 @@ const capture = async (c, base, label) => {
   const full2 = VH ? await c.ev('Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)') : 0
   const shot = VH ? await c.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: { x: 0, y: 0, width: WIDTH, height: Math.min(full2, MAXH), scale: 1 } }) : await c.send('Page.captureScreenshot', { format: 'png' })
   fs.writeFileSync(path.join(OUT, `${label}.png`), Buffer.from(shot.result.data, 'base64'))
-  let probes = null
-  if (args.probe) {
-    probes = await c.ev(`(() => { const keys = ${JSON.stringify(STYLE_KEYS)}; const out = {}
+  return { height: full, probes: await probe(c), dumps: await dump(c) }
+}
+
+const probe = async (c) => {
+  if (!args.probe) return null
+  return c.ev(`(() => { const keys = ${JSON.stringify(STYLE_KEYS)}; const out = {}
       for (const sel of ${JSON.stringify(String(args.probe).split('|'))}) { const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length) || document.querySelector(sel); if (!el) { out[sel] = null; continue }
         const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); const o = { rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] }
         for (const k of keys) o[k] = cs[k]; out[sel] = o } return out })()`)
-  }
-  let dumps = null
-  if (args.dump) {
-    dumps = await c.ev(`(() => { const out = {}; for (const sel of ${JSON.stringify(String(args.dump).split('|'))}) { const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length) || document.querySelector(sel); out[sel] = el ? el.outerHTML.replace(/ (data-[a-z-]+|style)="[^"]*"/g, '').replace(/<svg[\\s\\S]*?<\\/svg>/g, '<svg…/>').slice(0, ${+args.dumplen || 3500}) : null } return out })()`)
-  }
-  return { height: full, probes, dumps }
+}
+
+const dump = async (c) => {
+  if (!args.dump) return null
+  return c.ev(`(() => { const out = {}; for (const sel of ${JSON.stringify(String(args.dump).split('|'))}) { const el = [...document.querySelectorAll(sel)].find((e) => e.getClientRects().length) || document.querySelector(sel); out[sel] = el ? el.outerHTML.replace(/ (data-[a-z-]+|style)="[^"]*"/g, '').replace(/<svg[\\s\\S]*?<\\/svg>/g, '<svg…/>').slice(0, ${+args.dumplen || 3500}) : null } return out })()`)
 }
 
 const pad = (png, w, h) => { const out = new PNG({ width: w, height: h }); out.data.fill(255); PNG.bitblt(png, out, 0, 0, png.width, png.height, 0, 0); return out }

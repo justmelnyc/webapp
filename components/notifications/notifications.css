@@ -11,7 +11,7 @@
 }
 
 .Notification + .Notification {
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid var(--color-ge5);
 }
 
 .Notification > header {
@@ -33,6 +33,14 @@
   vertical-align: top;
 }
 
+.NotificationAsset .embetter {
+  pointer-events: none;
+}
+
+.NotificationAsset .EmbedRegionContent {
+  pointer-events: auto;
+}
+
 .NotificationBody {
   margin-bottom: 15px;
   word-wrap: break-word;
@@ -41,7 +49,7 @@
 .NotificationBody > p {
   margin-top: 0;
   margin-bottom: 5px;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .NotificationBody a {
@@ -57,12 +65,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: middle;
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 @media (hover: hover) {
   .NotificationBody > p a:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
@@ -79,17 +87,17 @@
 
 .Notification > footer {
   margin-top: -10px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 .Notification > footer a {
-  transition: color 0.2s ease;
+  transition: color var(--speed) ease;
 }
 
 @media (hover: hover) {
   .Notification > footer a:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
@@ -98,29 +106,29 @@
 .IconTab {
   display: inline-block;
   height: 30px;
-  font-size: 12px;
+  font-size: var(--text-12);
   line-height: 30px;
-  color: #aaa;
+  color: var(--color-gaa);
   text-align: center;
-  background-color: #e5e5e5;
+  background-color: var(--color-ge5);
   border: 0;
   transition: background-color var(--speed) ease, color var(--speed) ease;
 }
 
 .IconTab + .IconTab {
-  border-left: 1px solid #fff;
+  border-left: 1px solid var(--color-white);
 }
 
 .IconTab.isActive,
 .IconTab:active {
-  color: #fff;
-  background-color: #000;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }
 
 @media (hover: hover) {
   .IconTab:hover {
-    color: #fff;
-    background-color: #000;
+    color: var(--color-white);
+    background-color: var(--color-black);
   }
 }
 
@@ -139,8 +147,8 @@
   width: 360px;
   padding-bottom: 10px;
   overflow: hidden;
-  background-color: #fff;
-  border: 1px solid #aaa;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gaa);
   border-top: 0;
 }
 
@@ -191,6 +199,6 @@ body.isNotificationsScrolling {
 }
 
 .ZeroState {
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }

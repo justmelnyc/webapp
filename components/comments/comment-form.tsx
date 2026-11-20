@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useTransition, type FormEvent } from 'react'
+import { useEffect, useState, useTransition, type FormEvent } from 'react'
 import { createCommentFromBlocks } from '@/actions/comment-post-actions'
 import { fetchCommenterUsernames } from '@/actions/comment-actions'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { COMMENT_MAX_LENGTH } from '@/lib/schemas/comment'
 import { toast } from '@/stores/toast-store'
 import { cn } from '@/utils/cn'
@@ -13,6 +14,7 @@ import { CommentQuickEmoji } from './comment-quick-emoji'
 import { EmojiCompleter } from './emoji-completer'
 import type { CommentBlock } from './use-comment-blocks'
 import { useCommentEditor } from './use-comment-editor'
+import parts from '@/components/ui/editor-parts.module.css'
 import styles from './comment-editor.module.css'
 
 export interface ReplyRequest {
@@ -24,7 +26,7 @@ export interface ReplyRequest {
 interface CommentFormProps {
   postId: string
   onCreated: () => void
-  /** Called when the viewer cancels; the narrow layout closes the editor. */
+  /** Called once the viewer has confirmed "Cancel comment?"; the narrow layout closes the editor. */
   onCancel?: () => void
   reply?: ReplyRequest | null
   /** The original's `showReplyAll`: the post's owner, once it has comments, on wide viewports. */
@@ -43,6 +45,7 @@ export const CommentForm = ({
   showReplyAll = false,
 }: CommentFormProps) => {
   const [pending, startTransition] = useTransition()
+  const [isConfirmingCancel, setConfirmingCancel] = useState(false)
   const editor = useCommentEditor()
   const { blocks, setText, appendText, fields, completer, uploads } = editor
   const canSubmit = editor.isPostable && !pending
@@ -79,7 +82,9 @@ export const CommentForm = ({
     })
   }
 
+  // The original's `cancelConfirmed`: the editor is emptied; it only goes away where `onCancel` says so.
   const cancel = (): void => {
+    setConfirmingCancel(false)
     editor.clear()
     onCancel?.()
   }
@@ -89,6 +94,7 @@ export const CommentForm = ({
       className={cn(
         'editor isComment',
         editor.showQuickEmoji && 'withQuickEmoji',
+        parts.placeholder,
         styles.editor,
         editor.hasContent && 'hasContent',
         editor.hasDragOver && 'hasDragOver',
@@ -107,7 +113,7 @@ export const CommentForm = ({
         showReplyAll={showReplyAll}
         onFiles={uploads.addFiles}
         onReplyAll={replyAll}
-        onCancel={cancel}
+        onCancel={() => setConfirmingCancel(true)}
       />
       {editor.tooLong ? (
         <p
@@ -120,6 +126,9 @@ export const CommentForm = ({
         onPick={completer.complete}
         onClose={completer.hide}
       />
+      {isConfirmingCancel ? (
+        <ConfirmDialog title="Cancel comment?" onConfirm={cancel} onDismiss={() => setConfirmingCancel(false)} />
+      ) : null}
     </form>
   )
 }

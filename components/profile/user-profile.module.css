@@ -5,7 +5,7 @@
  */
 .hero {
   padding-top: 85px;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 :global(.isLoggedOut) .hero {
@@ -62,7 +62,7 @@
   padding-right: 10px;
   padding-left: 10px;
   margin: auto;
-  color: #000;
+  color: var(--color-black);
   text-align: center;
 }
 
@@ -93,9 +93,9 @@
   display: none;
   width: 40px;
   height: 40px;
-  color: #000;
-  background-color: #000;
-  border-radius: 20px;
+  color: var(--color-black);
+  background-color: var(--color-black);
+  border-radius: var(--radius-pill);
 }
 
 .share {
@@ -105,7 +105,7 @@
 
 .share :global(.ShareIcon) {
   margin-top: -6px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .shareSmall {
@@ -114,7 +114,7 @@
   right: 0;
   z-index: 2;
   display: block;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 .rolesHero {
@@ -123,7 +123,7 @@
 
 .rolesHero :global(.RolesIcon) {
   margin-top: -3px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .rolesHero :global(.RolesIcon) g {
@@ -131,7 +131,7 @@
 }
 
 .rolesHero :global(.RolesIcon) g path {
-  fill: #fff;
+  fill: var(--color-white);
   stroke-width: 0;
 }
 
@@ -159,7 +159,7 @@
     min-height: 360px;
     padding-right: 0;
     padding-left: 0;
-    color: #fff;
+    color: var(--color-white);
   }
 
   .userProfile :global(.UserCell) {

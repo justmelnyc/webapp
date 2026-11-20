@@ -62,7 +62,7 @@ const gqlUser = (u, viewerId) => ({
   externalLinksList: u.links || [],
   userStats: userStats(u),
   metaAttributes: { title: u.name, description: u.bio || '', robots: 'index', image: null },
-  categoryUsers: moderation.categoryUsers(u),
+  categoryUsers: moderation.categoryUsers(u, db.categoryRoles),
 })
 
 // v2 profile / follower-list shape: stats and settings flattened onto the user
@@ -108,7 +108,7 @@ const postRegions = (post) => {
     }
     const { url, w, h } = imageOf(region)
     const id = `${post.id}-a${i}`
-    assets.push({ id, attachment: media.responsive(url, w, h) })
+    assets.push({ id, attachment: require('./video').attachment(region, url, w, h) })
     return { kind: 'image', data: { url, alt: region.data.alt || '' }, linkUrl: region.linkUrl || null, links: { assets: id } }
   })
   const firstImage = content.find(r => r.kind === 'image' || r.kind === 'embed')

@@ -1,3 +1,4 @@
+import { StreamComments } from '@/components/comments/stream-comments'
 import { EditablePostBody } from '@/components/posts/editable-post-body'
 import { PostCard } from '@/components/posts/post-card'
 import { PostContent } from '@/components/posts/post-content'
@@ -25,10 +26,12 @@ const SubmissionPost = ({ submission, mode, signedIn, viewerId, eager, onAction 
         {actions && <AdminActions actions={actions} status={status} onAction={(action) => onAction(submission, action)} />}
         <PostCard.Body>
           <EditablePostBody postId={post.id}>
-            <PostContent post={post} mode={mode} eager={eager} />
+            {/* the original loads submissions over REST, so it has their content warning (see PostContent) */}
+            <PostContent post={post} mode={mode} eager={eager} showContentWarning />
           </EditablePostBody>
         </PostCard.Body>
         <PostCard.Footer post={post} signedIn={signedIn} viewerId={viewerId} showWatch={mode === 'list'} />
+        <StreamComments post={post} viewerId={viewerId} />
       </PostCard>
     </div>
   )

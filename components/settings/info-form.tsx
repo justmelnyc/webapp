@@ -2,7 +2,8 @@
 
 import { MarkerIcon } from '@/components/icons'
 import { FieldError } from '@/components/settings/field-status'
-import { linksToText, useInfoForm } from '@/components/settings/use-info-form'
+import { linksToText } from '@/components/settings/links-text'
+import { useInfoForm } from '@/components/settings/use-info-form'
 import { FormControl } from '@/components/ui/form-control'
 import type { InfoInput } from '@/lib/schemas/profile'
 

@@ -73,6 +73,13 @@
     padding-right: 5px;
   }
 
+  /* the pencil and the x sit closer together (a post's own tools in a list, and a comment's hover tools) */
+  .Posts.asList .PostTool.EditTool > button,
+  .Posts.asList .PostTool.DeleteTool > button {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
   .Posts.asList .ViewsTool.isPill {
     margin-right: 15px;
   }
@@ -92,5 +99,5 @@
 
 .PostTool.DeleteTool .Hint {
   left: -16px;
-  font-size: 14px;
+  font-size: var(--text-14);
 }

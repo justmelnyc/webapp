@@ -10,6 +10,9 @@ jest.mock('@/actions/moderation-actions', () => ({ flagPost: jest.fn(), flagUser
 jest.mock('@/actions/repost-actions', () => ({ createRepost: jest.fn(), loadRepostCategories: jest.fn() }))
 jest.mock('@/actions/post-edit-actions', () => ({ updatePost: jest.fn() }))
 jest.mock('@/actions/composer-actions', () => ({ createPost: jest.fn(), deletePost: jest.fn() }))
+// streams draw a post's comments under it (StreamComments): keep its server actions out of the test
+jest.mock('@/actions/comment-actions', () => ({}))
+jest.mock('@/actions/comment-post-actions', () => ({ createCommentFromBlocks: jest.fn() }))
 jest.mock('@/components/auth/registration-dialog', () => ({ useRegistrationDialog: () => ({ open: jest.fn() }) }))
 jest.mock('next/navigation', () => ({ useRouter: () => ({ push: jest.fn() }), usePathname: () => '/' }))
 

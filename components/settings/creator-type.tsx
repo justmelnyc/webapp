@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { saveCreatorTypes } from '@/actions/profile-actions'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
+import { CategoryOptionButton, OptionButton } from '@/components/ui/option-button'
 import { TreeSection } from '@/components/settings/tree-section'
 import type { CreatorTypes } from '@/services/settings'
 import { toast } from '@/stores/toast-store'
@@ -43,12 +44,12 @@ export const CreatorType = ({ categories, selectedIds }: CreatorTypes) => {
         <div className={cn('inSettings', styles.creatorBox)}>
           <h2 className={styles.creatorHeading}>I am here as:</h2>
           <div>
-            <button type="button" className={cn(styles.creatorButton, artist && styles.active)} disabled={artist} onClick={() => setArtist(true)}>
+            <OptionButton active={artist} disabled={artist} onClick={() => setArtist(true)}>
               An Artist
-            </button>
-            <button type="button" className={cn(styles.creatorButton, !artist && styles.active)} disabled={!artist} onClick={pickFan}>
+            </OptionButton>
+            <OptionButton active={!artist} disabled={!artist} onClick={pickFan}>
               A Fan
-            </button>
+            </OptionButton>
           </div>
           {artist ? (
             <div>
@@ -57,15 +58,9 @@ export const CreatorType = ({ categories, selectedIds }: CreatorTypes) => {
                 {categories.map((category) => {
                   const active = ids.includes(category.id)
                   return (
-                    <button
-                      key={category.id}
-                      type="button"
-                      aria-pressed={active}
-                      className={cn(styles.creatorButton, styles.categoryButton, active && styles.active)}
-                      onClick={() => pickCategory(category.id)}
-                    >
+                    <CategoryOptionButton key={category.id} active={active} onClick={() => pickCategory(category.id)}>
                       {category.name}
-                    </button>
+                    </CategoryOptionButton>
                   )
                 })}
               </div>

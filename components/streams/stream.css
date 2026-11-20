@@ -3,7 +3,7 @@
  * StreamContainer.css + Paginator.css and the Column rules of posts/Post.css.
  * Global class names on purpose: icons-posts.css and friends key off `.Post`, `.PostTool`...
  * `.no-touch :hover` becomes `@media (hover: hover)`. Breakpoints: 40em / 60em / 85em / 107.5em /
- * 130em / 152.5em. The category-drawer variants of the original are not ported (no drawer).
+ * 130em / 152.5em. The category-drawer variants live in discover/discover-main.module.css.
  */
 
 @keyframes paginatorLoading {
@@ -32,6 +32,11 @@
 
 .StreamContainer.inAllCategories {
   padding-top: 0;
+}
+
+/* a profile keeps a screen's height under its hero, so its content can always be scrolled into view */
+.MainView > .UserDetails {
+  min-height: 100vh;
 }
 
 @media (min-width: 40em) {
@@ -65,60 +70,16 @@
   }
 }
 
-/* Columns (posts as grid) */
-
-.Posts.asGrid {
-  margin-left: -20px;
-}
+/* Posts (the column grid itself is columns.css) */
 
 .Post {
   position: relative;
   margin-bottom: 20px;
 }
 
-.Column {
-  display: inline-block;
-  width: calc(50% - 20px);
-  margin-left: 20px;
-  vertical-align: top;
-}
-
-@media (min-width: 60em) {
-  .Column {
-    width: calc(33.33333% - 20px);
-  }
-}
-
 @media (min-width: 85em) {
-  .Posts.asGrid {
-    margin-left: -40px;
-  }
-
   .Post {
     margin-bottom: 40px;
-  }
-
-  .Column {
-    width: calc(25% - 40px);
-    margin-left: 40px;
-  }
-}
-
-@media (min-width: 107.5em) {
-  .Column {
-    width: calc(20% - 40px);
-  }
-}
-
-@media (min-width: 130em) {
-  .Column {
-    width: calc(16.66666% - 40px);
-  }
-}
-
-@media (min-width: 152.5em) {
-  .Column {
-    width: calc(14.28571% - 40px);
   }
 }
 
@@ -158,8 +119,8 @@
   left: 0;
   height: 0;
   overflow: hidden;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
   text-align: center;
   background-color: transparent;
   transition: transform var(--speed) var(--ease-ello), height var(--speed) var(--ease-ello), background-color var(--speed) var(--ease-ello);
@@ -174,7 +135,7 @@
 .Paginator.isBusy {
   height: 40px;
   line-height: 40px;
-  background: linear-gradient(225deg, #f00, #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, #f00);
+  background: linear-gradient(225deg, var(--color-red), #d200ff, #0063ff, #00ffc1, #0bff66, #16ff00, #f0ff00, var(--color-red));
   background-size: 1600% 1600%;
   transform: translate3d(0, 0, 0);
   animation: paginatorLoading 10s ease infinite;
@@ -195,10 +156,10 @@
   margin-top: 30px;
   margin-bottom: 50px;
   line-height: 40px;
-  color: #fff;
+  color: var(--color-white);
   vertical-align: middle;
-  background-color: #aaa;
-  border-radius: 5px;
+  background-color: var(--color-gaa);
+  border-radius: var(--radius-box);
   transform: none;
 }
 
@@ -231,6 +192,6 @@
   .Editorial .Paginator:hover,
   .UserDetails .Paginator:hover,
   .Search .Paginator:hover {
-    background-color: #000;
+    background-color: var(--color-black);
   }
 }

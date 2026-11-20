@@ -18,7 +18,7 @@
 .suggestionButton {
   margin-top: 5px;
   margin-right: 10px;
-  font-size: 14px;
+  font-size: var(--text-14);
   border-bottom: 1px solid currentcolor;
   transition: color var(--speed);
 }
@@ -29,6 +29,6 @@
 
 @media (hover: hover) {
   .suggestionButton:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }

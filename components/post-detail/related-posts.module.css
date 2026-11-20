@@ -6,54 +6,37 @@
   padding: 10px;
 }
 
-.related :global(.Posts) {
-  margin-left: -20px;
-}
-
 .relatedTitle {
   margin: 20px;
-  font-size: 18px;
-  color: #aaa;
+  font-size: var(--text-18);
+  color: var(--color-gaa);
 }
 
-.column {
-  display: inline-block;
-  width: calc(50% - 20px);
-  margin-left: 20px;
-  vertical-align: top;
+/*
+ * The cards stand in the stream's column grid (`.Posts.asGrid` / `.Column`, components/streams/
+ * columns.css); a post page has one column fewer than a stream from 60em (relatedPostsStyle), which
+ * is all the `.column` rules below say.
+ */
+
+/* PostBody.css: `.PostDetails .ImageRegion` */
+.related :global(.ImageRegion) {
+  width: 100%;
 }
 
-.column:nth-of-type(n + 3) {
-  display: none;
+/*
+ * PostTools.css below 40em: `.PostDetail .Posts.asList .PostTools .ShyTool` shows the flag on a
+ * post page, related cards included (a grid hides it again from 28.125em up).
+ */
+@media (max-width: 39.9375em) {
+  .related :global(.PostTools .ShyTool) {
+    pointer-events: auto;
+    opacity: 1;
+  }
 }
 
 @media (min-width: 40em) {
   .related {
     padding: 20px;
-  }
-}
-
-@media (min-width: 60em) {
-  .column:nth-of-type(3) {
-    display: inline-block;
-  }
-}
-
-@media (min-width: 107.5em) {
-  .column:nth-of-type(4) {
-    display: inline-block;
-  }
-}
-
-@media (min-width: 130em) {
-  .column:nth-of-type(5) {
-    display: inline-block;
-  }
-}
-
-@media (min-width: 152.5em) {
-  .column:nth-of-type(6) {
-    display: inline-block;
   }
 }
 
@@ -63,41 +46,36 @@
     padding-left: 40px;
   }
 
-  .related :global(.Posts) {
-    margin-left: -40px;
-  }
-
   .relatedTitle {
     margin-left: 40px;
   }
 
-  .column {
+  .related .column {
     width: calc(33.33333% - 40px);
-    margin-left: 40px;
   }
 }
 
 @media (min-width: 107.5em) {
-  .column {
+  .related .column {
     width: calc(25% - 40px);
   }
 }
 
 @media (min-width: 130em) {
-  .column {
+  .related .column {
     width: calc(20% - 40px);
   }
 }
 
 @media (min-width: 152.5em) {
-  .column {
+  .related .column {
     width: calc(16.66666% - 40px);
   }
 }
 
 /* The same widths below 85em (relatedPostsStyle). */
 @media (min-width: 60em) and (max-width: 84.9375em) {
-  .column {
+  .related .column {
     width: calc(50% - 20px);
   }
 }

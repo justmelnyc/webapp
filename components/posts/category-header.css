@@ -8,8 +8,8 @@
 .CategoryHeader {
   position: relative;
   height: 60px;
-  font-size: 14px;
-  color: #aaa;
+  font-size: var(--text-14);
+  color: var(--color-gaa);
 }
 
 .CategoryHeaderAuthor,
@@ -30,13 +30,6 @@
 .CategoryHeader .RelationshipContainer {
   margin-top: -2px;
   margin-left: 10px;
-}
-
-.CategoryHeader .DraggableUsername {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .CategoryHeader {

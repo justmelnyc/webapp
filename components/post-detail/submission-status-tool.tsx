@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArtistInviteSubmissionApprovedIcon, ArtistInviteSubmissionSelectedIcon } from '@/components/icons'
 import type { PostSubmission } from '@/types/post'
-import { Hint } from './hint'
+import { Hint } from '@/components/posts/hint'
 import styles from './submission-status-tool.module.css'
 
 const BADGES = {

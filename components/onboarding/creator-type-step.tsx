@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react'
 import { completeCreatorTypeStep } from '@/actions/onboarding-actions'
 import { saveCreatorTypes } from '@/actions/profile-actions'
 import { ONBOARDING_ROUTES } from '@/constants/onboarding'
+import { CategoryOptionButton, OptionButton } from '@/components/ui/option-button'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { toast } from '@/stores/toast-store'
 import type { CreatorTypes } from '@/services/settings'
@@ -61,9 +62,8 @@ export const CreatorTypeStep = ({ categories, selectedIds }: CreatorTypes) => {
       <div className={cn('inOnboarding', styles.box)}>
         <h2 className={styles.heading}>I am here as:</h2>
         <div>
-          <button
-            type="button"
-            className={cn(styles.button, artist && styles.active)}
+          <OptionButton
+            active={artist}
             disabled={artist}
             onClick={() => {
               setArtist(true)
@@ -71,10 +71,10 @@ export const CreatorTypeStep = ({ categories, selectedIds }: CreatorTypes) => {
             }}
           >
             An Artist
-          </button>
-          <button type="button" className={cn(styles.button, fan && styles.active)} disabled={fan} onClick={pickFan}>
+          </OptionButton>
+          <OptionButton active={fan} disabled={fan} onClick={pickFan}>
             A Fan
-          </button>
+          </OptionButton>
         </div>
         {artist ? (
           <div>
@@ -83,15 +83,9 @@ export const CreatorTypeStep = ({ categories, selectedIds }: CreatorTypes) => {
               {categories.map((category) => {
                 const active = ids.includes(category.id)
                 return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    aria-pressed={active}
-                    className={cn(styles.button, styles.category, active && styles.active)}
-                    onClick={() => pickCategory(category.id)}
-                  >
+                  <CategoryOptionButton key={category.id} active={active} onClick={() => pickCategory(category.id)}>
                     {category.name}
-                  </button>
+                  </CategoryOptionButton>
                 )
               })}
             </div>

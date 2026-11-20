@@ -1,0 +1,68 @@
+/*
+ * The parts every editor shares (the omnibar, the inline post editor, the comment editor), ported
+ * from the original's Editor.css, ImageBlock.js and RegionTools.js. An editor's own module only adds
+ * what differs (how far its tools sit from the right edge, where its placeholder starts), with the
+ * class doubled so it wins over these rules whatever order the two sheets load in.
+ */
+
+/* Editor.css `.editor::after`: the placeholder, read from `data-placeholder`. Hide it from the editor's own sheet. */
+.placeholder::after {
+  position: absolute;
+  top: 38px;
+  left: 31px;
+  max-width: calc(100% - 60px);
+  color: var(--color-g99);
+  pointer-events: none;
+  content: attr(data-placeholder);
+}
+
+/* ImageBlock.js: the dimmed cover over a picture while it uploads (or after it failed). */
+.busy {
+  position: absolute;
+  top: 0;
+  right: -40px;
+  bottom: 0;
+  left: -40px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.busyArrow {
+  position: relative;
+  padding: 4px;
+  color: var(--color-gaa);
+  background-color: var(--color-white);
+  border-radius: 50%;
+  transform: rotate(-90deg);
+}
+
+/* RegionTools.js: remove and drag, in a block's top right corner. */
+.tools {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 2;
+  color: var(--color-gaa);
+}
+
+/* The drag handle only shows where there is a pointer to drag with; an editor hides it while it has one block. */
+.drag {
+  display: none;
+  cursor: move;
+  transform: rotate(90deg);
+  touch-action: none;
+}
+
+@media (hover: hover) {
+  .drag {
+    display: inline-block;
+  }
+
+  .remove:hover,
+  .drag:hover {
+    color: var(--color-black);
+  }
+}

@@ -59,7 +59,7 @@ describe('PostBody', () => {
     const { container } = render(
       <PostBody regions={regions(textRegion('<p>first</p>'), imageRegion('x', 'https://o.test/a.jpg'), textRegion('<p>last</p>'))} />,
     )
-    const classes = Array.from(container.querySelector('.PostBody > div')?.children ?? [], (el) => el.className)
+    const classes = Array.from(container.querySelector('.PostBody > div')?.children ?? [], (el) => el.classList[0])
     expect(classes).toEqual(['TextRegion', 'ImageRegion', 'TextRegion'])
   })
 })
@@ -67,9 +67,16 @@ describe('PostBody', () => {
 describe('PostBody in a grid', () => {
   it('links images and shows the lightbox trigger', () => {
     const { container } = render(
-      <PostBody regions={regions(imageRegion('x', 'https://o.test/a.jpg'))} detailPath="/ada/post/t1" />,
+      <PostBody postId="p1" regions={regions(imageRegion('x', 'https://o.test/a.jpg'))} detailPath="/ada/post/t1" />,
     )
     expect(container.querySelectorAll('.ImageRegion a[href="/ada/post/t1"]')).toHaveLength(2)
-    expect(container.querySelector('.lightbox-trigger')).toBeInTheDocument()
+    expect(container.querySelector('a.lightbox-trigger')).toBeInTheDocument()
+    expect(container.querySelector('img')).toHaveAttribute('id', 'asset_x_p1')
+  })
+
+  it('gives a static image the lightbox trigger button and the id the lightbox scrolls to', () => {
+    const { container } = render(<PostBody postId="p1" regions={regions(imageRegion('x', 'https://o.test/a.jpg'))} />)
+    expect(container.querySelector('.StreamImage > .ImgHolder > button.lightbox-trigger')).toBeInTheDocument()
+    expect(container.querySelector('img')).toHaveAttribute('id', 'asset_x_p1')
   })
 })

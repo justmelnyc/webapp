@@ -6,7 +6,7 @@ import { deletePost } from '@/actions/composer-actions'
 import { PencilIcon, XBoxIcon } from '@/components/icons'
 import { toast } from '@/stores/toast-store'
 import { useEditPost } from '@/components/posts/use-edit-post'
-import { Hint } from './hint'
+import { Hint } from '@/components/posts/hint'
 
 /** The header's DeleteTool, shown on the viewer's own posts. */
 export const OwnerTools = ({ postId }: { postId: string }) => {

@@ -1,0 +1,55 @@
+/*
+ * The column grid of the original (the Column rules of posts/Post.css and the "User Invitee" grid of
+ * users/UserRenderables.css, which are the same numbers): two columns, three from 60em, four from
+ * 85em and one more at each wider breakpoint, 20px apart (40px from 85em). The container pulls the
+ * first gutter back. Streams (`.Posts.asGrid`), the related posts under a post and the invitations
+ * grid all use it; a place whose column count differs overrides `width` from its own module.
+ */
+
+.Posts.asGrid,
+.Columns {
+  margin-left: -20px;
+}
+
+.Column {
+  display: inline-block;
+  width: calc(50% - 20px);
+  margin-left: 20px;
+  vertical-align: top;
+}
+
+@media (min-width: 60em) {
+  .Column {
+    width: calc(33.33333% - 20px);
+  }
+}
+
+@media (min-width: 85em) {
+  .Posts.asGrid,
+  .Columns {
+    margin-left: -40px;
+  }
+
+  .Column {
+    width: calc(25% - 40px);
+    margin-left: 40px;
+  }
+}
+
+@media (min-width: 107.5em) {
+  .Column {
+    width: calc(20% - 40px);
+  }
+}
+
+@media (min-width: 130em) {
+  .Column {
+    width: calc(16.66666% - 40px);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .Column {
+    width: calc(14.28571% - 40px);
+  }
+}

@@ -29,7 +29,7 @@ export const CategoryHeader = ({ post, viewerId }: CategoryHeaderProps) => {
           <span className="CategoryHeaderAuthor">
             <Link className="PostHeaderLink" href={`/${author.username}`}>
               <Avatar src={avatarUrl(author.avatar, 'regular')} name={author.username} />
-              <span className="DraggableUsername">@{author.username}</span>
+              <span className="DraggableUsername max-w-full truncate">@{author.username}</span>
             </Link>
           </span>
           <PostFollowButton

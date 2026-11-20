@@ -18,6 +18,17 @@ describe('block / mute', () => {
     expect(db.blocks).toHaveLength(1)
   })
 
+  it('counts the blocked and the muted users for the profile', () => {
+    const db = fresh()
+    expect(m.blockCounts(db, '1')).toEqual({ blockedCount: 0, mutedCount: 0 })
+    m.setBlock(db, '1', '2', 'block')
+    m.setBlock(db, '1', '3', 'mute')
+    m.setBlock(db, '1', '4', 'mute')
+    expect(m.blockCounts(db, '1')).toEqual({ blockedCount: 1, mutedCount: 2 })
+    expect(m.blockCounts(db, '2')).toEqual({ blockedCount: 0, mutedCount: 0 })
+    expect(m.blockCounts(db, null)).toEqual({ blockedCount: 0, mutedCount: 0 })
+  })
+
   it('blocking removes follows both ways; inactive clears the mark', () => {
     const db = fresh()
     db.follows.push({ followerId: '2', followeeId: '1' })
@@ -56,7 +67,9 @@ describe('migration', () => {
     expect(by('mara')).toMatchObject({ hireable: true, collaborateable: true })
     expect(by('grace')).toMatchObject({ hireable: false, collaborateable: true })
     expect(by('ada').hireable).toBeUndefined()
-    expect(m.categoryUsers(by('mara')).map(c => c.role)).toEqual(['MODERATOR', 'FEATURED'])
+    expect(m.categoryUsers(by('mara')).map(c => c.role)).toEqual(['FEATURED'])
+    const roles = [{ categoryId: '2', userId: by('mara').id, role: 'moderator' }]
+    expect(m.categoryUsers(by('mara'), roles).map(c => [c.id, c.role])).toEqual([[`2-${by('mara').id}-moderator`, 'MODERATOR'], [`4-${by('mara').id}-featured`, 'FEATURED']])
     expect(m.categoryUsers(by('jules'))[0].category).toEqual({ id: '3', name: 'Design', slug: 'design' })
     expect(by('yuki').bio.length).toBeGreaterThan(150)
     const nsfw = db.posts.filter(p => p.contentWarning)

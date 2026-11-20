@@ -1,0 +1,13 @@
+/* While a route's loading view is up it stands in for the page: the page itself stays mounted but unseen */
+.pending + :global(.MainView) {
+  display: none;
+}
+
+/* A stream that is not a direct child of the main view keeps StreamContainer.css's base loader: 120px, mark at 20px */
+.nested:global(.StreamContainer.isBusy) {
+  min-height: 120px;
+}
+
+.nested :global(.StreamBusyIndicator) {
+  top: 20px;
+}

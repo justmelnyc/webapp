@@ -8,12 +8,12 @@
   margin-right: 20px;
   margin-bottom: 40px;
   margin-left: 20px;
-  font-family: AtlasGroteskRegular, AtlasGrotesk-Regular, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 14px;
+  font-family: var(--font-sans);
+  font-size: var(--text-14);
   font-style: normal;
   font-weight: 400;
-  background-color: #f2f2f2;
-  transition: background-color 0.2s ease;
+  background-color: var(--color-gf2);
+  transition: background-color var(--speed) ease;
 }
 
 @media (max-width: 84.9375em) {
@@ -36,7 +36,7 @@
 
 @media (hover: hover) {
   .grid:hover {
-    background-color: #e5e5e5;
+    background-color: var(--color-ge5);
   }
 
   .grid:hover > .image > :global(.BackgroundImage)::before {
@@ -116,8 +116,8 @@
 
 .title {
   display: block;
-  font-family: AtlasGroteskBlack, AtlasGrotesk-Black, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-black);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
 }
@@ -147,14 +147,14 @@
 @media (min-width: 60em) {
   :global(.ArtistInvitesDetail) .title {
     margin-bottom: 0;
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 
 .inviteType {
   margin-top: 0;
   margin-bottom: 0;
-  color: #aaa;
+  color: var(--color-gaa);
 }
 
 @media (min-width: 60em) {
@@ -174,8 +174,8 @@
   float: none;
   clear: both;
   width: 100%;
-  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-light);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
 }
@@ -183,7 +183,7 @@
 @media (min-width: 60em) {
   :global(.ArtistInvitesDetail) .inviteType {
     max-width: 100%;
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 
@@ -193,7 +193,7 @@
   margin-top: 0;
   margin-bottom: 0;
   overflow: hidden;
-  color: #aaa;
+  color: var(--color-gaa);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -210,15 +210,15 @@
   float: none;
   clear: both;
   width: 100%;
-  font-family: AtlasGroteskLight, AtlasGrotesk-Light, 'Helvetica Neue', HelveticaNeue, Helvetica, sans-serif;
-  font-size: 24px;
+  font-family: var(--font-light);
+  font-size: var(--text-24);
   font-style: normal;
   font-weight: 400;
 }
 
 @media (min-width: 60em) {
   :global(.ArtistInvitesDetail) .dateRange {
-    font-size: 38px;
+    font-size: var(--text-38);
   }
 }
 

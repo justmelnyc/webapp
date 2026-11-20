@@ -1,23 +1,37 @@
 'use client'
 
-import Link from 'next/link'
-import { useEffect, type MouseEvent } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
+import { assignProfileRole, removeProfileRole } from '@/actions/category-actions'
 import { XIconLG } from '@/components/icons'
+import { NewRoleMark, UserRoleItem, UserRoleRemove } from '@/components/profile/user-role-item'
+import { UserRolesForm, type NewProfileRole } from '@/components/profile/user-roles-form'
 import { useProfileRolesStore } from '@/stores/profile-roles-store'
+import { toast } from '@/stores/toast-store'
+import type { AdministeredCategory } from '@/types/category'
 import type { UserRole } from '@/types/user'
 import { cn } from '@/utils/cn'
+import { canRemoveRole, mergeRoles } from '@/utils/profile-roles'
 import styles from './user-roles.module.css'
 
-const ROLE_NAMES: Record<UserRole['role'], string> = {
-  FEATURED: 'Featured User',
-  CURATOR: 'Curator',
-  MODERATOR: 'Moderator',
+interface UserRolesPanelProps {
+  userId: string
+  username: string
+  roles: UserRole[]
+  /** The categories the viewer administers (`searchCategories(administered: true)`): with any, they get the form. */
+  administeredCategories: AdministeredCategory[]
+  isStaff: boolean
 }
 
-/** The original's `UserDetailRoles`: a "Community Roles" panel listing the user's roles in categories. */
-export const UserRolesPanel = ({ roles }: { roles: UserRole[] }) => {
+/**
+ * The original's `UserDetailRolesContainer` + `UserDetailRoles`: a "Community Roles" panel listing the user's
+ * roles in categories. People who administer categories can assign a role there and remove the ones they may.
+ */
+export const UserRolesPanel = ({ userId, username, roles: initialRoles, administeredCategories, isStaff }: UserRolesPanelProps) => {
   const isOpen = useProfileRolesStore((state) => state.isOpen)
   const setOpen = useProfileRolesStore((state) => state.setOpen)
+  // Like the original's store, the list lives here once loaded: a new role goes last, a removed one disappears.
+  const [roles, setRoles] = useState(initialRoles)
+  const [newCategoryId, setNewCategoryId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -33,29 +47,54 @@ export const UserRolesPanel = ({ roles }: { roles: UserRole[] }) => {
 
   if (!isOpen) return null
 
+  const close = (): void => {
+    setOpen(false)
+    setNewCategoryId(null)
+  }
+
   const onMaskClick = (event: MouseEvent<HTMLDivElement>): void => {
-    if (event.target === event.currentTarget) setOpen(false)
+    if (event.target === event.currentTarget) close()
+  }
+
+  const assign = async (role: NewProfileRole): Promise<boolean> => {
+    const result = await assignProfileRole({ ...role, userId, username })
+    if (!result.ok) {
+      toast.error(result.error)
+      return false
+    }
+    setRoles((current) => mergeRoles(current, result.data))
+    setNewCategoryId(role.categoryId)
+    return true
+  }
+
+  const remove = async (role: UserRole): Promise<void> => {
+    const result = await removeProfileRole(role.id, username)
+    if (!result.ok) return toast.error(result.error)
+    setRoles((current) => current.filter((entry) => entry.id !== role.id))
   }
 
   return (
     <div className={styles.modal}>
       <div className={cn('mask', styles.mask)} role="presentation" onClick={onMaskClick}>
         <div className={cn('content', styles.content)}>
-          <button type="button" aria-label="Close" className={cn('CloseModal', styles.close)} onClick={() => setOpen(false)}>
+          <button type="button" aria-label="Close" className={cn('CloseModal', styles.close)} onClick={close}>
             <XIconLG />
           </button>
-          <div className={styles.assign}>
+          <div className={cn('assign-roles', styles.assign)}>
             <h1>Community Roles</h1>
+            {administeredCategories.length > 0 ? (
+              <UserRolesForm administeredCategories={administeredCategories} isStaff={isStaff} onSubmit={assign} />
+            ) : null}
           </div>
-          <ul className={styles.list}>
+          <ul className={cn('user-roles', styles.list)}>
             {roles.map((role) => (
-              <li key={role.id} className={styles.role}>
-                <span className="meta">
-                  {ROLE_NAMES[role.role]} in&nbsp;
-                  <Link href={`/discover/${role.category.slug}`}>{role.category.name}</Link>
-                </span>
-                <span className="controls" />
-              </li>
+              <UserRoleItem key={role.id} role={role}>
+                {/* like the original, every role of the category just assigned is marked, not only the new one */}
+                {newCategoryId === role.category.id ? <NewRoleMark /> : null}
+                {canRemoveRole(role, administeredCategories, isStaff) ? (
+                  <UserRoleRemove role={role} username={username} onRemove={remove} />
+                ) : null}
+              </UserRoleItem>
             ))}
           </ul>
         </div>

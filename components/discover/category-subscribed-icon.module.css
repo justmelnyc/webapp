@@ -1,0 +1,32 @@
+/* categoryCheckStyle from CategoryRenderables.js */
+.check {
+  position: absolute;
+  display: inline-block;
+  width: 40px;
+  margin-top: -6px;
+  margin-left: -44px;
+  transform: scale(1.6);
+}
+
+.check :global(.svg-stroke-bevel),
+.check circle {
+  stroke: var(--color-green);
+}
+
+@media (max-width: 39.9375em) {
+  .check {
+    width: 28px;
+    margin-top: -2px;
+    margin-left: -28px;
+    transform: none;
+  }
+}
+
+@media (max-width: 26.25em) {
+  .check {
+    width: 26px;
+    margin-top: -2px;
+    margin-left: -25px;
+    transform: scale(0.86);
+  }
+}

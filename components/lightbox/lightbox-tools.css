@@ -1,0 +1,161 @@
+/*
+ * The post tools inside the lightbox: `postLightBoxContainerStyle` (LightBoxRenderables.js) and the
+ * `.isLightBox` / `.with-lightbox` rules of legacy PostTools.css. Their icon rules are in
+ * components/icons/icons-posts.css.
+ *
+ * On a post page the original draws the lightbox inside `.Posts.asList`, where the list's own tool
+ * rules still reach it (the overlay carries those classes there, see lightbox.tsx); in a stream it
+ * sits outside the list. Hence the `.Posts.asList` twins below; lightbox-tools-post.css has the
+ * rules that reach it from the post page itself.
+ */
+
+.LightBoxControls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  display: block;
+  width: 100%;
+}
+
+.LightBoxControls .PostTools.with-lightbox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 475px;
+  padding: 30px 10px 10px;
+  margin: 0 auto;
+}
+
+.PostTool.isLightBox {
+  font-size: var(--text-16);
+}
+
+.PostTool.isLightBox .SVGIcon,
+.PostTool.isLightBox .CurateIcon.SVGBox {
+  margin-top: -2px;
+  transform: scale(1.4);
+}
+
+.PostTool.isLightBox .SVGIcon g,
+.PostTool.isLightBox .CurateIcon.SVGBox path {
+  stroke-width: 1;
+}
+
+.PostTool.isLightBox button:hover .CurateIcon.SVGBox path {
+  fill: var(--color-white);
+  transition: fill var(--speed) var(--ease-ello);
+  transition-delay: 200ms;
+}
+
+.PostTool.isLightBox button.featured:hover .CurateIcon.SVGBox path {
+  fill: var(--color-dark-green);
+}
+
+.PostTool.isLightBox .CurateIcon.SVGBox {
+  padding-top: 5px;
+  transform: scale(1.1);
+}
+
+.PostTool.isLightBox .Hint {
+  top: calc(-100% - 10px);
+}
+
+.PostTool.isLightBox > a,
+.PostTool.isLightBox > button,
+.Posts.asList .PostTool.isLightBox > a,
+.Posts.asList .PostTool.isLightBox > button {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin: 0;
+}
+
+.PostTool.isLightBox > a.hasPostToolDrawer,
+.PostTool.isLightBox > button.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > a.hasPostToolDrawer,
+.Posts.asList .PostTool.isLightBox > button.hasPostToolDrawer {
+  padding-right: 15px;
+}
+
+/* in a stream the logged-out Share pill keeps its own padding (PostTools.css declares it later) */
+.PostTool.isLightBox.ShareTool.isPill > button {
+  padding-right: 11px;
+  padding-left: 11px;
+}
+
+.Posts.asList .PostTool.isLightBox.ShareTool.isPill > button {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+@media (hover: hover) {
+  .PostTool.isLightBox a:hover,
+  .PostTool.isLightBox button:hover {
+    color: var(--color-white);
+  }
+}
+
+.CommentTool.isLightBox.PostTool button.isNotZero .PostToolValue {
+  padding-left: 6px;
+}
+
+.CommentTool.isLightBox .Hint {
+  left: -24px;
+}
+
+.PostTool.isLightBox.ViewsTool {
+  margin-top: 2px;
+}
+
+.PostTool.isLightBox.ViewsTool .SVGIcon {
+  margin-top: -2px;
+  margin-right: 8px;
+}
+
+.PostTool.isLightBox .PostToolDrawerButton {
+  margin-left: -5px;
+}
+
+.LoveTool.isLightBox .Hint {
+  left: -6px;
+}
+
+.ViewsTool.isLightBox .Hint {
+  left: 8px;
+}
+
+.PostTools.with-lightbox .ViewsTool {
+  position: absolute;
+  top: 28px;
+  right: 10px;
+}
+
+.PostTools.with-lightbox .ShareTool,
+.PostTools.with-lightbox .FeatureCategoryPostTool {
+  position: relative;
+  top: auto;
+  right: auto;
+  display: inline-block;
+}
+
+/* `.Posts.asList .ShareTool` comes later in PostTools.css and wins on a post page */
+.Posts.asList .PostTools.with-lightbox .ShareTool {
+  position: static;
+}
+
+.PostTool.isLightBox.ShareTool .SVGIcon {
+  margin-top: -5px;
+}
+
+.ShareTool.isLightBox .Hint {
+  left: -10px;
+}
+
+.PostTool.isLightBox.RepostTool .SVGIcon {
+  margin-top: -4px;
+}
+
+.RepostTool.isLightBox .Hint {
+  left: -12px;
+}

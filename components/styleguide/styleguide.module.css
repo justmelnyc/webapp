@@ -1,0 +1,238 @@
+/*
+ * The living style guide (an addition: the original's /styleguide is only the header above it).
+ * Styled with the tokens and nothing else; the page gutters are the original's wrapperPaddingX.
+ */
+.guide {
+  padding: 0 10px 80px;
+  font-size: var(--text-14);
+  color: var(--color-black);
+}
+
+@media (min-width: 40em) {
+  .guide {
+    padding: 0 20px 80px;
+  }
+}
+
+@media (min-width: 85em) {
+  .guide {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+
+.contents {
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  color: var(--color-gaa);
+}
+
+.contents a {
+  margin-right: 20px;
+  line-height: var(--control-small);
+  transition: color var(--speed) ease;
+}
+
+@media (hover: hover) {
+  .contents a:hover {
+    color: var(--color-black);
+  }
+}
+
+.section {
+  padding: 40px 0 20px;
+  border-top: 1px solid var(--color-black);
+}
+
+.sectionTitle {
+  margin-bottom: 20px;
+  font-size: var(--text-24);
+  color: var(--color-gaa);
+}
+
+.intro {
+  max-width: 640px;
+  margin-bottom: 30px;
+  line-height: 1.5;
+  color: var(--color-g66);
+}
+
+.intro code,
+.token,
+.value {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+}
+
+.subTitle {
+  margin: 40px 0 20px;
+  font-size: var(--text-18);
+}
+
+/* A token's name and value sit on the page, without the grey box inline code gets. */
+.token,
+.value {
+  display: block;
+  padding: 0;
+  overflow-wrap: anywhere;
+  background-color: transparent;
+}
+
+.token {
+  color: var(--color-black);
+}
+
+.value {
+  color: var(--color-gaa);
+}
+
+.note {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--color-gaa);
+}
+
+/* ---- Colours ---- */
+
+.swatches {
+  display: grid;
+  margin: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 30px 10px;
+}
+
+.chip {
+  height: 60px;
+  margin-bottom: 10px;
+  border: 1px solid var(--color-ge5);
+  border-radius: var(--radius-box);
+}
+
+/* A checkerboard of the two lightest greys, so transparent and the modal scrim read as see-through. */
+.chipClear {
+  background-image:
+    linear-gradient(45deg, var(--color-ge5) 25%, transparent 25%, transparent 75%, var(--color-ge5) 75%),
+    linear-gradient(45deg, var(--color-ge5) 25%, transparent 25%, transparent 75%, var(--color-ge5) 75%);
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
+}
+
+/* ---- Rows: a specimen on the left, its token on the right ---- */
+
+.rows {
+  border-top: 1px solid var(--color-gf2);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-gf2);
+}
+
+.rowSpecimen {
+  flex: 0 1 480px;
+  min-width: 0;
+  padding-right: 20px;
+  overflow-wrap: anywhere;
+}
+
+.rowMeta {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+@media (max-width: 39.9375em) {
+  .rowSpecimen {
+    flex-basis: 100%;
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+
+  .rowMeta {
+    flex-basis: 100%;
+  }
+}
+
+.sample {
+  line-height: 1.2;
+}
+
+/* ---- Sizes ---- */
+
+.bar {
+  width: 100%;
+  max-width: 280px;
+  background-color: var(--color-black);
+}
+
+.step {
+  height: var(--control-small);
+  background-color: var(--color-black);
+}
+
+.radius {
+  width: 120px;
+  max-width: 100%;
+  border: 1px solid var(--color-black);
+}
+
+.container {
+  height: 10px;
+  max-width: 100%;
+  background-color: var(--color-black);
+}
+
+/* ---- Breakpoints: the dot is green while the viewport is at or above the row's width ---- */
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  background-color: var(--color-ge5);
+  border-radius: 50%;
+}
+
+.breakpointName {
+  font-size: var(--text-18);
+}
+
+@media (min-width: 40em) {
+  .bp2 .dot {
+    background-color: var(--color-green);
+  }
+}
+
+@media (min-width: 60em) {
+  .bp3 .dot {
+    background-color: var(--color-green);
+  }
+}
+
+@media (min-width: 85em) {
+  .bp4 .dot {
+    background-color: var(--color-green);
+  }
+}
+
+@media (min-width: 107.5em) {
+  .bp5 .dot {
+    background-color: var(--color-green);
+  }
+}
+
+@media (min-width: 130em) {
+  .bp6 .dot {
+    background-color: var(--color-green);
+  }
+}
+
+@media (min-width: 152.5em) {
+  .bp7 .dot {
+    background-color: var(--color-green);
+  }
+}

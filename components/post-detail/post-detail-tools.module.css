@@ -14,9 +14,9 @@
   justify-content: space-between;
   height: 60px;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--text-14);
   white-space: nowrap;
-  transition: transform var(--speed) var(--ease);
+  transition: transform var(--speed) var(--ease-ello);
 }
 
 .post .tools {
@@ -26,7 +26,7 @@
 }
 
 .top .tools {
-  border-bottom: 1px solid #f2f2f2;
+  border-bottom: 1px solid var(--color-gf2);
 }
 
 @media (min-width: 60em) {
@@ -48,62 +48,18 @@
   }
 }
 
-.tools :global(.PostTool) {
-  position: relative;
-  display: inline-block;
-  height: 20px;
-  line-height: 20px;
-  transition: transform var(--speed) var(--ease);
-}
-
-.tools :global(.PostTool) > a,
-.tools :global(.PostTool) > button {
-  padding-right: 8px;
-  padding-left: 4px;
-  color: #aaa;
-  transition: color var(--speed) ease;
-}
-
-.tools :global(.PostTool) > a {
-  vertical-align: middle;
-}
-
-.tools :global(.PostTool) > button:global(.hasPostToolDrawer) {
-  padding-right: 5px;
-}
-
-.tools :global(.PostTool) > button:global(.PostToolDrawerButton) {
-  padding-left: 0 !important;
-}
-
-@media (min-width: 60em) {
-  .tools :global(.PostTool) > a,
-  .tools :global(.PostTool) > button {
-    padding-right: 12px;
-    padding-left: 4px;
-  }
-
-  .tools :global(.PostTool) > button:global(.hasPostToolDrawer) {
-    padding-right: 5px;
-  }
-}
-
-@media (hover: hover) {
-  .tools :global(.PostTool) a:hover,
-  .tools :global(.PostTool) button:hover {
-    color: #000;
-  }
-}
-
-.tools :global(.PostToolValue):global(.isZero) {
-  display: none;
-}
+/*
+ * `.PostTool` itself (its box, the grey link or button, the 12px padding from 60em, hover, the zero
+ * value, the drawer button) and the Views / Share pills are the stream's rules in
+ * components/posts/post-tools.css and post-tools-more.css: a post page is `.Posts.asList` too. Only
+ * what the page changes is below.
+ */
 
 /* postDetailStyle: bigger values and icons in the top / post contexts */
 .post .tools :global(.PostToolValue),
 .top .tools :global(.PostToolValue) {
   margin-left: 10px;
-  font-size: 18px;
+  font-size: var(--text-18);
 }
 
 .post .tools :global(.SVGIcon) + :global(.PostToolValue),
@@ -121,14 +77,15 @@
   stroke-width: 0.9375;
 }
 
-.post .tools :global(.CommentTool),
-.post .tools :global(.WatchTool),
-.post .tools :global(.FlagTool),
-.post .tools :global(.TimeAgoTool),
-.top .tools :global(.CommentTool),
-.top .tools :global(.WatchTool),
-.top .tools :global(.FlagTool),
-.top .tools :global(.TimeAgoTool) {
+/* `.tools` doubled: the stream's `.Posts.asList .TimeAgoTool` (shown from 40em) is three classes too */
+.post .tools.tools :global(.CommentTool),
+.post .tools.tools :global(.WatchTool),
+.post .tools.tools :global(.FlagTool),
+.post .tools.tools :global(.TimeAgoTool),
+.top .tools.tools :global(.CommentTool),
+.top .tools.tools :global(.WatchTool),
+.top .tools.tools :global(.FlagTool),
+.top .tools.tools :global(.TimeAgoTool) {
   display: none;
 }
 
@@ -137,62 +94,23 @@
 }
 
 .tools :global(.ViewsTool) {
-  margin-left: -8px;
   pointer-events: none;
 }
 
+/* the page's Views pill is not a pill: grey figures on white, flush with the row */
 .tools :global(.ViewsTool):global(.isPill) {
-  height: 22px;
   margin-right: 0 !important;
-  margin-left: 0;
-  line-height: 22px;
 }
 
 .tools :global(.ViewsTool):global(.isPill) > a {
-  padding-right: 11px;
-  padding-left: 11px;
-  color: #aaa;
+  color: var(--color-gaa);
   background-color: transparent;
-  border-radius: 11px;
 }
 
-.tools :global(.ViewsTool):global(.isPill) > a :global(.SVGIcon),
-.tools :global(.ViewsTool):global(.isPill) > a :global(.PostToolValue) {
-  position: relative;
-  top: 1px;
-}
-
-.tools :global(.ShareTool):global(.isPill) {
-  right: 0;
-  height: 22px;
-  line-height: 22px;
-}
-
-.tools :global(.ShareTool):global(.isPill) > button {
-  padding-right: 11px;
-  padding-left: 11px;
-  background-color: #e8e8e8;
-  border-radius: 11px;
-  transition: color var(--speed) ease, background-color var(--speed) ease;
-}
-
-@media (hover: hover) {
-  .tools :global(.ShareTool):global(.isPill) > button:hover {
-    background-color: #ccc;
-  }
-}
-
-.tools :global(.ShareTool):global(.isPill) > button > :global(.Hint) {
-  position: static;
-  display: inline-block;
-  padding: 0;
-  color: #535353;
-  visibility: visible;
-  background-color: transparent;
-  border: 0;
-  border-radius: 0;
-  opacity: 1;
-}
+/*
+ * From 60em the pills take the 12px / 4px of every list tool (`.Posts.asList .PostTool > a`,
+ * post-tools-more.css), as the original's do: measured on its post page, not 11px either side.
+ */
 
 .tools :global(.ShyTool),
 :global(.PostDetails) .tools:global(.PostTools) :global(.ShyTool) {
@@ -208,12 +126,12 @@
   justify-content: flex-start;
 }
 
-.bottom .tools :global(.PostTool) {
+.bottom .tools.tools :global(.PostTool) {
   display: none;
 }
 
-.bottom .tools :global(.WatchTool),
-.bottom .tools :global(.FlagTool) {
+.bottom .tools.tools :global(.WatchTool),
+.bottom .tools.tools :global(.FlagTool) {
   display: block;
 }
 
@@ -228,9 +146,4 @@
 .categoryHistory {
   padding-right: 20px;
   padding-left: 20px;
-}
-
-/* `.PostTool[data-count="0"] > button.PostToolDrawerButton` */
-.tools :global(.PostTool)[data-count='0'] > button:global(.PostToolDrawerButton) {
-  display: none;
 }

@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import type { MouseEventHandler, ReactNode } from 'react'
 import { cn } from '@/utils/cn'
 import styles from './navbar-link.module.css'
+import { useShownPath } from './use-pending-navigation'
 
 /** Links that stay highlighted on their whole section (NavbarParts.js `highlightingRules`). */
 const HIGHLIGHT: Record<string, RegExp> = {
@@ -31,7 +31,7 @@ interface NavbarLinkProps {
 }
 
 const NavbarLinkBase = ({ kind, href, label, icon, className, onClick }: NavbarLinkProps & { kind: Kind }) => {
-  const pathname = usePathname()
+  const pathname = useShownPath()
   return (
     <Link
       href={href}

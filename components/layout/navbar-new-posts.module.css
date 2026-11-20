@@ -8,14 +8,14 @@
   z-index: 3;
   width: 30px;
   height: 30px;
-  font-size: 14px;
+  font-size: var(--text-14);
   line-height: 30px;
-  color: #fff;
+  color: var(--color-white);
   white-space: nowrap;
-  background-color: #aaa;
-  border: 1px solid #aaa;
+  background-color: var(--color-gaa);
+  border: 1px solid var(--color-gaa);
   border-radius: 50%;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.4s ease;
+  transition: background-color var(--speed) ease, border-color var(--speed) ease, color var(--speed) ease, opacity var(--speed2) ease;
 }
 
 :global(.isLoggedIn) .button {
@@ -28,7 +28,7 @@
 
 @media (hover: hover) {
   .button:hover {
-    color: #666;
+    color: var(--color-g66);
   }
 }
 
@@ -45,7 +45,7 @@
     padding-right: 20px;
     padding-left: 15px;
     line-height: 40px;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
   }
 
   :global(.isLoggedIn) .button {

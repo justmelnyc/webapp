@@ -2,14 +2,14 @@
 .button {
   padding-top: 10px;
   padding-bottom: 10px;
-  font-size: 14px;
-  color: #999;
-  transition: color 0.2s ease;
+  font-size: var(--text-14);
+  color: var(--color-g99);
+  transition: color var(--speed) ease;
 }
 
 @media (hover: hover) {
   .button:hover {
-    color: #000;
+    color: var(--color-black);
   }
 }
 
