@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { PostStream } from '@/components/streams/post-stream'
+import { StreamBusy } from '@/components/streams/stream-busy'
 import { getSession } from '@/lib/session'
 import { fetchStream } from '@/services/streams'
 import type { StreamSpec } from '@/types/stream'
@@ -10,7 +11,7 @@ interface ServerStreamProps {
 }
 
 /** Loads the first page on the server, then hands over to the client for infinite scroll. */
-export const ServerStream = async ({ spec, emptyMessage }: ServerStreamProps) => {
+const LoadedStream = async ({ spec, emptyMessage }: ServerStreamProps) => {
   const [initialPage, session] = await Promise.all([fetchStream(spec), getSession()])
   return (
     <PostStream
@@ -22,3 +23,13 @@ export const ServerStream = async ({ spec, emptyMessage }: ServerStreamProps) =>
     />
   )
 }
+
+/**
+ * The page around a stream is sent first, with the spinner where the posts go, and the posts follow once they
+ * arrive: the order the original drew them in (its server rendered the page, the stream loaded in the browser).
+ */
+export const ServerStream = (props: ServerStreamProps) => (
+  <Suspense fallback={<StreamBusy />}>
+    <LoadedStream {...props} />
+  </Suspense>
+)

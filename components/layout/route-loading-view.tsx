@@ -6,26 +6,17 @@ import triggerStyles from '@/components/discover/category-info-trigger.module.cs
 import { CategorySubNav } from '@/components/discover/category-sub-nav'
 import { DiscoverBeacon } from '@/components/discover/discover-beacon'
 import { HeroFrame } from '@/components/discover/discover-hero'
-import { ElloMark } from '@/components/icons'
 import { AnnouncementBanner } from '@/components/notifications/announcement-banner'
 import { NotificationPageList } from '@/components/notifications/notification-list'
 import { NotificationTabLinks } from '@/components/notifications/notification-tabs'
 import { SearchControl } from '@/components/profile/search-control'
 import searchStyles from '@/components/profile/search-control.module.css'
 import { FollowingBeacon } from '@/components/streams/following-beacon'
-import { cn } from '@/utils/cn'
 import { PageOffset } from './page-offset'
 import type { RouteLoading } from './route-loading'
-import '@/components/streams/stream.css'
+import { StreamBusy } from '@/components/streams/stream-busy'
 
-/** The original's `StreamContainer.renderLoading()`: the spinning mark where the stream will be. */
-export const StreamBusy = ({ className }: { className?: string }) => (
-  <section className={cn('StreamContainer isBusy', className)}>
-    <div className="StreamBusyIndicator">
-      <ElloMark className="isSpinner" />
-    </div>
-  </section>
-)
+export { StreamBusy }
 
 /** The empty `.Hero` every view starts with: it keeps the page below the fixed navbar. */
 const Offset = () => <PageOffset>{null}</PageOffset>
